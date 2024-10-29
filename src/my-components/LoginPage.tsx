@@ -2,50 +2,11 @@ import logo from "../assets/logo/twuzzy-logo.png";
 import githubicon from "../assets/images/1a78d0af8893b3c26a97a6740e49a82f.png";
 import discordicon from "../assets/images/png-clipart-white-flat-taskbar-icons-discord-online-game-chat-logo-illustration-thumbnail-removebg-preview.png";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { Session } from "@supabase/supabase-js";
-import { supabase } from "./createClient";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/auth/AuthProvider";
 
 export const LoginPage = () => {
-  const [session, setSession] = useState<Session | null>(null);
+  const { signInWithGitHub } = useAuth();
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Získání aktuální session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    // Sledování změn v autentizaci
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        if (session) {
-          navigate("/"); // Přesměrování po úspěšném přihlášení
-        }
-      }
-    );
-
-    return () => {
-      authListener?.subscription.unsubscribe(); // Odhlášení posluchače
-    };
-  }, [navigate]);
-
-  const signInWithGitHub = async () => {
-    
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "github",
-      });
-      if (error) throw error; // Zpracování chyb
-    } catch (err) {
-      console.error("Error signing in with GitHub:", err); // Zpracování chyby
-    } finally {
-      
-    }
-  };
   return (
     <section className="w-full flex bg-zinc-950">
       <motion.section
