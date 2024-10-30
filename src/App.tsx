@@ -5,6 +5,8 @@ import { AppContent } from "./my-components/AppContent";
 export default function App() {
   return (
     <BrowserRouter>
+      
+
       <AuthProvider>
         <AppContent />
       </AuthProvider>

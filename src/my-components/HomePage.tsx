@@ -1,21 +1,18 @@
-import { useAuth } from "@/auth/AuthProvider";
-import { SideBar } from "./Sidebar";
+import { Content } from "./Content";
+import { SideBar } from "./SideBar";
+import { TextBar } from "./TextBar";
 import { UpperBar } from "./UpperBar";
 
 export const HomePage = () => {
-  const { signOut } = useAuth();
-
   return (
     <div className="h-screen ">
       <SideBar />
-      <div className="flex justify-end">
+      <div className="flex flex-col items-end h-screen">
         <UpperBar />
-      </div>
+        <Content />
 
-      <div> 
-        <button onClick={signOut} className="ml-96">logout</button>
+        <TextBar />
       </div>
-      
     </div>
   );
 };

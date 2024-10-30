@@ -3,9 +3,14 @@ import githubicon from "../assets/images/1a78d0af8893b3c26a97a6740e49a82f.png";
 import discordicon from "../assets/images/png-clipart-white-flat-taskbar-icons-discord-online-game-chat-logo-illustration-thumbnail-removebg-preview.png";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/AuthProvider";
+import { Navigate } from "react-router-dom";
 
 export const LoginPage = () => {
-  const { signInWithGitHub } = useAuth();
+  const { signInWithGitHub, user } = useAuth();
+
+  if (user) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <section className="w-full flex bg-zinc-950">
