@@ -1,7 +1,7 @@
-import { Content } from "./Content";
-import { SideBar } from "./SideBar";
-import { TextBar } from "./TextBar";
-import { UpperBar } from "./UpperBar";
+import { Content } from "../my-components/Content";
+import { SideBar } from "../my-components/SideBar";
+import { TextBar } from "../my-components/TextBar";
+import { UpperBar } from "../my-components/UpperBar";
 
 export const HomePage = () => {
   return (

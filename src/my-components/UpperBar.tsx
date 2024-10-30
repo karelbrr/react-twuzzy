@@ -47,7 +47,7 @@ export function UpperBar() {
 
   const fetchUserData = async (): Promise<User> => {
     const { data, error } = await supabase
-      .from("users")
+      .from("profiles")
       .select("*")
       .eq("id", user?.id)
       .single();
@@ -56,21 +56,18 @@ export function UpperBar() {
   };
 
   const { data, error: errorQuery, isLoading } = useQuery<User, Error>({
-    queryKey: ["userdata"],
+    queryKey: ["profileData"],
     queryFn: fetchUserData,
   });
-
-  
-
 
   return (
     <section className="w-[82%] h-[10%] border-b ">
       <div className="p-5 flex justify-end">
-        <div className="flex w-full items-baseline max-w-sm justify-end space-x-4 mt-1">
+        <div className="flex w-full  max-w-sm justify-end space-x-4 ">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost">
+                <Button variant="ghost" className="mt-2">
                   <MailQuestion />
                 </Button>
               </TooltipTrigger>
@@ -82,9 +79,9 @@ export function UpperBar() {
 
           <Sheet>
             <SheetTrigger>
-              <Avatar className="size-12">
-                <AvatarImage src="" />
-                <AvatarFallback>KB</AvatarFallback>
+              <Avatar className="size-12 max-h-12 max-w-12">
+                <AvatarImage src={data?.avatar} />
+                <AvatarFallback>{data?.first_name.substring(0, 1)}{data?.last_name.substring(0, 1)}</AvatarFallback>
               </Avatar>
             </SheetTrigger>
             <SheetContent>
@@ -95,8 +92,8 @@ export function UpperBar() {
                       <Skeleton className="w-[65px] h-[65px] rounded-full" />
                     ) : (
                       <Avatar className="size-16 text-xl">
-                        <AvatarImage src="" />
-                        <AvatarFallback>KB</AvatarFallback>
+                        <AvatarImage src={data?.avatar} />
+                        <AvatarFallback>{data?.first_name.substring(0, 1)}{data?.last_name.substring(0, 1)}</AvatarFallback>
                       </Avatar>
                     )}
 
