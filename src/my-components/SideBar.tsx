@@ -23,7 +23,7 @@ export const SideBar = () => {
             <AvatarImage src="" />
             <AvatarFallback>PN</AvatarFallback>
           </Avatar>
-          Patrik Novotný
+          Jan Novák
         </Button>
         <Button
           variant="outline"
@@ -33,7 +33,7 @@ export const SideBar = () => {
             <AvatarImage src="" />
             <AvatarFallback>JS</AvatarFallback>
           </Avatar>
-          Jakub Slovák
+          Jan Novák
         </Button>
       </div>
     </section>
