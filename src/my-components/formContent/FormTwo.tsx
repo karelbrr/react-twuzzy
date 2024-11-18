@@ -4,16 +4,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 type UserData = {
-  username: string
-  description: string
+  username: string;
+  desc: string;
 };
 type UserFormProps = UserData & {
   updateForm: (fields: Partial<UserData>) => void;
 };
 
-
-
-export const FormTwo = ({ username, description, updateForm }: UserFormProps) => {
+export const FormTwo = ({ username, desc, updateForm }: UserFormProps) => {
   return (
     <div className="w-2/3">
       <motion.div
@@ -21,7 +19,7 @@ export const FormTwo = ({ username, description, updateForm }: UserFormProps) =>
         animate={{ opacity: 1, transition: { duration: 0.5 } }}
       >
         <h2 className="font-main text-4xl font-semibold  mt-24">
-          Almost Done!
+          Share a Little About Yourself
         </h2>
         <p className="font-main font-medium  mt-2 opacity-85">
           We're just about finished! Before we complete your setup, please
@@ -37,7 +35,12 @@ export const FormTwo = ({ username, description, updateForm }: UserFormProps) =>
           <Label htmlFor="username" className="text-md font-light">
             Username*
           </Label>
-          <Input id="username" className="mt-1" value={username} onChange={e => updateForm({ username: e.target.value })}></Input>
+          <Input
+            id="username"
+            className="mt-1"
+            value={username}
+            onChange={(e) => updateForm({ username: e.target.value })}
+          ></Input>
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
@@ -48,9 +51,9 @@ export const FormTwo = ({ username, description, updateForm }: UserFormProps) =>
           </Label>
           <Textarea
             id="description"
-            value={description}
+            value={desc}
             className="mt-1 min-h-[130px] max-h-[170px]"
-            onChange={e => updateForm({description: e.target.value})}
+            onChange={(e) => updateForm({ desc: e.target.value })}
           />
         </motion.div>
       </div>

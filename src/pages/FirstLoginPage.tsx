@@ -6,48 +6,91 @@ import { useState } from "react";
 import { FormOne } from "../my-components/formContent/FormOne";
 import { FormTwo } from "../my-components/formContent/FormTwo";
 import { FormThree } from "../my-components/formContent/FormThree";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/auth/AuthProvider";
+import { supabase } from "@/my-components/createClient";
+import { Link, useNavigate } from "react-router-dom";
+import { LastStep } from "@/my-components/formContent/LastStep";
+
+
+type FormData = {
+  first_name: string;
+  last_name: string;
+  birthday: {
+    day: string;
+    month: string;
+    year: string;
+  };
+  first_login: boolean;
+  username: string;
+  desc: string;
+  avatar: string;
+};
+
+const initialData: FormData = {
+  first_name: "",
+  last_name: "",
+  birthday: {
+    day: "",
+    month: "",
+    year: "",
+  },
+  first_login: false,
+  username: "",
+  desc: "",
+  avatar: "",
+};
 
 export const FirstLoginPage = () => {
-  type FormData = {
-    firstName: string;
-    lastName: string;
-    birthday: {
-      day: string;
-      month: string;
-      year: string;
-    };
-    username: string;
-    description: string;
-    avatar: string;
-  };
+  const { user } = useAuth();
+  const navigate = useNavigate()
 
-  const initialData: FormData = {
-    firstName: "",
-    lastName: "",
-    birthday: {
-      day: "",
-      month: "",
-      year: "",
-    },
+  const [userData, setUserData] = useState(initialData);
 
-    username: "",
-    description: "",
-    avatar: "",
-  };
-
-  const [data, setData] = useState(initialData);
   const updateForm = (fields: Partial<FormData>) => {
-    setData((prev) => {
+    setUserData((prev) => {
       return { ...prev, ...fields };
     });
   };
 
+  const AddProfile = async (updatedProfile: Partial<FormData>) => {
+    if (!user?.id) {
+      throw new Error("User ID is missing");
+    }
+
+    const updatedProfileWithBirthday = {
+      ...updatedProfile,
+      birthday: [
+        updatedProfile.birthday?.day,
+        updatedProfile.birthday?.month,
+        updatedProfile.birthday?.year,
+      ],
+    };
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(updatedProfileWithBirthday)
+      .eq("id", user.id);
+
+    if (error) throw new Error(error.message);
+    return data;
+  };
+
+  const { mutate, isPending, isError, isSuccess, error } = useMutation({
+    mutationFn: AddProfile,
+  });
+
   const { steps, currentStepIndex, isFirstStep, isLastStep, next, back } =
     useMultistepForm([
-      <FormOne {...data} updateForm={updateForm} />,
-      <FormTwo {...data} updateForm={updateForm} />,
-      <FormThree {...data} updateForm={updateForm} />,
+      <FormOne {...userData} updateForm={updateForm} />,
+      <FormTwo {...userData} updateForm={updateForm} />,
+      <FormThree {...userData} updateForm={updateForm} />,
+      <LastStep />,
     ]);
+
+  const handleFinish = () => {
+    mutate(userData);
+  };
 
   return (
     <section className="flex">
@@ -65,14 +108,24 @@ export const FirstLoginPage = () => {
         />
       </motion.section>
       <section className="w-2/3 h-screen ">
-        <div className=" justify-center flex h-[480px]">
+        <div className="justify-center flex h-[480px]">
           {steps[currentStepIndex]}
         </div>
 
         <div className="flex mt-14 w-2/3 justify-end m-auto space-x-4">
           {!isFirstStep && <Button onClick={back}>Previous</Button>}
-          {isLastStep ? (
-            <Button onClick={() => console.log(data)}>Finish</Button>
+          {currentStepIndex === 2 ? (
+            <Button
+              onClick={() => {
+                next();
+                handleFinish();
+              }}
+              disabled={isPending}
+            >
+              {isPending ? "Saving..." : "Submit"}
+            </Button>
+          ) : isLastStep ? (
+            <Button onClick={() => navigate("/")}>Jump into Twüzzy!</Button>
           ) : (
             <Button onClick={next}>Next</Button>
           )}

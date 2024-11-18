@@ -55,7 +55,11 @@ export function UpperBar() {
     return data;
   };
 
-  const { data, error: errorQuery, isLoading } = useQuery<User, Error>({
+  const {
+    data,
+    error: errorQuery,
+    isLoading,
+  } = useQuery<User, Error>({
     queryKey: ["profileData"],
     queryFn: fetchUserData,
   });
@@ -81,7 +85,10 @@ export function UpperBar() {
             <SheetTrigger>
               <Avatar className="size-12 max-h-12 max-w-12">
                 <AvatarImage src={data?.avatar} />
-                <AvatarFallback>{data?.first_name.substring(0, 1)}{data?.last_name.substring(0, 1)}</AvatarFallback>
+                <AvatarFallback>
+                  {data?.first_name?.substring(0, 1) || ""}
+                  {data?.last_name?.substring(0, 1) || ""}
+                </AvatarFallback>
               </Avatar>
             </SheetTrigger>
             <SheetContent>
@@ -93,7 +100,10 @@ export function UpperBar() {
                     ) : (
                       <Avatar className="size-16 text-xl">
                         <AvatarImage src={data?.avatar} />
-                        <AvatarFallback>{data?.first_name.substring(0, 1)}{data?.last_name.substring(0, 1)}</AvatarFallback>
+                        <AvatarFallback>
+                          {data?.first_name?.substring(0, 1) || ""}
+                          {data?.last_name?.substring(0, 1) || ""}
+                        </AvatarFallback>
                       </Avatar>
                     )}
 
@@ -122,10 +132,9 @@ export function UpperBar() {
               <div className="mt-5 h-5/6">
                 {isLoading || errorQuery ? (
                   <div className="space-y-2">
-                  <Skeleton className="w-[330px] h-[20px]  rounded-full" />
-                  <Skeleton className="w-[330px] h-[20px]  rounded-full" />
-                  <Skeleton className="w-[250px] h-[20px]  rounded-full" />
-
+                    <Skeleton className="w-[330px] h-[20px]  rounded-full" />
+                    <Skeleton className="w-[330px] h-[20px]  rounded-full" />
+                    <Skeleton className="w-[250px] h-[20px]  rounded-full" />
                   </div>
                 ) : (
                   <SheetDescription className="text-justify">

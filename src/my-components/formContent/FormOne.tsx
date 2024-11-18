@@ -3,8 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type UserData = {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   birthday: {
     day: string;
     month: string;
@@ -16,8 +16,8 @@ type UserFormProps = UserData & {
 };
 
 export const FormOne = ({
-  firstName,
-  lastName,
+  first_name,
+  last_name,
   birthday,
   updateForm,
 }: UserFormProps) => {
@@ -44,8 +44,8 @@ export const FormOne = ({
           <Input
             id="first-name"
             className="mt-1"
-            value={firstName}
-            onChange={(e) => updateForm({ firstName: e.target.value })}
+            value={first_name}
+            onChange={(e) => updateForm({ first_name: e.target.value })}
           ></Input>
         </motion.div>
         <motion.div
@@ -58,8 +58,8 @@ export const FormOne = ({
           <Input
             id="last-name"
             className="mt-1"
-            value={lastName}
-            onChange={(e) => updateForm({ lastName: e.target.value })}
+            value={last_name}
+            onChange={(e) => updateForm({ last_name: e.target.value })}
           ></Input>
         </motion.div>
         <motion.div
@@ -77,7 +77,7 @@ export const FormOne = ({
                 value={birthday.day}
                 onChange={(e) =>
                   updateForm({ birthday: { ...birthday, day: e.target.value } })
-                } // Opravená část
+                } 
               ></Input>
             </div>
 
