@@ -5,9 +5,7 @@ import { TextBar } from "../my-components/TextBar";
 import { UpperBar } from "../my-components/UpperBar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/my-components/createClient";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 interface FirstLogin {
   id: string;
@@ -17,7 +15,6 @@ interface FirstLogin {
 export const HomePage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // Hook pro získání aktuální URL
 
   const fetchUserData = async (): Promise<FirstLogin> => {
     const { data, error } = await supabase
@@ -29,36 +26,19 @@ export const HomePage = () => {
     return data;
   };
 
-  const {
-    data,
-    error,
-    isLoading,
-    refetch, 
-  } = useQuery<FirstLogin, Error>({
-    queryKey: ["profileData", user?.id], 
+  const { data, isPending } = useQuery<FirstLogin, Error>({
+    queryKey: ["profileData", user?.id],
     queryFn: fetchUserData,
-    refetchOnWindowFocus: true, 
-    refetchInterval: false, 
+    refetchOnWindowFocus: true,
   });
 
- 
-  useEffect(() => {
-   
-    refetch(); 
-  }, [location, refetch]); 
-
-  
-  useEffect(() => {
-    if (data?.first_login) {
-      navigate("/first_login", { replace: true });
-    }
-  }, [data, navigate]);
+  if (data?.first_login) {
+    navigate("/first_login");
+  }
 
   return (
     <div className="h-screen ">
-     
-
-      {!data?.first_login && (
+      {!isPending && (
         <div>
           <SideBar />
           <div className="flex flex-col items-end h-screen">
