@@ -8,6 +8,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,17 +29,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/auth/AuthProvider";
-import { MailQuestion } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { MailQuestion, Plus } from "lucide-react";
 import { SquarePen } from "lucide-react";
 import { supabase } from "./createClient";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface User {
   id: string;
@@ -68,18 +72,40 @@ export function UpperBar() {
     <section className="w-[82%] h-[10%] border-b ">
       <div className="p-5 flex justify-end">
         <div className="flex w-full  max-w-sm justify-end space-x-4 ">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" className="mt-2">
-                  <MailQuestion />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Message requests</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" className="mt-1">
+                <MailQuestion />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Chat requests</DialogTitle>
+              </DialogHeader>
+              <ScrollArea className="h-[200px] w-full">
+                <div className="space-y-2">
+                  <Button
+                    variant={"outline"}
+                    className=" w-full text-left flex justify-between"
+                  >
+                    <p>Filip Pšenčík</p> <Plus />
+                  </Button>
+                  <Button
+                    variant={"outline"}
+                    className="w-full text-left flex justify-between"
+                  >
+                    <p>Jan Novák</p> <Plus />
+                  </Button>
+                  <Button
+                    variant={"outline"}
+                    className="w-full text-left flex justify-between"
+                  >
+                    <p>Petr Svoboda</p> <Plus />
+                  </Button>
+                </div>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
 
           <Sheet>
             <SheetTrigger>
@@ -123,8 +149,10 @@ export function UpperBar() {
                       <SquarePen />
                     </Button>
                   ) : (
-                    <Button variant="ghost" className="mt-3">
-                      <SquarePen />
+                    <Button variant="ghost" className="mt-3" asChild>
+                      <Link to={"profile-edit"}>
+                        <SquarePen />
+                      </Link>
                     </Button>
                   )}
                 </div>

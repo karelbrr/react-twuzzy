@@ -9,7 +9,7 @@ import { FormThree } from "../my-components/formContent/FormThree";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "@/my-components/createClient";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LastStep } from "@/my-components/formContent/LastStep";
 
 
