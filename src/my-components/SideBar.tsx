@@ -15,7 +15,7 @@ export const SideBar = () => {
   return (
     <section className="h-screen w-[18%]  fixed border-r">
       <div className="flex justify-between">
-        <h3 className="font-main font-semibold text-2xl m-auto w-4/5  mt-5 ml-5">
+        <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">
           Chats
         </h3>
 
@@ -107,7 +107,7 @@ export const SideBar = () => {
         </Dialog>
       </div>
 
-      <div className="m-auto w-[90%] mt-4 font-main">
+      <div className="m-auto w-[90%] mt-4 ">
         <Button
           variant="outline"
           className=" w-full flex justify-start h-14 mb-3"

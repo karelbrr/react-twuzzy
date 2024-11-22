@@ -18,10 +18,10 @@ export const FormTwo = ({ username, desc, updateForm }: UserFormProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.5 } }}
       >
-        <h2 className="font-main text-4xl font-semibold  mt-24">
+        <h2 className="font-bold text-4xl  mt-24">
           Share a Little About Yourself
         </h2>
-        <p className="font-main font-medium  mt-2 opacity-85">
+        <p className=" font-medium  mt-2 opacity-85">
           We're just about finished! Before we complete your setup, please
           review the information you've provided and make any necessary
           changes...

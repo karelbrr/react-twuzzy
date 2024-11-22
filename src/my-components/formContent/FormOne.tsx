@@ -27,8 +27,8 @@ export const FormOne = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.5 } }}
       >
-        <h2 className="font-main text-4xl font-semibold  mt-24">Welcome!</h2>
-        <p className="font-main font-medium  mt-2 opacity-85">
+        <h2 className=" text-4xl font-bold  mt-24">Welcome!</h2>
+        <p className=" font-medium  mt-2 opacity-85">
           We're glad to have you here! Please take a moment to tell us a little
           something about yourself...
         </p>
