@@ -12,6 +12,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -71,18 +72,21 @@ export function UpperBar() {
   return (
     <section className="w-[82%] h-[10%] border-b ">
       <div className="p-5 flex justify-end">
-        <div className="flex w-full  max-w-sm justify-end space-x-4 ">
+        <div className="flex w-full  max-w-sm justify-end items-center space-x-4 ">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" className="mt-1">
+              <Button variant="ghost" className="">
                 <MailQuestion />
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Chat requests</DialogTitle>
+                <DialogDescription>
+                Manage your chat requests with accept, decline, or view details of users who want to connect with you.
+              </DialogDescription>
               </DialogHeader>
-              <ScrollArea className="h-[200px] w-full">
+              <ScrollArea className="max-h-[200px] w-full">
                 <div className="space-y-2">
                   <Button
                     variant={"outline"}
