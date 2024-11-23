@@ -37,6 +37,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { motion } from "framer-motion";
 
 interface User {
   id: string;
@@ -70,7 +71,8 @@ export function UpperBar() {
   });
 
   return (
-    <section className="w-[82%] h-[10%] border-b ">
+    <motion.section initial={{ opacity: 0 }}
+    animate={{ opacity: 1, transition: { duration: 1 } }} className="w-[82%] h-[10%] border-b ">
       <div className="p-5 flex justify-end">
         <div className="flex w-full  max-w-sm justify-end items-center space-x-4 ">
           <Dialog>
@@ -204,6 +206,6 @@ export function UpperBar() {
           </Sheet>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

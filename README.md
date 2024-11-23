@@ -1,5 +1,5 @@
-Ued technologies:
-- Typescript?
+Used technologies:
+- Typescript
 - Framer motion
 - React query 
 - Shad cn

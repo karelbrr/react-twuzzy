@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Ellipsis } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface User {
   id: string;
@@ -54,7 +55,11 @@ export const SideBar = () => {
   });
 
   return (
-    <section className="h-screen w-[18%]  fixed border-r">
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 1 } }}
+      className="h-screen w-[18%]  fixed border-r"
+    >
       <div className="flex justify-between">
         <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">Chats</h3>
 
@@ -144,6 +149,6 @@ export const SideBar = () => {
           Jan Novák
         </Button>
       </div>
-    </section>
+    </motion.section>
   );
 };
