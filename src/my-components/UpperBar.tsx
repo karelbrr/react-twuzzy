@@ -38,6 +38,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
+import { Newspaper } from "lucide-react";
+import { CircleHelp } from "lucide-react";
 
 interface User {
   id: string;
@@ -71,8 +73,11 @@ export function UpperBar() {
   });
 
   return (
-    <motion.section initial={{ opacity: 0 }}
-    animate={{ opacity: 1, transition: { duration: 1 } }} className="w-[82%] h-[10%] border-b ">
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 1 } }}
+      className="w-[82%] h-[10%] border-b "
+    >
       <div className="p-5 flex justify-end">
         <div className="flex w-full  max-w-sm justify-end items-center space-x-4 ">
           <Dialog>
@@ -85,8 +90,9 @@ export function UpperBar() {
               <DialogHeader>
                 <DialogTitle>Chat requests</DialogTitle>
                 <DialogDescription>
-                Manage your chat requests with accept, decline, or view details of users who want to connect with you.
-              </DialogDescription>
+                  Manage your chat requests with accept, decline, or view
+                  details of users who want to connect with you.
+                </DialogDescription>
               </DialogHeader>
               <ScrollArea className="max-h-[200px] w-full">
                 <div className="space-y-2">
@@ -176,7 +182,21 @@ export function UpperBar() {
                   </SheetDescription>
                 )}
               </div>
-              <SheetFooter className="flex items-end">
+              <SheetFooter className=" flex items-end">
+                <div className="flex ">
+                  <Button variant={"link"} className="opacity-90" asChild>
+                  
+                    <Link to={"/news"}>
+                      <Newspaper />
+                      Explore News
+                    </Link>
+                  </Button>
+                  <Button variant={"link"}>
+                    {" "}
+                    <CircleHelp />
+                    Help
+                  </Button>
+                </div>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button className="mt-2" variant="outline">
