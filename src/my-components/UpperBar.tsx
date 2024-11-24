@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/auth/AuthProvider";
-import { MailQuestion, Plus } from "lucide-react";
+import { Ellipsis, MailQuestion } from "lucide-react";
 import { SquarePen } from "lucide-react";
 import { supabase } from "./createClient";
 import { useQuery } from "@tanstack/react-query";
@@ -40,6 +40,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { Newspaper } from "lucide-react";
 import { CircleHelp } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface User {
   id: string;
@@ -75,7 +83,7 @@ export function UpperBar() {
   return (
     <motion.section
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 1 } }}
+      animate={{ opacity: 1, transition: { duration: 0.5 } }}
       className="w-[82%] h-[10%] border-b "
     >
       <div className="p-5 flex justify-end">
@@ -96,24 +104,26 @@ export function UpperBar() {
               </DialogHeader>
               <ScrollArea className="max-h-[200px] w-full">
                 <div className="space-y-2">
-                  <Button
-                    variant={"outline"}
-                    className=" w-full text-left flex justify-between"
-                  >
-                    <p>Filip Pšenčík</p> <Plus />
-                  </Button>
-                  <Button
-                    variant={"outline"}
-                    className="w-full text-left flex justify-between"
-                  >
-                    <p>Jan Novák</p> <Plus />
-                  </Button>
-                  <Button
-                    variant={"outline"}
-                    className="w-full text-left flex justify-between"
-                  >
-                    <p>Petr Svoboda</p> <Plus />
-                  </Button>
+                  <div className="flex justify-between border p-2 rounded-lg">
+                    <p className="text-sm">Jakub Slovák</p>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Ellipsis size={17} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>
+                          <p>Jakub Slovák</p>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>Accept Request</DropdownMenuItem>
+                        <DropdownMenuItem>View Profile</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-red-700 focus:text-red-700">
+                          Block
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
               </ScrollArea>
             </DialogContent>
@@ -181,11 +191,17 @@ export function UpperBar() {
                     {data?.desc}
                   </SheetDescription>
                 )}
+                {errorQuery && (
+                  <div className="border border-red-700 mt-5 p-3 text-red-700 rounded-lg">
+                    <h4>Error</h4>
+                    <p>{errorQuery.message}</p>
+                  </div>
+                )}
               </div>
+
               <SheetFooter className=" flex items-end">
                 <div className="flex ">
                   <Button variant={"link"} className="opacity-90" asChild>
-                  
                     <Link to={"/news"}>
                       <Newspaper />
                       Explore News
