@@ -172,7 +172,7 @@ export function UpperBar() {
                     </Button>
                   ) : (
                     <Button variant="ghost" className="mt-3" asChild>
-                      <Link to={"profile-edit"}>
+                      <Link to={"settings/account"}>
                         <SquarePen />
                       </Link>
                     </Button>

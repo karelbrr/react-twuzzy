@@ -8,7 +8,8 @@ const AuthContext = createContext<{
   user: User | null | undefined;
   signOut: () => void;
   signInWithGitHub: () => void;
-}>({ session: null, user: null, signOut: () => {}, signInWithGitHub: () => {} });
+  signInWithDiscord: () => void;
+}>({ session: null, user: null, signOut: () => {}, signInWithGitHub: () => {},signInWithDiscord: () => {} });
 
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User>();
@@ -56,11 +57,24 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
+  const signInWithDiscord = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "discord",
+      });
+      if (error) throw error; // Zpracování chyb
+    } catch (err) {
+      console.error("Error signing in with Discord:", err); // Zpracování chyby
+    } finally {
+    }
+  };
+
   const value = {
     session,
     user,
     signOut: () => supabase.auth.signOut(),
-    signInWithGitHub
+    signInWithGitHub,
+    signInWithDiscord
   };
 
   // use a provider to pass down the value

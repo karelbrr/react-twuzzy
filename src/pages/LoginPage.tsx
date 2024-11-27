@@ -6,7 +6,7 @@ import { useAuth } from "@/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 
 export const LoginPage = () => {
-  const { signInWithGitHub, user } = useAuth();
+  const { signInWithGitHub,signInWithDiscord, user } = useAuth();
 
   if (user) {
     return <Navigate to="/" />;
@@ -61,7 +61,7 @@ export const LoginPage = () => {
               <img src={githubicon} alt="" className="w-6 mr-1" />
               Sign in with Github
             </button>
-            <button className="w-full mt-5 text-md bg-indigo-600  text-white flex justify-center py-3  rounded-xl hover:opacity-80 transition">
+            <button onClick={signInWithDiscord} className="w-full  mt-5 text-md bg-indigo-600  text-white flex justify-center py-3  rounded-xl hover:opacity-80 transition">
               <img src={discordicon} alt="" className="w-6 mt-1 mr-1" />
               Sign in with Discord
             </button>

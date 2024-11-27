@@ -4,6 +4,10 @@ import { HomePage } from "../pages/HomePage";
 import ProtectedRoute from "@/auth/ProtectedRoute";
 import { FirstLoginPage } from "@/pages/FirstLoginPage";
 import { NewsPage } from "@/pages/NewsPage";
+import { ProfileEdit } from "@/pages/ProfileEdit";
+import { SettingsAccount } from "./SettingsAccount";
+import { SettingsProfile } from "./SettingsProfile";
+import { SettingsBlocked } from "./SettingsBlocked";
 
 export const AppContent = () => (
   <Routes>
@@ -17,6 +21,39 @@ export const AppContent = () => (
         </ProtectedRoute>
       }
     />
+    <Route
+      path="/settings"
+      element={
+        <ProtectedRoute>
+          <ProfileEdit />
+        </ProtectedRoute>
+      }
+    >
+      <Route
+        path="account"
+        element={
+          <ProtectedRoute>
+            <SettingsAccount />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="profile"
+        element={
+          <ProtectedRoute>
+            <SettingsProfile />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="blocked"
+        element={
+          <ProtectedRoute>
+            <SettingsBlocked/>
+          </ProtectedRoute>
+        }
+      />
+    </Route>
     <Route
       path="/first_login"
       element={
