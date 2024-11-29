@@ -31,6 +31,7 @@ import {
 import { Ellipsis } from "lucide-react";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast"
 
 interface User {
   id: string;
@@ -41,6 +42,7 @@ interface Chat {
   id?: string;
   is_group: boolean;
   updated_at: string;
+  created_by: string | undefined;
   is_started: boolean;
 }
 
@@ -52,6 +54,7 @@ interface membersDataType {
 }
 
 export const SideBar = () => {
+  const { toast } = useToast()
   const { user } = useAuth();
   const fetchUserData = async (): Promise<User[]> => {
     const { data, error } = await supabase
@@ -78,6 +81,7 @@ export const SideBar = () => {
       is_group: false,
       updated_at: new Date().toISOString(),
       is_started: false,
+      created_by: user?.id
     };
 
     // Vložit nový chat do tabulky "chats"
@@ -125,6 +129,12 @@ export const SideBar = () => {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: CreateChatRequest,
+    onSuccess: () => {
+      toast({
+        title: "Request sent",
+        description: "Your chat request has been successfully sent.",
+      });
+    },
   });
 
   const handleFinish = (oppositeUserId: string) => {

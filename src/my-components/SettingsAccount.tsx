@@ -1,7 +1,7 @@
 export const SettingsAccount = () => {
   return (
-    <section className="ml-[500px]">
-      <h2>test</h2>
+    <section className="">
+      <h2 className="font-bold text-3xl m-10">Account Settings</h2>
     </section>
   );
 };

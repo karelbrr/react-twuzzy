@@ -1,7 +1,7 @@
-
 export const SettingsProfile = () => {
-
-
-    return <section className="ml-[500px]"><h2>test</h2></section>;
-  };
-  
+  return (
+    <section className="">
+      <h2 className="font-bold text-3xl m-10">Profile Settings</h2>
+    </section>
+  );
+};

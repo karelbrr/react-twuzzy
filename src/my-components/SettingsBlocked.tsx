@@ -1,6 +1,8 @@
-
 export const SettingsBlocked = () => {
   return (
-    <div>SettingsBlocked</div>
-  )
-}
+    <section>
+      
+      <h2 className="font-bold text-3xl m-10">Blocked People</h2>
+    </section>
+  );
+};

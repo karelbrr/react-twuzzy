@@ -1,3 +1,4 @@
+import { MyChatRequests } from './MyChatRequests';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sheet,
@@ -8,15 +9,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,24 +22,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/auth/AuthProvider";
-import { Ellipsis, MailQuestion } from "lucide-react";
 import { SquarePen } from "lucide-react";
 import { supabase } from "./createClient";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { Newspaper } from "lucide-react";
 import { CircleHelp } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface User {
   id: string;
@@ -79,6 +61,8 @@ export function UpperBar() {
     queryKey: ["profileData"],
     queryFn: fetchUserData,
   });
+  
+ 
 
   return (
     <motion.section
@@ -88,46 +72,7 @@ export function UpperBar() {
     >
       <div className="p-5 flex justify-end">
         <div className="flex w-full  max-w-sm justify-end items-center space-x-4 ">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" className="">
-                <MailQuestion />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Chat requests</DialogTitle>
-                <DialogDescription>
-                  Manage your chat requests with accept, decline, or view
-                  details of users who want to connect with you.
-                </DialogDescription>
-              </DialogHeader>
-              <ScrollArea className="max-h-[200px] w-full">
-                <div className="space-y-2">
-                  <div className="flex justify-between border p-2 rounded-lg">
-                    <p className="text-sm">Jakub Slovák</p>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Ellipsis size={17} />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>
-                          <p>Jakub Slovák</p>
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Accept Request</DropdownMenuItem>
-                        <DropdownMenuItem>View Profile</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                          Block
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
+          <MyChatRequests     />
 
           <Sheet>
             <SheetTrigger>

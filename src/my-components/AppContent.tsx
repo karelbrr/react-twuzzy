@@ -8,15 +8,18 @@ import { ProfileEdit } from "@/pages/ProfileEdit";
 import { SettingsAccount } from "./SettingsAccount";
 import { SettingsProfile } from "./SettingsProfile";
 import { SettingsBlocked } from "./SettingsBlocked";
+import { Toaster } from "@/components/ui/toaster";
 
 export const AppContent = () => (
   <Routes>
+    
     <Route path="/login" element={<LoginPage />} />
     <Route path="/news" element={<NewsPage />} />
     <Route
       path="/"
       element={
         <ProtectedRoute>
+          <Toaster/>
           <HomePage />
         </ProtectedRoute>
       }
