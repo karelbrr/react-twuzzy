@@ -144,7 +144,7 @@ export const SideBar = () => {
   return (
     <motion.section
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.5 } }}
+      animate={{ opacity: 1, transition: { duration: 0.3 } }}
       className="h-screen w-[18%]  fixed border-r"
     >
       <div className="flex justify-between">

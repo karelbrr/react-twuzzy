@@ -9,7 +9,7 @@ export const TextBar = () => {
   return (
     <motion.section
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 1 } }}
+      animate={{ opacity: 1, transition: { duration: 0.3 } }}
       className="w-[82%] h-[10%] border-t"
     >
       <div className="w-full flex space-x-3 justify-end pr-10">
