@@ -17,8 +17,8 @@ export const ProfileEdit = () => {
           </Button>
           <h3 className=" font-bold text-2xl  ml-5">Settings</h3>
         </div>
-        <div className="flex flex-col ml-10 xl:ml-20 m-auto mt-5 font-extralight">
-          <div className="flex  flex-col w-5/6  space-y-1">
+        <div className="flex flex-col ml-10 xl:ml-15  m-auto mt-5 font-extralight">
+          <div className="flex  flex-col lg:w-5/6  space-y-1">
             <Link
               to={"/settings/account"}
               className="px-5 xl:text-[15px] font-medium  hover:underline hover:underline-offset-4 items-baseline text-left  flex w-full text-sm"
