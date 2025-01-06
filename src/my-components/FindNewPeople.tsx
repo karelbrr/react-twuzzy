@@ -31,6 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface User {
   id: string;
@@ -205,7 +206,7 @@ export function FindNewPeople() {
                             </DropdownMenuItem>
                           )}
 
-                          <DropdownMenuItem>View Profile</DropdownMenuItem>
+                          <DropdownMenuItem asChild><Link to={`/profile/${item.id}`}>View Profile</Link></DropdownMenuItem>
 
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-red-700 focus:text-red-700">

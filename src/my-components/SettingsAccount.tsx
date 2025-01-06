@@ -18,7 +18,7 @@ export const SettingsAccount = () => {
           <Input id="provider" placeholder={user?.app_metadata.provider} disabled />
         </div>
         <div className="flex flex-col w-1/3 gap-1.5 ml-10">
-          <Label htmlFor="provider">Email</Label>
+          <Label htmlFor="email">Email</Label>
           <Input type="email" id="email" placeholder={user?.email} disabled />
         </div>
         <div className="flex flex-col w-1/3 gap-1.5 ml-10">

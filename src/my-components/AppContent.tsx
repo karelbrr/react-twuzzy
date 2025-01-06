@@ -9,6 +9,8 @@ import { SettingsAccount } from "./SettingsAccount";
 import { SettingsProfile } from "./SettingsProfile";
 import { SettingsBlocked } from "./SettingsBlocked";
 import { Toaster } from "@/components/ui/toaster";
+import { ProfileDetails } from "@/pages/ProfileDetails";
+
 
 export const AppContent = () => (
   <Routes>
@@ -62,6 +64,14 @@ export const AppContent = () => (
       element={
         <ProtectedRoute>
           <FirstLoginPage />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/profile/:id"
+      element={
+        <ProtectedRoute>
+          <ProfileDetails/>
         </ProtectedRoute>
       }
     />

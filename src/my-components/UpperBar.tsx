@@ -30,15 +30,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Newspaper } from "lucide-react";
 import { CircleHelp } from "lucide-react";
+import { User } from "./types";
 
-interface User {
-  id: string;
-  created_at: string;
-  first_name: string;
-  last_name: string;
-  avatar: string;
-  desc: string;
-}
 
 export function UpperBar() {
   const { signOut, user } = useAuth();

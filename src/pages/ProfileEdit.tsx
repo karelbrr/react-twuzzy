@@ -21,7 +21,7 @@ export const ProfileEdit = () => {
           <div className="flex  flex-col lg:w-5/6  space-y-1">
             <Link
               to={"/settings/account"}
-              className="px-5 xl:text-[15px] font-medium  hover:underline hover:underline-offset-4 items-baseline text-left  flex w-full text-sm"
+              className="px-5 xl:text-[15px] font-normal  hover:underline hover:underline-offset-4 items-baseline text-left  flex w-full text-sm"
             >
               <Key size={15} className="mr-1" />
               Account
@@ -29,7 +29,7 @@ export const ProfileEdit = () => {
 
             <Link
               to={"/settings/profile"}
-              className="px-5 xl:text-[15px] font-medium  hover:underline hover:underline-offset-4 items-baseline text-left  flex w-full text-sm"
+              className="px-5 xl:text-[15px] font-normal  hover:underline hover:underline-offset-4 items-baseline text-left  flex w-full text-sm"
             >
               <UserPen size={15} className="mr-1 " />
               Profile
@@ -37,7 +37,7 @@ export const ProfileEdit = () => {
 
             <Link
               to={"/settings/blocked"}
-              className="px-5 xl:text-[15px] font-medium  hover:underline hover:underline-offset-4 items-baseline text-left text-sm flex w-full"
+              className="px-5 xl:text-[15px] font-normal  hover:underline hover:underline-offset-4 items-baseline text-left text-sm flex w-full"
             >
               <ShieldAlert size={15} className="mr-1" />
               Blocked People
