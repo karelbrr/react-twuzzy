@@ -1,11 +1,9 @@
 import { useAuth } from "@/auth/AuthProvider";
-import { Content } from "../my-components/Content";
 import { SideBar } from "../my-components/SideBar";
-import { TextBar } from "../my-components/TextBar";
 import { UpperBar } from "../my-components/UpperBar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/my-components/createClient";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 interface FirstLogin {
   id: string;
@@ -43,8 +41,7 @@ export const HomePage = () => {
           <SideBar />
           <div className="flex flex-col items-end h-screen">
             <UpperBar />
-            <Content />
-            <TextBar />
+            <Outlet/>
           </div>
         </div>
       )}

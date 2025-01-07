@@ -10,22 +10,27 @@ import { SettingsProfile } from "./SettingsProfile";
 import { SettingsBlocked } from "./SettingsBlocked";
 import { Toaster } from "@/components/ui/toaster";
 import { ProfileDetails } from "@/pages/ProfileDetails";
+import { Content } from "../my-components/Content";
+import NoChatSelected from "./NoChatSelected";
 
 
 export const AppContent = () => (
   <Routes>
-    
     <Route path="/login" element={<LoginPage />} />
     <Route path="/news" element={<NewsPage />} />
     <Route
       path="/"
       element={
         <ProtectedRoute>
-          <Toaster/>
+          <Toaster />
           <HomePage />
         </ProtectedRoute>
       }
-    />
+    >
+      <Route path="/" element={<NoChatSelected/>}/>
+      <Route path="chat/:id" element={<Content/>}/>
+      
+    </Route>
     <Route
       path="/settings"
       element={
@@ -50,11 +55,11 @@ export const AppContent = () => (
           </ProtectedRoute>
         }
       />
-       <Route
+      <Route
         path="blocked"
         element={
           <ProtectedRoute>
-            <SettingsBlocked/>
+            <SettingsBlocked />
           </ProtectedRoute>
         }
       />
@@ -71,7 +76,7 @@ export const AppContent = () => (
       path="/profile/:id"
       element={
         <ProtectedRoute>
-          <ProfileDetails/>
+          <ProfileDetails />
         </ProtectedRoute>
       }
     />

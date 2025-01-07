@@ -7,6 +7,7 @@ interface ChatMember {
 interface Profiles {
   first_name: string;
   last_name: string;
+  avatar: string
 }
 export interface ChatRequest {
   id: string;

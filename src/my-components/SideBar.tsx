@@ -6,6 +6,7 @@ import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./createClient";
 import { ChatRequest as Chat } from "./types";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 export const SideBar = () => {
   const { user } = useAuth();
@@ -21,7 +22,8 @@ export const SideBar = () => {
         profiles!inner(
           id, 
           first_name, 
-          last_name
+          last_name,
+          avatar
         )
       )
     `
@@ -31,7 +33,6 @@ export const SideBar = () => {
 
     if (error) throw new Error(error.message);
 
-    console.log(myChatsData);
 
     return myChatsData;
   };
@@ -58,21 +59,24 @@ export const SideBar = () => {
 
       <div className="m-auto w-[90%] mt-4 ">
         {myChats?.map((item) => (
-          <Button
+          <Button asChild
             key={item.id}
             variant="outline"
-            className=" w-full flex justify-start h-14 mb-3"
+            className="w-full flex justify-start  h-16 mb-3"
           >
-            <Avatar className="size-10 max-h-12 max-w-12">
-              <AvatarImage />
-              <AvatarFallback></AvatarFallback>
-            </Avatar>
-            {item.chat_members.map((member) => (
-              <p key={member.user_id}>
-              
-                {member.profiles.first_name} {member.profiles.last_name}
-              </p>
+            <Link to={`chat/${item.id}`}>{item.chat_members.map((member) => (
+              <div className="flex items-center" key={member.user_id}>
+                <Avatar className="size-10 max-h-12 max-w-12 ml-2">
+                  <AvatarImage src={member.profiles.avatar}/>
+                  <AvatarFallback></AvatarFallback>
+                </Avatar>
+                <p className="ml-2">
+                  {member.profiles.first_name} {member.profiles.last_name}
+                </p>
+              </div>
             ))}
+            </Link>
+            
           </Button>
         ))}
       </div>
