@@ -8,7 +8,7 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ position = "left", message }) => {
   return (
     <div
-      className={`inline-block rounded-xl border px-4 py-2 text-base mx-5 mt-1 ${
+      className={`inline-block rounded-xl border px-4 py-2 max-w-[500px] text-base mx-5 mt-1 ${
         position === "right" 
           ? "bg-gradient-to-r from-violet-600 to-indigo-600 ml-auto" // zpráva vpravo
           : "bg-gradient-to-r from-fuchsia-600 to-purple-600 mr-auto"// zpráva vlevo

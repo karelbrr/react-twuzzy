@@ -40,18 +40,13 @@ interface User {
 }
 interface Chat {
   id?: string;
-  is_group: boolean;
   updated_at: string;
   created_by: string | undefined;
+  chat_with: string;
   is_started: boolean;
 }
 
-interface membersDataType {
-  chat_id: string;
-  user_id: string | undefined;
-  added_at: string;
-  role: string;
-}
+
 
 export function FindNewPeople() {
   const { toast } = useToast();
@@ -77,13 +72,12 @@ export function FindNewPeople() {
 
   const CreateChatRequest = async (oppositeUserId: string) => {
     const chatData: Chat = {
-      is_group: false,
       updated_at: new Date().toISOString(),
       is_started: false,
       created_by: user?.id,
+      chat_with: oppositeUserId,
     };
 
-    // Vložit nový chat do tabulky "chats"
     const { data: chat, error: chatError } = await supabase
       .from("chats")
       .insert([chatData])
@@ -94,36 +88,7 @@ export function FindNewPeople() {
       console.error("Error creating chat:", chatError.message);
       throw new Error(chatError.message);
     }
-
-    const chatId = chat?.id;
-    if (!chatId) {
-      throw new Error("Failed to retrieve chat ID");
-    }
-    const membersData: membersDataType[] = [
-      {
-        chat_id: chatId,
-        user_id: user?.id,
-        added_at: new Date().toISOString(),
-        role: "member",
-      },
-      {
-        chat_id: chatId,
-        user_id: oppositeUserId,
-        added_at: new Date().toISOString(),
-        role: "member",
-      },
-    ];
-
-    const { data: members, error: membersError } = await supabase
-      .from("chat_members")
-      .insert(membersData);
-
-    if (membersError) {
-      console.error("Error adding chat members:", membersError.message);
-      throw new Error(membersError.message);
-    }
-
-    return { chat, members };
+    return { chat };
   };
 
   const { mutate, isPending, error } = useMutation({

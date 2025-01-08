@@ -21,60 +21,88 @@ import { supabase } from "./createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChatRequest } from "./types";
+import { log } from "console";
+
+interface Profiles {
+  first_name: string;
+  last_name: string;
+  avatar: string;
+}
+export interface ChatRequest {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  is_started: boolean;
+  created_by: string;
+  chat_with: string;
+}
 
 export function MyChatRequests({}) {
   const { user } = useAuth();
-  const fetchUserData = async (): Promise<ChatRequest[]> => {
-    const { data: myRequestsData, error } = await supabase
+  const fetchChatRequests = async () => {
+    const { data, error } = await supabase
       .from("chats")
       .select(
-        `*,chat_members!inner(user_id),profiles!inner(first_name, last_name)`
+        `
+      *,
+      profiles!created_by (
+        id,
+        first_name,
+        last_name,
+        avatar
+      )
+    `
       )
       .eq("is_started", false)
-      .eq("chat_members.user_id", user?.id)
-      .neq("created_by", user?.id);
-    if (error) throw new Error(error.message);
-    return myRequestsData;
+      .eq("chat_with", user?.id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+   
+
+    return data;
   };
+
   const {
     data: myRequestsData,
     error: errorQuery,
     isLoading,
-  } = useQuery<ChatRequest[], Error>({
-    queryKey: ["myChatData"],
-    queryFn: fetchUserData,
+  } = useQuery({
+    queryKey: ["ChatRequest"],
+    queryFn: fetchChatRequests,
   });
 
   const acceptRequest = async (chatId: string) => {
     try {
       const { data, error } = await supabase
         .from("chats")
-        .update({ is_started: true })  
-        .eq("id", chatId); 
-  
+        .update({ is_started: true })
+        .eq("id", chatId);
+
       if (error) {
         throw new Error(error.message);
       }
-      
-      console.log("Chat request accepted", data); 
-      return data;  
+
+      console.log("Chat request accepted", data);
+      return data;
       ;
-  
+
     } catch (error) {
       console.error("Error accepting request:", error);
-      throw error;  
+      throw error;
     }
   };
   const { mutate, isPending, error } = useMutation({
     mutationFn: acceptRequest,
     onError: () => {
       console.log(error);
-      
+
     },
     onSuccess: () => {
       console.log("test");
-      
+
     }
   });
 
@@ -126,7 +154,7 @@ export function MyChatRequests({}) {
                       </p>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => sendAcceptRequest(item.id)}>Accept Request</DropdownMenuItem>
+                     <DropdownMenuItem onClick={() => sendAcceptRequest(item.id)}>Accept Request</DropdownMenuItem>
                     <DropdownMenuItem>Decline Request</DropdownMenuItem>
                     <DropdownMenuItem>View Profile</DropdownMenuItem>
                     <DropdownMenuSeparator />
