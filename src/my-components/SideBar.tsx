@@ -6,6 +6,8 @@ import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./createClient";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { Error as ErrorDiv } from "./Error";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Chat {
   id: string;
@@ -45,7 +47,6 @@ export const SideBar = () => {
     if (error) {
       throw new Error(error.message);
     }
-    console.log(data);
 
     return data;
   };
@@ -94,7 +95,8 @@ export const SideBar = () => {
                 <p className="ml-2">
                   {item.created_by.id === user?.id
                     ? item.chat_with.first_name
-                    : item.created_by.first_name}                   {item.created_by.id === user?.id
+                    : item.created_by.first_name}{" "}
+                  {item.created_by.id === user?.id
                     ? item.chat_with.last_name
                     : item.created_by.last_name}
                 </p>
@@ -102,6 +104,15 @@ export const SideBar = () => {
             </Link>
           </Button>
         ))}
+
+        {isLoading && (
+          <div className="space-y-4">
+            <Skeleton className="w-full h-16" />
+            <Skeleton className="w-full h-16" />
+
+          </div>
+        )}
+        {errorQuery && <ErrorDiv error={errorQuery?.message} />}
       </div>
     </motion.section>
   );

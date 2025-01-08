@@ -1,3 +1,4 @@
+import { Error as ErrorDiv } from './Error';
 import { SquarePen } from "lucide-react";
 import {
   Dialog,
@@ -91,7 +92,7 @@ export function FindNewPeople() {
     return { chat };
   };
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: CreateChatRequest,
     onSuccess: () => {
       toast({
@@ -135,10 +136,7 @@ export function FindNewPeople() {
               )}
               <CommandGroup className="mt-1">
                 {errorQuery && (
-                  <div className="border border-red-700 mt-2 p-3 text-red-700 rounded-lg">
-                    <h4>Error</h4>
-                    <p>{errorQuery.message}</p>
-                  </div>
+                  <ErrorDiv  error={errorQuery?.message}/>
                 )}
                 {isLoading && <Skeleton className="w-full h-6" />}
                 {data?.map((item) => (

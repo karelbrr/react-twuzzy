@@ -1,7 +1,7 @@
 import React from "react";
 
 interface MessageProps {
-  position?: "left" | "right"; 
+  position?: string | "left" | "right" ; 
   message: string;
 }
 
