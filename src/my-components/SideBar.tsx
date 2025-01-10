@@ -92,7 +92,9 @@ export const SideBar = () => {
               <div className="flex w-full items-center justify-between">
                 <div className="flex items-center ">
                   <Avatar className="size-10 max-h-12 max-w-12 ml-2">
-                    <AvatarImage />
+                    <AvatarImage src={item.created_by.id === user?.id
+                      ? item.chat_with.avatar
+                      : item.created_by.avatar}/>
                     <AvatarFallback>
                       {item.created_by.id === user?.id
                         ? item.chat_with.first_name?.substring(0, 1) || ""

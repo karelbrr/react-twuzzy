@@ -8,7 +8,6 @@ import { ProfileEdit } from "@/pages/ProfileEdit";
 import { SettingsAccount } from "./SettingsAccount";
 import { SettingsProfile } from "./SettingsProfile";
 import { SettingsBlocked } from "./SettingsBlocked";
-import { Toaster } from "@/components/ui/toaster";
 import { ProfileDetails } from "@/pages/ProfileDetails";
 import { Content } from "../my-components/Content";
 import NoChatSelected from "./NoChatSelected";
@@ -22,7 +21,7 @@ export const AppContent = () => (
       path="/"
       element={
         <ProtectedRoute>
-          <Toaster />
+          
           <HomePage />
         </ProtectedRoute>
       }
