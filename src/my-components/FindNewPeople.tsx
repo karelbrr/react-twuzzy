@@ -169,7 +169,7 @@ export function FindNewPeople() {
                             </DropdownMenuItem>
                           )}
 
-                          <DropdownMenuItem asChild><Link to={`/profile/${item.id}`}>View Profile</Link></DropdownMenuItem>
+                          <DropdownMenuItem asChild><Link to={`/profile/${item.id}`}>Profile</Link></DropdownMenuItem>
 
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-red-700 focus:text-red-700">

@@ -156,7 +156,7 @@ export function MyChatRequests({}) {
                     <DropdownMenuSeparator />
                      <DropdownMenuItem onClick={() => sendAcceptRequest(item.id)}>Accept Request</DropdownMenuItem>
                     <DropdownMenuItem>Decline Request</DropdownMenuItem>
-                    <DropdownMenuItem>View Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-700 focus:text-red-700">
                       Block

@@ -10,9 +10,9 @@ export const TextBar = () => {
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.3 } }}
-      className="h-[4%] border-t"
+      className="h-[4%] border-t fixed  right-0 w-[82%] bg-background "
     >
-      <div className="w-full flex space-x-3 justify-end pr-10">
+      <div className="w-full flex space-x-3 justify-end pr-10 bg-background">
         <Input
           className=" mt-10 w-3/4 text-md"
           placeholder="

@@ -61,7 +61,7 @@ export function UpperBar() {
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.3 } }}
-      className="w-[82%] h-[10%] border-b "
+      className="w-[82%] h-[10%] border-b fixed bg-background "
     >
       <div className="p-5 flex justify-end">
         <div className="flex w-full  max-w-sm justify-end items-center space-x-4 ">

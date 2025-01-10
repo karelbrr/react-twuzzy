@@ -33,21 +33,38 @@ export const Content = () => {
     return data;
   };
 
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading } = useQuery<Message[], Error>({
     queryKey: ["fetchMessages"],
     queryFn: fetchMessages,
   });
 
   return (
-    <div className="h-[80%] w-[82%]">
-      <section className="h-[96%] flex-col pt-2">
+    <div className="h-[80%] w-[82%] mt-24   ">
+      <section className="h-[94%] flex-col pt-2 overflow-scroll pb-4">
         <div className="flex flex-col">
           {data?.map((item) => (
-            <Message key={item.id}
+            <Message
+              key={item.id}
               position={item?.user_id === user?.id ? "right" : "left"}
               message={item.message}
+              created_at={item.created_at}
             />
           ))}
+
+          {data?.length === 0 && (
+            <section className="w-full flex justify-center">
+              <div className="w-1/2 opacity-70 mt-4">
+                <h2 className="text-center text-xl font-medium">
+                  No Messages Yet
+                </h2>
+                <p className="text-justify opacity-65">
+                  It seems like there are no messages in this chat yet. Be the
+                  first to start the conversation! Type a message below and hit
+                  send to break the silence. 😊
+                </p>
+              </div>
+            </section>
+          )}
         </div>
       </section>
       <TextBar />

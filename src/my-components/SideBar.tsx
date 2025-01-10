@@ -8,6 +8,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Ellipsis } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Chat {
   id: string;
@@ -55,7 +64,7 @@ export const SideBar = () => {
     data: myChats,
     error: errorQuery,
     isLoading,
-  } = useQuery({
+  } = useQuery<Chat[], Error>({
     queryKey: ["Chats"],
     queryFn: fetchChats,
   });
@@ -80,26 +89,58 @@ export const SideBar = () => {
             className="w-full flex justify-start  h-16 mb-3"
           >
             <Link to={`chat/${item.id}`}>
-              <div className="flex items-center">
-                <Avatar className="size-10 max-h-12 max-w-12 ml-2">
-                  <AvatarImage />
-                  <AvatarFallback>
+              <div className="flex w-full items-center justify-between">
+                <div className="flex items-center ">
+                  <Avatar className="size-10 max-h-12 max-w-12 ml-2">
+                    <AvatarImage />
+                    <AvatarFallback>
+                      {item.created_by.id === user?.id
+                        ? item.chat_with.first_name?.substring(0, 1) || ""
+                        : item.created_by.first_name?.substring(0, 1) || ""}
+                      {item.created_by.id === user?.id
+                        ? item.chat_with.last_name?.substring(0, 1) || ""
+                        : item.created_by.last_name?.substring(0, 1) || ""}
+                    </AvatarFallback>
+                  </Avatar>
+                  <p className="ml-2">
                     {item.created_by.id === user?.id
-                      ? item.chat_with.first_name?.substring(0, 1) || ""
-                      : item.created_by.first_name?.substring(0, 1) || ""}
+                      ? item.chat_with.first_name
+                      : item.created_by.first_name}{" "}
                     {item.created_by.id === user?.id
-                      ? item.chat_with.last_name?.substring(0, 1) || ""
-                      : item.created_by.last_name?.substring(0, 1) || ""}
-                  </AvatarFallback>
-                </Avatar>
-                <p className="ml-2">
-                  {item.created_by.id === user?.id
-                    ? item.chat_with.first_name
-                    : item.created_by.first_name}{" "}
-                  {item.created_by.id === user?.id
-                    ? item.chat_with.last_name
-                    : item.created_by.last_name}
-                </p>
+                      ? item.chat_with.last_name
+                      : item.created_by.last_name}
+                  </p>
+                </div>
+                <div className="">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Ellipsis className="mt-2" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>
+                        {item.created_by.id === user?.id
+                          ? item.chat_with.first_name
+                          : item.created_by.first_name}{" "}
+                        {item.created_by.id === user?.id
+                          ? item.chat_with.last_name
+                          : item.created_by.last_name}
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to={`/profile/${item.created_by.id === user?.id
+                          ? item.chat_with.id
+                          : item.created_by.id}`}>View Profile</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-red-700 focus:text-red-700">
+                        Block User
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-700 focus:text-red-700">
+                        Delete Chat
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
             </Link>
           </Button>
@@ -109,7 +150,6 @@ export const SideBar = () => {
           <div className="space-y-4">
             <Skeleton className="w-full h-16" />
             <Skeleton className="w-full h-16" />
-
           </div>
         )}
         {errorQuery && <ErrorDiv error={errorQuery?.message} />}
