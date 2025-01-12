@@ -1,3 +1,13 @@
+export interface Badge {
+  id: number;
+  created_at: string;
+  user_id: string;
+  badge_id: number;
+  badges: {
+    id: number;
+    name: string;
+  }
+}
 
 export interface User {
   id: string;
@@ -7,4 +17,5 @@ export interface User {
   avatar: string;
   desc: string;
   username: string;
+  badges: Badge[];
 }

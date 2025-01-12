@@ -8,17 +8,20 @@ import {
 } from "@/components/ui/context-menu";
 import { formatDate } from "./formatDate";
 import { useClipboard } from "./useClipboard";
+import heart  from "../assets/images/heart.png";
 
 interface MessageProps {
   position?: string | "left" | "right";
   message: string;
   created_at: string;
+  is_liked: boolean;
 }
 
 const Message: React.FC<MessageProps> = ({
   position = "left",
   message,
   created_at,
+  is_liked,
 }) => {
   const { copyToClipboard } = useClipboard();
 
@@ -30,9 +33,10 @@ const Message: React.FC<MessageProps> = ({
             position === "right"
               ? "bg-gradient-to-r from-violet-600 to-indigo-500 ml-auto" // zpráva vpravo
               : "bg-gradient-to-r from-violet-600 to-indigo-500 mr-auto" // zpráva vlevo
-          }`}
+          } ${is_liked && "mb-2"}`}
         >
           <p>{message}</p>
+          {is_liked && <div className="absolute size-5 "><img src={heart} alt="" /></div>}
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
@@ -41,6 +45,7 @@ const Message: React.FC<MessageProps> = ({
         <ContextMenuItem onClick={() => copyToClipboard(message)}>
           Copy
         </ContextMenuItem>
+        {is_liked ? <ContextMenuItem>Remove Like</ContextMenuItem> : <ContextMenuItem>Like</ContextMenuItem>}
         <ContextMenuItem>Reply</ContextMenuItem>
         {position === "right" && (
           <ContextMenuItem className="text-red-500 focus:text-red-600">

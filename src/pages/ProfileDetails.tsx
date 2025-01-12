@@ -4,42 +4,26 @@ import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { supabase } from "@/my-components/createClient";
-import { useQuery } from "@tanstack/react-query";
-import { User } from "src/my-components/types.tsx";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Error as ErrorDiv } from "@/my-components/Error";
+import { useQuery } from "@tanstack/react-query";
+import { getProfileData } from "@/my-components/getProfileData";
+import { User } from "src/my-components/types.tsx";
+
 
 export const ProfileDetails = () => {
   const { id } = useParams();
-
-  const fetchProfileDetails = async (): Promise<User> => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      throw new Error(error.message);
-    }
-    return data;
-  };
-
-  const {
-    data: profileDetails,
-    error: errorQuery,
-    isLoading,
-  } = useQuery<User, Error>({
-    queryKey: ["profileDetails"],
-    queryFn: fetchProfileDetails,
+  const { data: profileDetails, error: errorQuery, isLoading } = useQuery<User, Error>({
+    queryKey: ["profileDetailsForProfileDetails", id], // Unikátní klíč
+    queryFn: () => getProfileData(id), // Použití refaktorované funkce
   });
+  
 
   return (
     <section>
       <div className="w-1/2 m-auto mt-10 flex items-baseline">
         <Button variant={"outline"} asChild>
-          <Link to={"/"}>
+          <Link to={`/`}>
             <ArrowLeft />
           </Link>
         </Button>
@@ -91,13 +75,16 @@ export const ProfileDetails = () => {
           <p className=" text-justify opacity-70">{profileDetails?.desc}</p>
         )}
 
-        {errorQuery && <ErrorDiv error={errorQuery?.message}/>}
-      
+        {errorQuery && <ErrorDiv error={errorQuery?.message} />}
       </div>
       <Separator className="w-1/2 m-auto my-7" />
       <div className="w-1/2 m-auto">
         <h3 className="text-2xl font-semibold">Badges</h3>
-        <div className=" space-x-2 "></div>
+        <div className=" space-x-2 ">
+          {profileDetails?.badges.map((badge) => (
+            <Badge key={badge.id}>{badge.badges.name}</Badge>
+          ))}
+        </div>
       </div>
     </section>
   );

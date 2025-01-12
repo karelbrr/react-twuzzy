@@ -13,6 +13,7 @@ interface Message {
   message: string;
   media_url: string;
   is_read: boolean;
+  is_liked:boolean;
   replied_to: string;
 }
 
@@ -24,7 +25,8 @@ export const Content = () => {
     const { data, error } = await supabase
       .from("messages")
       .select("*")
-      .eq("chat_id", id);
+      .eq("chat_id", id)
+      .order("created_at", { ascending: true  });
 
     if (error) {
       throw new Error(error.message);
@@ -48,6 +50,7 @@ export const Content = () => {
               position={item?.user_id === user?.id ? "right" : "left"}
               message={item.message}
               created_at={item.created_at}
+              is_liked={item.is_liked}
             />
           ))}
 

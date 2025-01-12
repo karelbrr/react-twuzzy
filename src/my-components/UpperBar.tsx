@@ -1,4 +1,4 @@
-import { MyChatRequests } from './MyChatRequests';
+import { MyChatRequests } from "./MyChatRequests";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sheet,
@@ -23,39 +23,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/auth/AuthProvider";
 import { SquarePen } from "lucide-react";
-import { supabase } from "./createClient";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Newspaper } from "lucide-react";
 import { CircleHelp } from "lucide-react";
-import { User } from "./types";
-
+import { getProfileData } from "./getProfileData";
+import { User } from "src/my-components/types.tsx";
+import { Badge } from "@/components/ui/badge";
 
 export function UpperBar() {
   const { signOut, user } = useAuth();
-
-  const fetchUserData = async (): Promise<User> => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user?.id)
-      .single();
-    if (error) throw new Error(error.message);
-    return data;
-  };
-
   const {
     data,
     error: errorQuery,
     isLoading,
   } = useQuery<User, Error>({
-    queryKey: ["profileData"],
-    queryFn: fetchUserData,
+    queryKey: ["profileDetailsUpperBar", user?.id],
+    queryFn: () => getProfileData(user?.id),
   });
-  
- 
 
   return (
     <motion.section
@@ -65,7 +52,7 @@ export function UpperBar() {
     >
       <div className="p-5 flex justify-end">
         <div className="flex w-full  max-w-sm justify-end items-center space-x-4 ">
-          <MyChatRequests     />
+          <MyChatRequests />
 
           <Sheet>
             <SheetTrigger>
@@ -129,6 +116,13 @@ export function UpperBar() {
                     {data?.desc}
                   </SheetDescription>
                 )}
+
+                <div className=" space-x-2 mt-5">
+                  <h4 className="font-semibold opacity-90">My badges</h4>
+                  {data?.badges.map((badge) => (
+                    <Badge className="mt-1" key={badge.id}>{badge.badges.name}</Badge>
+                  ))}
+                </div>
                 {errorQuery && (
                   <div className="border border-red-700 mt-5 p-3 text-red-700 rounded-lg">
                     <h4>Error</h4>
