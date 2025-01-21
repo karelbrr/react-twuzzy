@@ -11,6 +11,8 @@ import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "@/my-components/createClient";
 import { useNavigate } from "react-router-dom";
 import { LastStep } from "@/my-components/formContent/LastStep";
+import { AddBadges } from "@/my-components/formContent/AddBadges";
+
 
 
 type FormData = {
@@ -84,6 +86,7 @@ export const FirstLoginPage = () => {
     useMultistepForm([
       <FormOne {...userData} updateForm={updateForm} />,
       <FormTwo {...userData} updateForm={updateForm} />,
+      <AddBadges {...userData} updateForm={updateForm}/>,
       <FormThree {...userData} updateForm={updateForm} />,
       <LastStep />,
     ]);
@@ -108,13 +111,13 @@ export const FirstLoginPage = () => {
         />
       </motion.section>
       <section className="w-2/3 h-screen ">
-        <div className="justify-center flex h-[480px]">
+        <div className={`justify-center flex  ${currentStepIndex === 2 ? " h-[600px] " :  "h-[480px]" } `}>
           {steps[currentStepIndex]}
         </div>
 
         <div className="flex mt-14 w-2/3 justify-end m-auto space-x-4">
           {!isFirstStep && <Button onClick={back}>Previous</Button>}
-          {currentStepIndex === 2 ? (
+          {currentStepIndex === 3 ? (
             <Button
               onClick={() => {
                 next();

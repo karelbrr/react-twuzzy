@@ -14,8 +14,8 @@ import { User } from "src/my-components/types.tsx";
 export const ProfileDetails = () => {
   const { id } = useParams();
   const { data: profileDetails, error: errorQuery, isLoading } = useQuery<User, Error>({
-    queryKey: ["profileDetailsForProfileDetails", id], // Unikátní klíč
-    queryFn: () => getProfileData(id), // Použití refaktorované funkce
+    queryKey: ["profileDetailsForProfileDetails", id], 
+    queryFn: () => getProfileData(id), 
   });
   
 

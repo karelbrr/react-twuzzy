@@ -7,7 +7,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Toaster />
-
       <AuthProvider>
         <AppContent />
       </AuthProvider>

@@ -21,7 +21,6 @@ export const AppContent = () => (
       path="/"
       element={
         <ProtectedRoute>
-          
           <HomePage />
         </ProtectedRoute>
       }
