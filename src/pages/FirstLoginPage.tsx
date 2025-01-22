@@ -13,8 +13,6 @@ import { useNavigate } from "react-router-dom";
 import { LastStep } from "@/my-components/formContent/LastStep";
 import { AddBadges } from "@/my-components/formContent/AddBadges";
 
-
-
 type FormData = {
   first_name: string;
   last_name: string;
@@ -43,11 +41,18 @@ const initialData: FormData = {
   avatar: "",
 };
 
+interface Badge {
+  id: string;
+  name: string;
+  user_id: string | undefined;
+}
+
 export const FirstLoginPage = () => {
   const { user } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [userData, setUserData] = useState(initialData);
+  const [myBadges, setMyBadges] = useState<Badge[]>([]);
 
   const updateForm = (fields: Partial<FormData>) => {
     setUserData((prev) => {
@@ -69,16 +74,26 @@ export const FirstLoginPage = () => {
       ],
     };
 
-    const { data, error } = await supabase
+    const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .update(updatedProfileWithBirthday)
       .eq("id", user.id);
 
-    if (error) throw new Error(error.message);
-    return data;
+    if (profileError) throw new Error(profileError.message);
+
+    const updatedBadges = myBadges.map((badge) => ({
+      badge_id: badge.id,
+      user_id: user?.id,
+    }));
+    const { data: badgesData, error: badgesError } = await supabase
+      .from("user_badges")
+      .insert(updatedBadges);
+
+    if (badgesError) throw new Error(badgesError.message);
+    return { profileData, badgesData };
   };
 
-  const { mutate, isPending, isError, isSuccess, error } = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationFn: AddProfile,
   });
 
@@ -86,7 +101,7 @@ export const FirstLoginPage = () => {
     useMultistepForm([
       <FormOne {...userData} updateForm={updateForm} />,
       <FormTwo {...userData} updateForm={updateForm} />,
-      <AddBadges {...userData} updateForm={updateForm}/>,
+      <AddBadges myBadges={myBadges} setMyBadges={setMyBadges} />,
       <FormThree {...userData} updateForm={updateForm} />,
       <LastStep />,
     ]);
@@ -111,7 +126,11 @@ export const FirstLoginPage = () => {
         />
       </motion.section>
       <section className="w-2/3 h-screen ">
-        <div className={`justify-center flex  ${currentStepIndex === 2 ? " h-[600px] " :  "h-[480px]" } `}>
+        <div
+          className={`justify-center flex  ${
+            currentStepIndex === 2 ? " h-[600px] " : "h-[480px]"
+          } `}
+        >
           {steps[currentStepIndex]}
         </div>
 
@@ -121,6 +140,8 @@ export const FirstLoginPage = () => {
             <Button
               onClick={() => {
                 next();
+                console.log(myBadges);
+
                 handleFinish();
               }}
               disabled={isPending}
