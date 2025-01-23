@@ -16,9 +16,9 @@ type UserFormProps = UserData & {
 };
 
 export const FormThree = ({ avatar, updateForm }: UserFormProps) => {
-  const { user } = useAuth(); // Získání informací o uživateli
+  const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
-  const {toast} = useToast()
+  const { toast } = useToast();
 
   const uploadAvatar = useMutation({
     mutationFn: async (file: File) => {
@@ -46,7 +46,7 @@ export const FormThree = ({ avatar, updateForm }: UserFormProps) => {
       return publicUrlData.publicUrl;
     },
     onSuccess: (publicUrl) => {
-      updateForm({ avatar: publicUrl }); 
+      updateForm({ avatar: publicUrl });
       toast({
         title: "",
         description: "Your avatar has been successfully uploaded!",
@@ -56,20 +56,20 @@ export const FormThree = ({ avatar, updateForm }: UserFormProps) => {
       toast({
         variant: "destructive",
         description: "There was an error while uploading the avatar",
-      });      
+      });
     },
-    
-    
-      
-    
   });
 
   const handleSubmit = () => {
     if (!file) {
+      toast({
+        variant: "destructive",
+        description: "No avatar selected!",
+      });
       return;
     }
-    
-    uploadAvatar.mutate(file); 
+
+    uploadAvatar.mutate(file);
   };
 
   return (
@@ -99,8 +99,16 @@ export const FormThree = ({ avatar, updateForm }: UserFormProps) => {
             type="file"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
           ></Input>
-          <Button onClick={handleSubmit} className="mt-4">
-            Upload Avatar
+          <Button
+            onClick={handleSubmit}
+            className="mt-4"
+            disabled={uploadAvatar.isSuccess}
+          >
+            {uploadAvatar.isPending
+              ? "Uploading"
+              : uploadAvatar.isSuccess
+              ? "Avatar Uploaded"
+              : "Upload Avatar"}
           </Button>
         </motion.div>
       </div>
