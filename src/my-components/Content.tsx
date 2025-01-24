@@ -42,7 +42,7 @@ export const Content = () => {
 
   return (
     <div className="h-[80%] w-[82%] mt-24   ">
-      <section className="h-[94%] flex-col pt-2 overflow-scroll pb-4">
+      <section className="h-[94%] flex-col pt-2 overflow-auto pb-4">
         <div className="flex flex-col">
           {data?.map((item) => (
             <Message
