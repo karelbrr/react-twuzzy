@@ -7,11 +7,13 @@ import { MoveLeft } from "lucide-react";
 import {
   Card
 } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 export const ProfileEdit = () => {
   return (
     <section className="h-screen flex ">
-      <div className=" w-1/6 border-r   ">
+      <motion.div className=" w-1/6 border-r   " initial={{ opacity: 0 }}
+    animate={{ opacity: 1, transition: { duration: 0.2 } }}>
         <div className=" mt-6 flex  items-baseline">
           <Button asChild variant={"outline"} className="ml-7">
             <Link to={"/"}>
@@ -57,7 +59,7 @@ export const ProfileEdit = () => {
             </div>
           </div>
         </Card>
-      </div>
+      </motion.div>
 
       <div className="w-3/4">
         <Outlet />
