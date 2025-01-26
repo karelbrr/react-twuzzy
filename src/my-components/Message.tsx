@@ -6,10 +6,10 @@ import {
   ContextMenuLabel,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { formatDate } from "./formatDate";
-import { useClipboard } from "./useClipboard";
+import { formatDate } from "./my-hooks/formatDate";
+import { useClipboard } from "./my-hooks/useClipboard";
 import heart from "../assets/images/heart.png";
-import { supabase } from "./createClient";
+import { supabase } from "./my-hooks/createClient";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface MessageProps {

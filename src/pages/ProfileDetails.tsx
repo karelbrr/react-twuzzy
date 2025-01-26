@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Error as ErrorDiv } from "@/my-components/Error";
 import { useQuery } from "@tanstack/react-query";
-import { getProfileData } from "@/my-components/getProfileData";
+import { getProfileData } from "@/my-components/my-hooks/getProfileData";
 import { User } from "src/my-components/types.tsx";
 
 export const ProfileDetails = () => {

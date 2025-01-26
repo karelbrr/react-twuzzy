@@ -18,4 +18,7 @@ export interface User {
   desc: string;
   username: string;
   badges: Badge[];
+  is_private: boolean;
+  data_sharing: boolean;
+  activity_tracking: boolean;
 }

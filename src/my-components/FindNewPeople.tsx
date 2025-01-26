@@ -16,7 +16,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { supabase } from "./createClient";
+import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {

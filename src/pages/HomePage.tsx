@@ -2,7 +2,7 @@ import { useAuth } from "@/auth/AuthProvider";
 import { SideBar } from "../my-components/SideBar";
 import { UpperBar } from "../my-components/UpperBar";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/my-components/createClient";
+import { supabase } from "@/my-components/my-hooks/createClient";
 import { Outlet, useNavigate } from "react-router-dom";
 
 interface FirstLogin {

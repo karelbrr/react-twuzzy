@@ -29,7 +29,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Newspaper } from "lucide-react";
 import { CircleHelp } from "lucide-react";
-import { getProfileData } from "./getProfileData";
+import { getProfileData } from "./my-hooks/getProfileData";
 import { User } from "src/my-components/types.tsx";
 import { Badge } from "@/components/ui/badge";
 

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "../createClient";
+import { supabase } from "../my-hooks/createClient";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";

@@ -1,7 +1,7 @@
 import { useAuth } from "@/auth/AuthProvider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { formatDate } from "./formatDate";
+import { formatDate } from "./my-hooks/formatDate";
 import {
   Card,
   CardContent,

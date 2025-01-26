@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import logo from "../assets/logo/twuzzy-logo.png";
-import { useMultistepForm } from "@/useMultistepForm";
+import { useMultistepForm } from "@/my-components/my-hooks/useMultistepForm";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { FormOne } from "../my-components/formContent/FormOne";
@@ -8,7 +8,7 @@ import { FormTwo } from "../my-components/formContent/FormTwo";
 import { FormThree } from "../my-components/formContent/FormThree";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/auth/AuthProvider";
-import { supabase } from "@/my-components/createClient";
+import { supabase } from "@/my-components/my-hooks/createClient";
 import { useNavigate } from "react-router-dom";
 import { LastStep } from "@/my-components/formContent/LastStep";
 import { AddBadges } from "@/my-components/formContent/AddBadges";

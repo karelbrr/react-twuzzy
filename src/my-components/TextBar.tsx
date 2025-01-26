@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { Send, Image, Laugh } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { supabase } from "./createClient";
+import { supabase } from "./my-hooks/createClient";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/auth/AuthProvider";
 

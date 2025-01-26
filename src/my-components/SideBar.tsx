@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/AuthProvider";
-import { supabase } from "./createClient";
+import { supabase } from "./my-hooks/createClient";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";

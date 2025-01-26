@@ -1,8 +1,9 @@
+import { PrivacySettings } from './privacySettings';
 import { useAuth } from "@/auth/AuthProvider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "./createClient";
+import { supabase } from "./my-hooks/createClient";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "./types";
 import { useForm } from "react-hook-form";
@@ -17,13 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { motion } from "framer-motion";
 
 type Inputs = {
@@ -54,6 +48,7 @@ export const SettingsProfile = () => {
     queryKey: ["profileDataForSettings"],
     queryFn: fetchUserData,
   });
+
 
   const {
     register,
@@ -233,63 +228,7 @@ export const SettingsProfile = () => {
           </form>
         </Card>
         <div className="flex flex-col w-1/2">
-          <Card className="h-[435px] ml-10">
-            <CardHeader>
-              <CardTitle>Privacy Settings</CardTitle>
-              <CardDescription>
-                Quickly and easily update your privacy details
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="w-full flex flex-col  gap-1.5">
-                <Label htmlFor="profile-visibility" className="text-md">
-                  Profile Visibility
-                </Label>
-                <Select name="profile-visibility" defaultValue="public">
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Public" />
-                  </SelectTrigger>
-                  <SelectContent >
-                    <SelectItem value="private">Private</SelectItem>
-                    <SelectItem value="public">Public</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col mt-5  gap-1.5">
-                <Label htmlFor="data-sharing" className="text-md">
-                  Data Sharing Permission
-                </Label>
-                <Select name="data-sharing" defaultValue="allow">
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Allow Data Sharing" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="allow">Allow Data Sharing</SelectItem>
-                    <SelectItem value="deny">Deny Data Sharing</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col mt-5  gap-1.5">
-                <Label htmlFor="activity-tracking" className="text-md">
-                  Activity Tracking
-                </Label>
-                <Select name="activity-tracking" defaultValue="enabled">
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Enabled" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="enabled">Enabled</SelectItem>
-                    <SelectItem value="disabled">Disabled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className=" w-[20%] m-0" type="submit">
-                Update
-              </Button>
-            </CardFooter>
-          </Card>
+         <PrivacySettings   is_private={profileData?.is_private} activity_tracking={profileData?.activity_tracking} data_sharing={profileData?.data_sharing}  />
           
         </div>
       </div>

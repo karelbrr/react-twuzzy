@@ -1,4 +1,4 @@
-import { supabase } from "@/my-components/createClient";
+import { supabase } from "@/my-components/my-hooks/createClient";
 import { Session, User } from "@supabase/supabase-js";
 import { useContext, useState, useEffect, createContext } from "react";
 

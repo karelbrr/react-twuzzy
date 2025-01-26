@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import Message from "./Message";
 import { TextBar } from "../my-components/TextBar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "./createClient";
+import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { useEffect } from "react";
 import { motion } from "framer-motion";

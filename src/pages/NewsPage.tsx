@@ -7,13 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { supabase } from "@/my-components/createClient";
+import { supabase } from "@/my-components/my-hooks/createClient";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDate } from "@/my-components/formatDate";
+import { formatDate } from "@/my-components/my-hooks/formatDate";
 
 interface News {
   id: string;
