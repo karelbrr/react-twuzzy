@@ -27,7 +27,7 @@ export const SettingsAccount = () => {
         </CardHeader>
         <form className="space-y-5">
           <CardContent>
-            <div className="flex flex-col w-1/3 gap-1.5 ">
+            <div className="flex flex-col  gap-1.5 ">
               <Label htmlFor="provider" className="text-md">
                 Provider
               </Label>
@@ -37,7 +37,7 @@ export const SettingsAccount = () => {
                 disabled
               />
             </div>
-            <div className="flex flex-col w-1/3 gap-1.5 mt-5">
+            <div className="flex flex-col  gap-1.5 mt-5">
               <Label htmlFor="email" className="text-md">
                 Email
               </Label>
@@ -48,7 +48,7 @@ export const SettingsAccount = () => {
                 disabled
               />
             </div>
-            <div className="flex flex-col w-1/3 gap-1.5 mt-5">
+            <div className="flex flex-col  gap-1.5 mt-5">
               <Label htmlFor="member" className="text-md">
                 Member from
               </Label>

@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import { UserPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
@@ -10,6 +10,9 @@ import {
 import { motion } from "framer-motion";
 
 export const ProfileEdit = () => {
+  const location = useLocation();
+
+
   return (
     <section className="h-screen flex ">
       <motion.div className=" w-1/6 border-r   " initial={{ opacity: 0 }}
@@ -27,7 +30,7 @@ export const ProfileEdit = () => {
           <div className="flex flex-col xl:ml-15 font-extralight mb-5 mt-5">
             <div className="flex  flex-col  space-y-2">
               <Button
-                className="m-auto w-5/6 flex justify-start"
+                className={`m-auto w-5/6 flex justify-start ${ location.pathname === "/settings/account" && "bg-secondary opacity-90"}`}
                 variant={"outline"}
                 asChild
               >
@@ -37,7 +40,7 @@ export const ProfileEdit = () => {
                 </Link>
               </Button>
               <Button
-                className="m-auto w-5/6 flex justify-start"
+                className={`m-auto w-5/6 flex justify-start ${ location.pathname === "/settings/profile" && "bg-secondary opacity-90"}`}
                 variant={"outline"}
                 asChild
               >
@@ -47,7 +50,7 @@ export const ProfileEdit = () => {
                 </Link>
               </Button>
               <Button
-                className="m-auto w-5/6 flex justify-start"
+                className={`m-auto w-5/6 flex justify-start ${ location.pathname === "/settings/blocked" && "bg-secondary opacity-90"}`}
                 variant={"outline"}
                 asChild
               >

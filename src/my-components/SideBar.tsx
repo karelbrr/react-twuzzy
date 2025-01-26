@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./createClient";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Ellipsis } from "lucide-react";
@@ -39,6 +39,7 @@ interface Chat {
 
 export const SideBar = () => {
   const { user } = useAuth();
+  const {id} = useParams();
 
   const fetchChats = async (): Promise<Chat[]> => {
     const { data, error } = await supabase
@@ -86,7 +87,7 @@ export const SideBar = () => {
             asChild
             key={item.id}
             variant="outline"
-            className="w-full flex justify-start  h-16 mb-3"
+            className={`w-full flex justify-start  h-16 mb-3 ${item.id === id && "opacity-70"}`}
           >
             <Link to={`chat/${item.id}`}>
               <div className="flex w-full items-center justify-between">
@@ -131,7 +132,7 @@ export const SideBar = () => {
                       <DropdownMenuItem asChild>
                         <Link to={`/profile/${item.created_by.id === user?.id
                           ? item.chat_with.id
-                          : item.created_by.id}`}>View Profile</Link>
+                          : item.created_by.id}`}>Profile</Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem className="text-red-700 focus:text-red-700">

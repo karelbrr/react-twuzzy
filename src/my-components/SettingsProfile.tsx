@@ -96,7 +96,7 @@ export const SettingsProfile = () => {
       <div className="flex justify-center w-full">
         <Card className=" w-1/2">
           <CardHeader>
-            <CardTitle>Update Your Profile Information</CardTitle>
+            <CardTitle>Profile Information</CardTitle>
             <CardDescription>
               Quickly and easily update your personal details
             </CardDescription>
@@ -235,7 +235,7 @@ export const SettingsProfile = () => {
         <div className="flex flex-col w-1/2">
           <Card className="h-[435px] ml-10">
             <CardHeader>
-              <CardTitle>Update Your Privacy Settings</CardTitle>
+              <CardTitle>Privacy Settings</CardTitle>
               <CardDescription>
                 Quickly and easily update your privacy details
               </CardDescription>
@@ -245,11 +245,11 @@ export const SettingsProfile = () => {
                 <Label htmlFor="profile-visibility" className="text-md">
                   Profile Visibility
                 </Label>
-                <Select name="profile-visibility">
+                <Select name="profile-visibility" defaultValue="public">
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Public" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent >
                     <SelectItem value="private">Private</SelectItem>
                     <SelectItem value="public">Public</SelectItem>
                   </SelectContent>
@@ -259,7 +259,7 @@ export const SettingsProfile = () => {
                 <Label htmlFor="data-sharing" className="text-md">
                   Data Sharing Permission
                 </Label>
-                <Select name="data-sharing">
+                <Select name="data-sharing" defaultValue="allow">
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Allow Data Sharing" />
                   </SelectTrigger>
@@ -273,7 +273,7 @@ export const SettingsProfile = () => {
                 <Label htmlFor="activity-tracking" className="text-md">
                   Activity Tracking
                 </Label>
-                <Select name="activity-tracking">
+                <Select name="activity-tracking" defaultValue="enabled">
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Enabled" />
                   </SelectTrigger>

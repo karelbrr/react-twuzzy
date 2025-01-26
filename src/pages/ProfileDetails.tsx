@@ -10,14 +10,17 @@ import { useQuery } from "@tanstack/react-query";
 import { getProfileData } from "@/my-components/getProfileData";
 import { User } from "src/my-components/types.tsx";
 
-
 export const ProfileDetails = () => {
   const { id } = useParams();
-  const { data: profileDetails, error: errorQuery, isLoading } = useQuery<User, Error>({
-    queryKey: ["profileDetailsForProfileDetails", id], 
-    queryFn: () => getProfileData(id), 
+  const {
+    data: profileDetails,
+    error: errorQuery,
+    isLoading,
+  } = useQuery<User, Error>({
+    queryKey: ["profileDetailsForProfileDetails", id],
+    queryFn: () => getProfileData(id),
   });
-  
+  const skeletonCount = 3;
 
   return (
     <section>
@@ -62,7 +65,7 @@ export const ProfileDetails = () => {
         </div>
       </div>
       <Separator className="w-1/2 m-auto my-8" />
-      <div className="w-1/2 m-auto">
+      <div className="w-1/2 m-auto h-[140px]">
         <h3 className="text-2xl font-semibold">Description</h3>
         {isLoading ? (
           <div>
@@ -80,10 +83,18 @@ export const ProfileDetails = () => {
       <Separator className="w-1/2 m-auto my-7" />
       <div className="w-1/2 m-auto">
         <h3 className="text-2xl font-semibold">Badges</h3>
-        <div className=" space-x-2 ">
-          {profileDetails?.badges.map((badge) => (
-            <Badge key={badge.id}>{badge.badges.name}</Badge>
-          ))}
+        <div className=" space-x-2 pt-2">
+          {isLoading || errorQuery ? (
+            <div className="flex space-x-2">
+              <Skeleton className="w-24 h-5" />
+              <Skeleton className="w-32 h-5" />
+              <Skeleton className="w-20 h-5" />
+            </div>
+          ) : (
+            profileDetails?.badges.map((badge) => (
+              <Badge key={badge.id}>{badge.badges.name}</Badge>
+            ))
+          )}
         </div>
       </div>
     </section>
