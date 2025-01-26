@@ -21,13 +21,7 @@ import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { log } from "console";
 
-interface Profiles {
-  first_name: string;
-  last_name: string;
-  avatar: string;
-}
 export interface ChatRequest {
   id: string;
   created_at: string;

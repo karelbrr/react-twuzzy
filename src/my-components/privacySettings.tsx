@@ -13,9 +13,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import AlertDialogSection from "./AlertDialogSection";
 
 type Inputs = {
   is_private: boolean;
@@ -34,13 +35,7 @@ export function PrivacySettings({
   activity_tracking = false,
   data_sharing = false,
 }: PrivacySettingsProps) {
-  const {
-    handleSubmit,
-    reset,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<Inputs>({
+  const { handleSubmit, reset, watch, setValue } = useForm<Inputs>({
     defaultValues: {
       is_private,
       activity_tracking,
@@ -103,7 +98,7 @@ export function PrivacySettings({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex flex-col mt-5 gap-1.5">
+          <div className="flex flex-col mt-5 mb-5 gap-1.5">
             <Label className="text-md">Activity Tracking</Label>
             <Select
               value={watch("activity_tracking") ? "enabled" : "disabled"}
@@ -120,9 +115,13 @@ export function PrivacySettings({
               </SelectContent>
             </Select>
           </div>
-          <Button className="w-[20%] mt-5" type="submit">
-            Update
-          </Button>
+          <AlertDialogSection
+            onConfirm={handleSubmit(onSubmit)}
+            title={"Are you sure you want to privacy setting in your profile?"}
+            desc={
+              "This action will save the changes to your profile, and it cannotbe undone."
+            }
+          />
         </form>
       </CardContent>
     </Card>

@@ -1,4 +1,4 @@
-import { PrivacySettings } from './privacySettings';
+import  {PrivacySettings}  from "./privacySettings";
 import { useAuth } from "@/auth/AuthProvider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,6 @@ import { supabase } from "./my-hooks/createClient";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "./types";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { Error as ErrorDiv } from "./Error";
 import {
@@ -19,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import AlertDialogSection from "./AlertDialogSection";
 
 type Inputs = {
   first_name: string;
@@ -49,7 +49,6 @@ export const SettingsProfile = () => {
     queryFn: fetchUserData,
   });
 
-
   const {
     register,
     handleSubmit,
@@ -74,6 +73,10 @@ export const SettingsProfile = () => {
       });
     }
   }, [profileData, reset]);
+
+  const onSubmit = (data: Inputs) => {
+    console.log("Submitted data:", data);
+  };
 
   return (
     <motion.section
@@ -218,18 +221,24 @@ export const SettingsProfile = () => {
                   <h2 className="text-red-500">{errors.desc.message}</h2>
                 )}
               </div>
-              
             </CardContent>
             <CardFooter>
-              <Button className=" w-[20%] m-0" type="submit">
-                Update
-              </Button>
+              <AlertDialogSection
+                title={"Are you sure you want to update your profile?"}
+                desc={
+                  "This action will save the changes to your profile, and it cannotbe undone."
+                }
+                onConfirm={handleSubmit(onSubmit)}
+              />
             </CardFooter>
           </form>
         </Card>
         <div className="flex flex-col w-1/2">
-         <PrivacySettings   is_private={profileData?.is_private} activity_tracking={profileData?.activity_tracking} data_sharing={profileData?.data_sharing}  />
-          
+          <PrivacySettings
+            is_private={profileData?.is_private}
+            activity_tracking={profileData?.activity_tracking}
+            data_sharing={profileData?.data_sharing}
+          />
         </div>
       </div>
     </motion.section>
