@@ -7,3 +7,4 @@ Used technologies:
 - Tailwind
 - React
 - Vite
+- React Hook Form
