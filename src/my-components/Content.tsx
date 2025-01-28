@@ -4,7 +4,7 @@ import { TextBar } from "../my-components/TextBar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 interface Message {
@@ -23,6 +23,7 @@ export const Content = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const fetchMessages = async (chatId: string): Promise<Message[]> => {
     const { data, error } = await supabase
@@ -48,6 +49,13 @@ export const Content = () => {
   });
 
   useEffect(() => {
+    const scrollToBottom = () => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    scrollToBottom();
     const subscription = supabase
       .channel("realtime:messages")
       .on(
@@ -93,8 +101,7 @@ export const Content = () => {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, [queryClient, id]);
-
+  }, [queryClient, id, messages]);
 
   return (
     <div className="h-[80%] w-[82%] mt-24">
@@ -130,6 +137,7 @@ export const Content = () => {
               </div>
             </section>
           )}
+          <div ref={messagesEndRef} />
         </div>
       </motion.section>
       <TextBar />
