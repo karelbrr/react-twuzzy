@@ -8,6 +8,7 @@ import {
   Card
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 
 export const ProfileEdit = () => {
   const location = useLocation();
@@ -15,6 +16,11 @@ export const ProfileEdit = () => {
 
   return (
     <section className="h-screen flex ">
+      <Helmet>
+        <title>
+          Profile Edit | Twüzzy
+        </title>
+      </Helmet>
       <motion.div className=" w-1/6 border-r   " initial={{ opacity: 0 }}
     animate={{ opacity: 1, transition: { duration: 0.2 } }}>
         <div className=" mt-6 flex  items-baseline">

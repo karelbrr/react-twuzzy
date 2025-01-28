@@ -13,7 +13,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import AlertDialogSection from "./AlertDialogSection";
@@ -22,24 +21,28 @@ type Inputs = {
   is_private: boolean;
   activity_tracking: boolean;
   data_sharing: boolean;
+  visible_join_date: boolean;
 };
 
 interface PrivacySettingsProps {
   is_private?: boolean;
   activity_tracking?: boolean;
   data_sharing?: boolean;
+  visible_join_date?: boolean;
 }
 
 export function PrivacySettings({
   is_private = false,
   activity_tracking = false,
   data_sharing = false,
+  visible_join_date = false,
 }: PrivacySettingsProps) {
   const { handleSubmit, reset, watch, setValue } = useForm<Inputs>({
     defaultValues: {
       is_private,
       activity_tracking,
       data_sharing,
+      visible_join_date,
     },
   });
   useEffect(() => {
@@ -47,15 +50,16 @@ export function PrivacySettings({
       is_private,
       activity_tracking,
       data_sharing,
+      visible_join_date,
     });
-  }, [is_private, activity_tracking, data_sharing, reset]);
+  }, [is_private, activity_tracking, data_sharing, visible_join_date, reset]);
 
   const onSubmit = (data: Inputs) => {
     console.log(data);
   };
 
   return (
-    <Card className="h-[435px] ml-10">
+    <Card className="h-[520px] ml-10">
       <CardHeader>
         <CardTitle>Privacy Settings</CardTitle>
         <CardDescription>
@@ -112,6 +116,23 @@ export function PrivacySettings({
               <SelectContent>
                 <SelectItem value="enabled">Enabled</SelectItem>
                 <SelectItem value="disabled">Disabled</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col mt-5 mb-5 gap-1.5">
+            <Label className="text-md">Visible Date of Join on Profile</Label>
+            <Select
+              value={watch("visible_join_date") ? "visible" : "hidden"}
+              onValueChange={(value) =>
+                setValue("visible_join_date", value === "visible")
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Visible" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="visible">Visible</SelectItem>
+                <SelectItem value="hidden">Hidden</SelectItem>
               </SelectContent>
             </Select>
           </div>

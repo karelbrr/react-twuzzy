@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 
+
 interface Chat {
   id: string;
   created_at: string;
@@ -37,6 +38,7 @@ interface Chat {
     avatar: string;
   };
 }
+
 
 export const SideBar = () => {
   const { user } = useAuth();
@@ -67,7 +69,7 @@ export const SideBar = () => {
     error: errorQuery,
     isLoading,
   } = useQuery<Chat[], Error>({
-    queryKey: ["Chats"],
+    queryKey: ["fetchChats"],
     queryFn: fetchChats,
   });
   return (
@@ -76,101 +78,101 @@ export const SideBar = () => {
       animate={{ opacity: 1, transition: { duration: 0.3 } }}
       className="h-screen w-[18%]  fixed border-r"
     >
+      
       <div className="flex justify-between">
         <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">Chats</h3>
-
+        
         <FindNewPeople />
       </div>
-      
-        <div className="m-auto w-[90%] mt-4 ">
-          {myChats?.map((item) => (
-            <Button
-              asChild
-              key={item.id}
-              variant="outline"
-              className={`w-full flex justify-start  h-16 mb-3 ${
-                item.id === id && "opacity-70"
-              }`}
-            >
-              <Link to={`chat/${item.id}`}>
-                <div className="flex w-full items-center justify-between">
-                  <div className="flex items-center ">
-                    <Avatar className="size-10 max-h-12 max-w-12 ml-2">
-                      <AvatarImage
-                        src={
-                          item.created_by.id === user?.id
-                            ? item.chat_with.avatar
-                            : item.created_by.avatar
-                        }
-                      />
-                      <AvatarFallback>
-                        {item.created_by.id === user?.id
-                          ? item.chat_with.first_name?.substring(0, 1) || ""
-                          : item.created_by.first_name?.substring(0, 1) || ""}
-                        {item.created_by.id === user?.id
-                          ? item.chat_with.last_name?.substring(0, 1) || ""
-                          : item.created_by.last_name?.substring(0, 1) || ""}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p className="ml-2">
-                      {item.created_by.id === user?.id
-                        ? item.chat_with.first_name
-                        : item.created_by.first_name}{" "}
-                      {item.created_by.id === user?.id
-                        ? item.chat_with.last_name
-                        : item.created_by.last_name}
-                    </p>
-                  </div>
-                  <div className="">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Ellipsis className="mt-2" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>
-                          {item.created_by.id === user?.id
-                            ? item.chat_with.first_name
-                            : item.created_by.first_name}{" "}
-                          {item.created_by.id === user?.id
-                            ? item.chat_with.last_name
-                            : item.created_by.last_name}
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link
-                            to={`/profile/${
-                              item.created_by.id === user?.id
-                                ? item.chat_with.id
-                                : item.created_by.id
-                            }`}
-                          >
-                            Profile
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                          Block User
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                          Delete Chat
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              </Link>
-            </Button>
-          ))}
 
-          {isLoading && (
-            <div className="space-y-4">
-              <Skeleton className="w-full h-16" />
-              <Skeleton className="w-full h-16" />
-            </div>
-          )}
-          {errorQuery && <ErrorDiv error={errorQuery?.message} />}
-        </div>
-     
+      <div className="m-auto w-[90%] mt-4 ">
+        {myChats?.map((item) => (
+          <Button
+            asChild
+            key={item.id}
+            variant="outline"
+            className={`w-full flex justify-start  h-16 mb-3 ${
+              item.id === id && "opacity-70"
+            }`}
+          >
+            <Link to={`chat/${item.id}`}>
+              <div className="flex w-full items-center justify-between">
+                <div className="flex items-center ">
+                  <Avatar className="size-10 max-h-12 max-w-12 ml-2">
+                    <AvatarImage
+                      src={
+                        item.created_by.id === user?.id
+                          ? item.chat_with.avatar
+                          : item.created_by.avatar
+                      }
+                    />
+                    <AvatarFallback>
+                      {item.created_by.id === user?.id
+                        ? item.chat_with.first_name?.substring(0, 1) || ""
+                        : item.created_by.first_name?.substring(0, 1) || ""}
+                      {item.created_by.id === user?.id
+                        ? item.chat_with.last_name?.substring(0, 1) || ""
+                        : item.created_by.last_name?.substring(0, 1) || ""}
+                    </AvatarFallback>
+                  </Avatar>
+                  <p className="ml-2">
+                    {item.created_by.id === user?.id
+                      ? item.chat_with.first_name
+                      : item.created_by.first_name}{" "}
+                    {item.created_by.id === user?.id
+                      ? item.chat_with.last_name
+                      : item.created_by.last_name}
+                  </p>
+                </div>
+                <div className="">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Ellipsis className="mt-2" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>
+                        {item.created_by.id === user?.id
+                          ? item.chat_with.first_name
+                          : item.created_by.first_name}{" "}
+                        {item.created_by.id === user?.id
+                          ? item.chat_with.last_name
+                          : item.created_by.last_name}
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link
+                          to={`/profile/${
+                            item.created_by.id === user?.id
+                              ? item.chat_with.id
+                              : item.created_by.id
+                          }`}
+                        >
+                          Profile
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-red-700 focus:text-red-700">
+                        Block User
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-700 focus:text-red-700">
+                        Delete Chat
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            </Link>
+          </Button>
+        ))}
+
+        {isLoading && (
+          <div className="space-y-4">
+            <Skeleton className="w-full h-16" />
+            <Skeleton className="w-full h-16" />
+          </div>
+        )}
+        {errorQuery && <ErrorDiv error={errorQuery?.message} />}
+      </div>
     </motion.section>
   );
 };

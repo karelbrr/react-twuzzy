@@ -1,3 +1,4 @@
+import { ProfileDescInContent } from './profileDescInContent';
 import { useParams } from "react-router-dom";
 import Message from "./Message";
 import { TextBar } from "../my-components/TextBar";
@@ -110,6 +111,7 @@ export const Content = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
       >
+        <ProfileDescInContent     />
         <div className="flex flex-col">
           {messages?.map((item) => (
             <Message

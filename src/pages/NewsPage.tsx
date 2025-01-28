@@ -15,6 +15,7 @@ import { ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/my-components/my-hooks/formatDate";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 import {
   Pagination,
@@ -78,6 +79,11 @@ export const NewsPage = () => {
 
   return (
     <section className="w-1/2 m-auto">
+      <Helmet>
+        <title>
+          News | Twüzzy
+        </title>
+      </Helmet>
       <div className="flex justify-between items-baseline mt-10 mb-4 ">
         <h2 className="font-bold text-3xl ">Twüzzy News</h2>
         <Button variant={"outline"} asChild>

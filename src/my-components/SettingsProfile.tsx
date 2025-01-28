@@ -238,6 +238,7 @@ export const SettingsProfile = () => {
             is_private={profileData?.is_private}
             activity_tracking={profileData?.activity_tracking}
             data_sharing={profileData?.data_sharing}
+            visible_join_date={profileData?.visible_join_date}
           />
         </div>
       </div>

@@ -21,4 +21,5 @@ export interface User {
   is_private: boolean;
   data_sharing: boolean;
   activity_tracking: boolean;
+  visible_join_date: boolean;
 }

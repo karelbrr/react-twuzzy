@@ -9,9 +9,11 @@ import { Error as ErrorDiv } from "@/my-components/Error";
 import { useQuery } from "@tanstack/react-query";
 import { getProfileData } from "@/my-components/my-hooks/getProfileData";
 import { User } from "src/my-components/types.tsx";
+import { Helmet } from "react-helmet-async";
 
 export const ProfileDetails = () => {
   const { id } = useParams();
+
   const {
     data: profileDetails,
     error: errorQuery,
@@ -20,9 +22,28 @@ export const ProfileDetails = () => {
     queryKey: ["profileDetailsForProfileDetails", id],
     queryFn: () => getProfileData(id),
   });
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.toLocaleString("en-US", { month: "long" }); // Full month name
+    const day = date.getDate().toString().padStart(2, "0");
+
+    return `${month} ${day}, ${year}`;
+  };
 
   return (
     <section>
+      <Helmet>
+        {isLoading ? (
+          <title>profile details | Twüzzy</title>
+        ) : (
+          <title>
+            {`${profileDetails?.first_name} ${profileDetails?.last_name}`} |
+            Profile | Twüzzy
+          </title>
+        )}
+      </Helmet>
+
       <div className="w-1/2 m-auto mt-10 flex items-baseline">
         <Button variant={"outline"} asChild>
           <Link to={`/`}>
@@ -96,6 +117,18 @@ export const ProfileDetails = () => {
           )}
         </div>
       </div>
+      {profileDetails?.visible_join_date && (
+        <div className="w-1/2 mt-2 m-auto min-h-[140px] max-h-[240px]">
+          <h3 className="text-2xl font-semibold">Member From</h3>
+          {isLoading ? (
+            <Skeleton className="w-20 h-4 mt-1" />
+          ) : (
+            <p className="opacity-60 mt-1">
+              {formatDate(profileDetails?.created_at || "")}
+            </p>
+          )}
+        </div>
+      )}
     </section>
   );
 };
