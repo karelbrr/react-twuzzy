@@ -18,6 +18,7 @@ interface MessageProps {
   created_at: string;
   is_liked: boolean;
   id: string;
+  replied_to: string;
 }
 
 const Message: React.FC<MessageProps> = ({
@@ -26,6 +27,7 @@ const Message: React.FC<MessageProps> = ({
   created_at,
   is_liked,
   id,
+  replied_to,
 }) => {
   const { copyToClipboard } = useClipboard();
 
@@ -54,29 +56,38 @@ const Message: React.FC<MessageProps> = ({
           animate={{
             opacity: 1,
             y: 0,
-            transition: { duration: 0.3, type: "spring", stiffness: 150 },
+            transition: { duration: 0.3, type: "spring", stiffness: 200 },
           }}
           exit={{ opacity: 0, y: 15, transition: { duration: 0.3 } }}
           className={`inline-block relative rounded-xl border px-4 py-2 max-w-[500px] text-base mx-5 mt-1 ${
             position === "right"
               ? "bg-gradient-to-r from-violet-600 to-indigo-500 ml-auto" // zpráva vpravo
               : "bg-gradient-to-r from-violet-600 to-indigo-500 mr-auto" // zpráva vlevo
-          } ${is_liked && "mb-2"}`}
+          } ${is_liked && "mb-2"} ${replied_to && "mt-8"}`}
         >
+          {replied_to !== "" && (
+            <div className="absolute z-50 right-0 top-[-27px] w-[500px] text-right  max-w-[500px] opacity-70 max-h-6 overflow-hidden">
+              <p>
+                Replying to: zajistí, že div bude mít šířku 100% šířky
+                rodičovského elementu (tedy šířky zprávy), zatímco
+              </p>
+            </div>
+          )}
+
           <p>{message}</p>
           <AnimatePresence>
             {is_liked && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{
                   opacity: 1,
                   y: 0,
-                  transition: { duration: 0.3, type: "spring", stiffness: 300 },
+                  transition: { duration: 0.3, type: "spring", stiffness: 200 },
                 }}
-                exit={{ opacity: 0, y: 10, transition: { duration: 0.3 } }}
-                className="absolute left-2  size-5"
+                exit={{ opacity: 0, y: 15, transition: { duration: 0.3 } }}
+                className="absolute left-2 text-xl bottom-[-15px]"
               >
-                <img src={heart} alt="heart" />
+                ❤️
               </motion.div>
             )}
           </AnimatePresence>

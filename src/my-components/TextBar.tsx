@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Send, Image, Laugh } from "lucide-react";
+import { Send, Paperclip, Laugh } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { supabase } from "./my-hooks/createClient";
 import { useParams } from "react-router-dom";
@@ -66,7 +66,7 @@ export const TextBar = () => {
           placeholder="Type your message here..."
         />
         <Button className="mt-10" variant="outline">
-          <Image />
+          <Paperclip />
         </Button>
         <Button className="mt-10" variant="outline">
           <Laugh />

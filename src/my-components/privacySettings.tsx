@@ -119,7 +119,7 @@ export function PrivacySettings({
             onConfirm={handleSubmit(onSubmit)}
             title={"Are you sure you want to privacy setting in your profile?"}
             desc={
-              "This action will save the changes to your profile, and it cannotbe undone."
+              "This action will save the changes to your profile, and it cannot be undone."
             }
           />
         </form>

@@ -20,7 +20,6 @@ export const ProfileDetails = () => {
     queryKey: ["profileDetailsForProfileDetails", id],
     queryFn: () => getProfileData(id),
   });
-  const skeletonCount = 3;
 
   return (
     <section>
@@ -65,7 +64,7 @@ export const ProfileDetails = () => {
         </div>
       </div>
       <Separator className="w-1/2 m-auto my-8" />
-      <div className="w-1/2 m-auto h-[140px]">
+      <div className="w-1/2 m-auto min-h-[140px] max-h-[240px]">
         <h3 className="text-2xl font-semibold">Description</h3>
         {isLoading ? (
           <div>

@@ -178,7 +178,7 @@ export const SettingsProfile = () => {
                   }`}
                   id="username"
                   {...register("username", {
-                    required: "Last name is required",
+                    required: "Username is required",
                     minLength: {
                       value: 3,
                       message: "Username must be at least 3 characters long",

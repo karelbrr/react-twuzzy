@@ -33,8 +33,8 @@ const AlertDialogSection = ({ onConfirm, title, desc }: Props) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            {/* Když klikne na Confirm, spustí se onConfirm */}
-            <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+            
+            <AlertDialogAction onClick={()=>onConfirm()} >Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

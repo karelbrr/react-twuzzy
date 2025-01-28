@@ -16,7 +16,7 @@ import NoChatSelected from "./NoChatSelected";
 export const AppContent = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
-    <Route path="/news" element={<NewsPage />} />
+    <Route path="/news/:id" element={<NewsPage />} />
     <Route
       path="/"
       element={

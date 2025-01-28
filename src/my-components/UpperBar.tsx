@@ -134,7 +134,7 @@ export function UpperBar() {
               <SheetFooter className=" flex items-end">
                 <div className="flex ">
                   <Button variant={"link"} className="opacity-90" asChild>
-                    <Link to={"/news"}>
+                    <Link to={"/news/1"}>
                       <Newspaper />
                       Explore News
                     </Link>

@@ -112,6 +112,7 @@ export const Content = () => {
               message={item.message}
               created_at={item.created_at}
               is_liked={item.is_liked}
+              replied_to={item.replied_to}
             />
           ))}
 
