@@ -1,10 +1,9 @@
-import  {PrivacySettings}  from "./privacySettings";
 import { useAuth } from "@/auth/AuthProvider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "./my-hooks/createClient";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { User } from "./types";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
@@ -19,6 +18,8 @@ import {
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import AlertDialogSection from "./AlertDialogSection";
+import { PrivacySettings } from "./PrivacySettings";
+import { toast } from "@/hooks/use-toast";
 
 type Inputs = {
   first_name: string;
@@ -40,11 +41,7 @@ export const SettingsProfile = () => {
     return data;
   };
 
-  const {
-    data: profileData,
-    error: errorQuery,
-    isLoading,
-  } = useQuery<User, Error>({
+  const { data: profileData, error: errorQuery } = useQuery<User, Error>({
     queryKey: ["profileDataForSettings"],
     queryFn: fetchUserData,
   });
@@ -74,8 +71,49 @@ export const SettingsProfile = () => {
     }
   }, [profileData, reset]);
 
+  const updateProfile = async (variables: {
+    userId: string | undefined;
+    updatedData: Inputs;
+  }) => {
+    const { userId, updatedData } = variables;
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(updatedData)
+      .eq("id", userId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  };
+  // Mutace pro aktualizaci profilu
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      toast({
+        title: "Profile updated",
+        description: "Your profile settings has been successfully updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        description: "There was an error while updating profile settings.",
+      });
+    },
+  });
+
   const onSubmit = (data: Inputs) => {
-    console.log("Submitted data:", data);
+    if (
+      data.first_name === profileData?.first_name &&
+      data.last_name === profileData?.last_name &&
+      data.username === profileData?.username &&
+      data.desc === profileData?.desc
+    ) {
+      return;
+    } else {
+      mutate({ userId: user?.id, updatedData: data });
+    }
   };
 
   return (
@@ -91,6 +129,7 @@ export const SettingsProfile = () => {
           <ErrorDiv error={errorQuery.message} />
         </div>
       )}
+
       <div className="flex justify-center w-full">
         <Card className=" w-1/2">
           <CardHeader>
@@ -99,20 +138,16 @@ export const SettingsProfile = () => {
               Quickly and easily update your personal details
             </CardDescription>
           </CardHeader>
-          <form
-            className="space-y-5 "
-            onSubmit={handleSubmit((data) => {
-              console.log(data);
-            })}
-          >
+
+          <form className="space-y-5">
             <CardContent className="pb-0">
-              <div className="flex flex-col  gap-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label htmlFor="first_name" className="text-md">
                   First Name
                 </Label>
                 <Input
                   id="first_name"
-                  className={` ${
+                  className={`${
                     errors.first_name ? "border-red-500 " : "border-secondary"
                   }`}
                   {...register("first_name", {
@@ -125,21 +160,29 @@ export const SettingsProfile = () => {
                       value: 15,
                       message: "First name must be max 15 characters long",
                     },
-                    validate: (value) =>
-                      /^[A-Z][a-z]*$/.test(value) ||
-                      "First name must start with a capital letter and contain only letters",
+                    validate: (value) => {
+                      if (
+                        !/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]*$/.test(
+                          value
+                        )
+                      ) {
+                        return "First name must start with a capital letter and contain only letters";
+                      }
+                      return true;
+                    },
                   })}
                 />
                 {errors.first_name && (
                   <h2 className="text-red-500">{errors.first_name.message}</h2>
                 )}
               </div>
-              <div className="flex flex-col mt-5  gap-1.5 ">
+
+              <div className="flex flex-col mt-5 gap-1.5">
                 <Label htmlFor="last_name" className="text-md">
                   Last Name
                 </Label>
                 <Input
-                  className={` ${
+                  className={`${
                     errors.last_name ? "border-red-500 " : "border-secondary"
                   }`}
                   id="last_name"
@@ -154,7 +197,11 @@ export const SettingsProfile = () => {
                       message: "Last name must be max 20 characters long",
                     },
                     validate: (value) => {
-                      if (!/^[A-Z][a-z]*$/.test(value)) {
+                      if (
+                        !/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]*$/.test(
+                          value
+                        )
+                      ) {
                         return "Last name must start with a capital letter and contain only letters";
                       }
                       if (/\s/.test(value)) {
@@ -168,7 +215,8 @@ export const SettingsProfile = () => {
                   <h2 className="text-red-500">{errors.last_name.message}</h2>
                 )}
               </div>
-              <div className="flex flex-col mt-5  gap-1.5 ">
+
+              <div className="flex flex-col mt-5 gap-1.5">
                 <Label htmlFor="username" className="text-md">
                   Username
                 </Label>
@@ -200,7 +248,8 @@ export const SettingsProfile = () => {
                   <h2 className="text-red-500">{errors.username.message}</h2>
                 )}
               </div>
-              <div className="flex flex-col mt-5 gap-1.5 ">
+
+              <div className="flex flex-col mt-5 gap-1.5">
                 <Label htmlFor="desc" className="text-md">
                   Profile Description
                 </Label>
@@ -222,17 +271,20 @@ export const SettingsProfile = () => {
                 )}
               </div>
             </CardContent>
+
             <CardFooter>
               <AlertDialogSection
                 title={"Are you sure you want to update your profile?"}
                 desc={
-                  "This action will save the changes to your profile, and it cannotbe undone."
+                  "This action will save the changes to your profile, and it cannot be undone."
                 }
                 onConfirm={handleSubmit(onSubmit)}
+                isPending={isPending}
               />
             </CardFooter>
           </form>
         </Card>
+
         <div className="flex flex-col w-1/2">
           <PrivacySettings
             is_private={profileData?.is_private}

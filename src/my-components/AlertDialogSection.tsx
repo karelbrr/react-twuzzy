@@ -10,20 +10,22 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 interface Props {
-  onConfirm: () => void;  
+  onConfirm: () => void;
   title: string;
   desc: string;
+  isPending: boolean;
 }
 
-const AlertDialogSection = ({ onConfirm, title, desc }: Props) => {
+const AlertDialogSection = ({ onConfirm, title, desc, isPending }: Props) => {
   return (
     <div className="w-full">
       <AlertDialog>
         <AlertDialogTrigger className="w-full flex justify-center" asChild>
           <Button className="w-[20%] m-0">
-            Update
+            {isPending ? <Loader2 className="animate-spin" /> : "Update"}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -33,8 +35,10 @@ const AlertDialogSection = ({ onConfirm, title, desc }: Props) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            
-            <AlertDialogAction onClick={()=>onConfirm()} >Continue</AlertDialogAction>
+
+            <AlertDialogAction onClick={() => onConfirm()}>
+              Update
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

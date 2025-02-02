@@ -126,12 +126,12 @@ export const Content = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
       >
-        <ProfileDescInContent />
         <div
           ref={messagesContainerRef}
           className="flex flex-col overflow-auto h-full"
           onScroll={handleScroll}
         >
+          <ProfileDescInContent />
           <div className="flex flex-col">
             {messages?.map((item) => (
               <Message

@@ -41,9 +41,6 @@ export const TextBar = () => {
       if (error) {
         throw error;
       }
-
-      
-
       reset({message: ""})
     } catch (error) {
       console.error("Error inserting message:", error);

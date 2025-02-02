@@ -10,57 +10,95 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export const SettingsAccount = () => {
   const { user } = useAuth();
 
   return (
-    <motion.section className="" initial={{ opacity: 0 }}
-    animate={{ opacity: 1, transition: { duration: 0.2 } }}>
+    <motion.section
+      className=""
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.2 } }}
+    >
       <h2 className="font-bold text-2xl mx-10 mt-10 mb-5">Account Settings</h2>
-      <Card className="ml-10 w-1/2">
-        <CardHeader>
-          <CardTitle>Update Your Account Information</CardTitle>
-          <CardDescription>
-            Quickly and easily update your account details
-          </CardDescription>
-        </CardHeader>
-        <form className="space-y-5">
-          <CardContent>
-            <div className="flex flex-col  gap-1.5 ">
-              <Label htmlFor="provider" className="text-md">
-                Provider
-              </Label>
-              <Input
-                id="provider"
-                placeholder={user?.app_metadata.provider}
-                disabled
-              />
+      <div className="w-full justify-center flex">
+        <Card className="ml-10 w-1/2">
+          <CardHeader>
+            <CardTitle>Update Your Account Information</CardTitle>
+            <CardDescription>
+              Quickly and easily update your account details
+            </CardDescription>
+          </CardHeader>
+          <form className="space-y-5">
+            <CardContent>
+              <div className="flex flex-col  gap-1.5 ">
+                <Label htmlFor="provider" className="text-md">
+                  Provider
+                </Label>
+                <Input
+                  id="provider"
+                  placeholder={user?.app_metadata.provider}
+                  disabled
+                />
+              </div>
+              <div className="flex flex-col  gap-1.5 mt-5">
+                <Label htmlFor="email" className="text-md">
+                  Email
+                </Label>
+                <Input
+                  type="email"
+                  id="email"
+                  placeholder={user?.email}
+                  disabled
+                />
+              </div>
+              <div className="flex flex-col  gap-1.5 mt-5">
+                <Label htmlFor="member" className="text-md">
+                  Member from
+                </Label>
+                <Input
+                  id="member"
+                  placeholder={formatDate(user?.created_at || "")}
+                  disabled
+                />
+              </div>
+            </CardContent>
+          </form>
+        </Card>
+        <Card className="ml-10 w-1/2 border-red-800">
+          <CardHeader className="opacity-90">
+            <CardTitle className="text-red-800">Danger Zone</CardTitle>
+            <CardDescription className="text-red-800">
+              Manage sensitive account settings with caution
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex w-full justify-between items-center">
+              <div>
+                <h4 className="font-semibold opacity-85">Delete your account</h4>
+                <p className="opacity-60 text-sm">
+                  This action is permanent and cannot be undone
+                </p>
+              </div>
+              <div className="flex ">
+                <Button variant={"destructive"}>Delete Account</Button>
+              </div>
             </div>
-            <div className="flex flex-col  gap-1.5 mt-5">
-              <Label htmlFor="email" className="text-md">
-                Email
-              </Label>
-              <Input
-                type="email"
-                id="email"
-                placeholder={user?.email}
-                disabled
-              />
-            </div>
-            <div className="flex flex-col  gap-1.5 mt-5">
-              <Label htmlFor="member" className="text-md">
-                Member from
-              </Label>
-              <Input
-                id="member"
-                placeholder={formatDate(user?.created_at || "")}
-                disabled
-              />
+            <div className="flex w-full justify-between items-center ">
+              <div>
+                <h4 className="font-semibold opacity-85">Deactivate your account</h4>
+                <p className="opacity-60 text-sm">
+                  Temporarily disable your account.
+                </p>
+              </div>
+              <div className="flex">
+                <Button variant={"destructive"}>Deactivate Account</Button>
+              </div>
             </div>
           </CardContent>
-        </form>
-      </Card>
+        </Card>
+      </div>
     </motion.section>
   );
 };

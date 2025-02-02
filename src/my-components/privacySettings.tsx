@@ -16,6 +16,11 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import AlertDialogSection from "./AlertDialogSection";
+import { ManageProfileVisibility } from "./ManageProfileVisibility";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { supabase } from "./my-hooks/createClient";
+import { useAuth } from "@/auth/AuthProvider";
 
 type Inputs = {
   is_private: boolean;
@@ -37,6 +42,7 @@ export function PrivacySettings({
   data_sharing = false,
   visible_join_date = false,
 }: PrivacySettingsProps) {
+  const { user } = useAuth();
   const { handleSubmit, reset, watch, setValue } = useForm<Inputs>({
     defaultValues: {
       is_private,
@@ -54,12 +60,53 @@ export function PrivacySettings({
     });
   }, [is_private, activity_tracking, data_sharing, visible_join_date, reset]);
 
+  const updateProfile = async (variables: {
+    userId: string | undefined;
+    updatedData: Inputs;
+  }) => {
+    const { userId, updatedData } = variables;
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(updatedData)
+      .eq("id", userId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  };
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      toast({
+        title: "Profile updated",
+        description: "Your privacy settings has been successfully updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        description: "There was an error while updating privacy settings.",
+      });
+    },
+  });
+
   const onSubmit = (data: Inputs) => {
-    console.log(data);
+    if (
+      data.activity_tracking === activity_tracking &&
+      data.data_sharing === data_sharing &&
+      data.is_private === is_private &&
+      data.visible_join_date === visible_join_date
+    ) {
+      return;
+    } else {
+      mutate({ userId: user?.id, updatedData: data });
+    }
   };
 
   return (
-    <Card className="h-[520px] ml-10">
+    <Card className="ml-10">
       <CardHeader>
         <CardTitle>Privacy Settings</CardTitle>
         <CardDescription>
@@ -85,6 +132,12 @@ export function PrivacySettings({
               </SelectContent>
             </Select>
           </div>
+          {watch("is_private") === true && (
+            <div className="mt-2 mb-5">
+              <ManageProfileVisibility />
+            </div>
+          )}
+
           <div className="flex flex-col mt-5 gap-1.5">
             <Label className="text-md">Data Sharing Permission</Label>
             <Select
@@ -142,6 +195,7 @@ export function PrivacySettings({
             desc={
               "This action will save the changes to your profile, and it cannot be undone."
             }
+            isPending={isPending}
           />
         </form>
       </CardContent>

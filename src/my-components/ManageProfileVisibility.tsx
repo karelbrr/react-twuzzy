@@ -1,5 +1,4 @@
-import { Error as ErrorDiv } from './Error';
-import { SquarePen } from "lucide-react";
+import { Error as ErrorDiv } from "./Error";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/command";
 import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,26 +28,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
-
 interface User {
   id: string;
   first_name: string;
   last_name: string;
 }
-interface Chat {
-  id?: string;
-  updated_at: string;
-  created_by: string | undefined;
-  chat_with: string;
-  is_started: boolean;
-}
 
-export function FindNewPeople() {
-  const { toast } = useToast();
+export const ManageProfileVisibility = () => {
   const { user } = useAuth();
   const fetchUserData = async (): Promise<User[]> => {
     const { data, error } = await supabase
@@ -65,77 +53,31 @@ export function FindNewPeople() {
     error: errorQuery,
     isLoading,
   } = useQuery<User[], Error>({
-    queryKey: ["findNewUsers"],
+    queryKey: ["fetchUsersForProfileVisibility"],
     queryFn: fetchUserData,
   });
-
-  const CreateChatRequest = async (oppositeUserId: string) => {
-    const chatData: Chat = {
-      updated_at: new Date().toISOString(),
-      is_started: false,
-      created_by: user?.id,
-      chat_with: oppositeUserId,
-    };
-
-    const { data: chat, error: chatError } = await supabase
-      .from("chats")
-      .insert([chatData])
-      .select("id")
-      .single();
-
-    if (chatError) {
-      console.error("Error creating chat:", chatError.message);
-      throw new Error(chatError.message);
-    }
-    return { chat };
-  };
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: CreateChatRequest,
-    onSuccess: () => {
-      toast({
-        title: "Request sent",
-        description: "Your chat request has been successfully sent.",
-      });
-    },
-    onError: () => {
-      toast({
-        variant: "destructive",
-        description: "There was an error while sending request.",
-      });
-    }
-  });
-
-  const handleFinish = (oppositeUserId: string) => {
-    mutate(oppositeUserId);
-  };
-
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-5 w-1/5 mr-4 " variant="outline">
-          <SquarePen />
-        </Button>
+        <Button variant={"outline"}>Manage profile visibility</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Discover new people to start chatting with.</DialogTitle>
+          <DialogTitle>Manage Profile Visibility</DialogTitle>
           <DialogDescription>
-            Discover and chat with new people around you to expand your network
-            and start engaging conversations
+            Control who can and cannot see your profile to maintain your privacy
+            and visibility preferences.
           </DialogDescription>
         </DialogHeader>
         <div>
           <Command>
-            <CommandInput placeholder="Search for people to chat with..." />
+            <CommandInput placeholder="Search for people who can see your profile" />
             <CommandList>
               {!errorQuery && !isLoading && (
                 <CommandEmpty>No people found. Please try again.</CommandEmpty>
               )}
               <CommandGroup className="mt-1">
-                {errorQuery && (
-                  <ErrorDiv  error={errorQuery?.message}/>
-                )}
+                {errorQuery && <ErrorDiv error={errorQuery?.message} />}
                 {isLoading && <Skeleton className="w-full h-6" />}
                 {data?.map((item) => (
                   <CommandItem key={item.id} asChild>
@@ -154,24 +96,13 @@ export function FindNewPeople() {
                             </p>
                           </DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          {isPending ? (
-                            <DropdownMenuItem>
-                              <Loader2 className="animate-spin" />
-                              Please wait
-                            </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem
-                              onClick={() => handleFinish(item.id)}
-                            >
-                              Send Request
-                            </DropdownMenuItem>
-                          )}
 
-                          <DropdownMenuItem asChild><Link to={`/profile/${item.id}`}>Profile</Link></DropdownMenuItem>
+                          <DropdownMenuItem>
+                            Allow to see profile
+                          </DropdownMenuItem>
 
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                            Block
+                          <DropdownMenuItem asChild>
+                            <Link to={`/profile/${item.id}`}>Profile</Link>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -185,4 +116,4 @@ export function FindNewPeople() {
       </DialogContent>
     </Dialog>
   );
-}
+};

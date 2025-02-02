@@ -18,8 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-
-
 interface Chat {
   id: string;
   created_at: string;
@@ -38,7 +36,6 @@ interface Chat {
     avatar: string;
   };
 }
-
 
 export const SideBar = () => {
   const { user } = useAuth();
@@ -72,16 +69,18 @@ export const SideBar = () => {
     queryKey: ["fetchChats"],
     queryFn: fetchChats,
   });
+
+
+  
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.3 } }}
       className="h-screen w-[18%]  fixed border-r"
     >
-      
       <div className="flex justify-between">
         <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">Chats</h3>
-        
+
         <FindNewPeople />
       </div>
 

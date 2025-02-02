@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -25,12 +25,12 @@ export const ProfileDetails = () => {
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = date.toLocaleString("en-US", { month: "long" }); // Full month name
+    const month = date.toLocaleString("en-US", { month: "long" });
     const day = date.getDate().toString().padStart(2, "0");
 
     return `${month} ${day}, ${year}`;
   };
-
+  
   return (
     <section>
       <Helmet>
@@ -46,10 +46,10 @@ export const ProfileDetails = () => {
 
       <div className="w-1/2 m-auto mt-10 flex items-baseline">
         <Button variant={"outline"} asChild>
-          <Link to={`/`}>
-            <ArrowLeft />
-          </Link>
+          <Link to={"/"}><ArrowLeft /></Link>
+          
         </Button>
+
         <h2 className=" text-2xl font-semibold ml-4 opacity-95">
           Profile Details
         </h2>
@@ -84,48 +84,56 @@ export const ProfileDetails = () => {
           )}
         </div>
       </div>
-      <Separator className="w-1/2 m-auto my-8" />
-      <div className="w-1/2 m-auto min-h-[140px] max-h-[240px]">
-        <h3 className="text-2xl font-semibold">Description</h3>
-        {isLoading ? (
-          <div>
-            <Skeleton className="w-full h-4 mt-2" />
-            <Skeleton className="w-full h-4 mt-2" />
-            <Skeleton className="w-full h-4 mt-2" />
-            <Skeleton className="w-3/4 h-4 mt-2" />
-          </div>
-        ) : (
-          <p className=" text-justify opacity-70">{profileDetails?.desc}</p>
-        )}
-
-        {errorQuery && <ErrorDiv error={errorQuery?.message} />}
-      </div>
-      <Separator className="w-1/2 m-auto my-7" />
-      <div className="w-1/2 m-auto">
-        <h3 className="text-2xl font-semibold">Badges</h3>
-        <div className=" space-x-2 pt-2">
-          {isLoading || errorQuery ? (
-            <div className="flex space-x-2">
-              <Skeleton className="w-24 h-5" />
-              <Skeleton className="w-32 h-5" />
-              <Skeleton className="w-20 h-5" />
-            </div>
-          ) : (
-            profileDetails?.badges.map((badge) => (
-              <Badge key={badge.id}>{badge.badges.name}</Badge>
-            ))
-          )}
+      <Separator className="w-1/2 m-auto mt-8" />
+      {profileDetails?.is_private ? (
+        <div className="flex justify-center mt-4 opacity-70">
+          <h2 className="font-medium">This account is private</h2>
         </div>
-      </div>
-      {profileDetails?.visible_join_date && (
-        <div className="w-1/2 mt-2 m-auto min-h-[140px] max-h-[240px]">
-          <h3 className="text-2xl font-semibold">Member From</h3>
-          {isLoading ? (
-            <Skeleton className="w-20 h-4 mt-1" />
-          ) : (
-            <p className="opacity-60 mt-1">
-              {formatDate(profileDetails?.created_at || "")}
-            </p>
+      ) : (
+        <div className="mt-8">
+          <div className="w-1/2 m-auto min-h-[140px] max-h-[240px]">
+            <h3 className="text-2xl font-semibold">Description</h3>
+            {isLoading ? (
+              <div>
+                <Skeleton className="w-full h-4 mt-2" />
+                <Skeleton className="w-full h-4 mt-2" />
+                <Skeleton className="w-full h-4 mt-2" />
+                <Skeleton className="w-3/4 h-4 mt-2" />
+              </div>
+            ) : (
+              <p className=" text-justify opacity-70">{profileDetails?.desc}</p>
+            )}
+
+            {errorQuery && <ErrorDiv error={errorQuery?.message} />}
+          </div>
+          <Separator className="w-1/2 m-auto my-7" />
+          <div className="w-1/2 m-auto">
+            <h3 className="text-2xl font-semibold">Badges</h3>
+            <div className=" space-x-2 pt-2">
+              {isLoading || errorQuery ? (
+                <div className="flex space-x-2">
+                  <Skeleton className="w-24 h-5" />
+                  <Skeleton className="w-32 h-5" />
+                  <Skeleton className="w-20 h-5" />
+                </div>
+              ) : (
+                profileDetails?.badges.map((badge) => (
+                  <Badge key={badge.id}>{badge.badges.name}</Badge>
+                ))
+              )}
+            </div>
+          </div>
+          {profileDetails?.visible_join_date && (
+            <div className="w-1/2 mt-2 m-auto min-h-[140px] max-h-[240px]">
+              <h3 className="text-2xl font-semibold">Member From</h3>
+              {isLoading ? (
+                <Skeleton className="w-20 h-4 mt-1" />
+              ) : (
+                <p className="opacity-60 mt-1">
+                  {formatDate(profileDetails?.created_at || "")}
+                </p>
+              )}
+            </div>
           )}
         </div>
       )}
