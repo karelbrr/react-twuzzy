@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { UserPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";

@@ -66,7 +66,7 @@ const Message: React.FC<MessageProps> = ({
               : " mr-auto" // zpráva vlevo
           } ${is_liked && "mb-2"} ${replied_to && "mt-8"}`}
         >
-          {media_url ? <img className="mt-1 rounded-xl" src={media_url} alt="" /> : <p>{message}</p>}
+          {media_url ? <img className="mt-1 rounded-lg" src={media_url} alt="" /> : <p>{message}</p>}
           {replied_to !== "" && (
             <div className="absolute z-50 right-0 top-[-27px] w-[500px] text-right  max-w-[500px] opacity-70 max-h-6 overflow-hidden">
               <p>

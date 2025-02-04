@@ -1,24 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Send, Paperclip, Laugh } from "lucide-react";
-import { Trash2 } from "lucide-react";
-
+import { Send, Paperclip, Laugh, Trash2, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { supabase } from "./my-hooks/createClient";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/auth/AuthProvider";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
 
 interface FormData {
   message: string;
-  chat_id: string;
-  user_id: string;
-  media_url: string;
-  is_liked: boolean;
-  is_read: boolean;
-  replied_to: string;
 }
 
 export const TextBar = () => {
@@ -27,13 +20,14 @@ export const TextBar = () => {
   const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
 
-  const onSubmit = async (data: FormData) => {
+  const sendMessage = async ({ message, file }: { message: string; file: File | null }) => {
     try {
-      const filePath = `${id}/${Date.now()}_${file?.name}`;
+      
+      const filePath = file ? `${id}/${Date.now()}_${file.name}` : "";
       let fileUrl = "";
 
       if (file) {
-        const { data: fileData, error: fileError } = await supabase.storage
+        const { error: fileError } = await supabase.storage
           .from("images")
           .upload(filePath, file, {
             cacheControl: "3600",
@@ -41,56 +35,59 @@ export const TextBar = () => {
           });
 
         if (fileError) {
-          console.error("Upload failed:", fileError);
+          throw new Error(`Upload failed: ${fileError.message}`);
         }
-        setFile(null);
+
         const { data: signedUrlData, error: urlError } = await supabase.storage
           .from("images")
           .createSignedUrl(filePath, 31_536_000);
 
         if (urlError) {
-          console.error("Failed to get signed URL:", urlError.message);
-          return null;
+          throw new Error(`Failed to get signed URL: ${urlError.message}`);
         }
 
         fileUrl = signedUrlData.signedUrl;
       }
 
-      const { data: insertedData, error: messageError } = await supabase
-        .from("messages")
-        .insert([
-          {
-            chat_id: id,
-            user_id: user?.id,
-            message: data.message,
-            media_url: fileUrl || null,
-            is_read: false,
-            is_liked: false,
-            replied_to: "",
-          },
-        ]);
+      const { error: messageError } = await supabase.from("messages").insert([
+        {
+          chat_id: id,
+          user_id: user?.id,
+          message: file ? "image" : message,
+          media_url: fileUrl || null,
+          is_read: false,
+          is_liked: false,
+          replied_to: "",
+        },
+      ]);
 
       if (messageError) {
-        throw messageError;
+        throw new Error(`Error inserting message: ${messageError.message}`);
       }
-
-      reset({ message: "" });
     } catch (error) {
-      console.error("Error inserting message:", error);
+      console.error(error);
+      throw error;
     }
+  };
+
+  const mutation = useMutation({
+    mutationFn: sendMessage,
+    onSuccess: () => {
+      reset({ message: "" });
+      setFile(null);
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    mutation.mutate({ message: data.message, file });
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      setFile(file);
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
       reset({ message: "" });
     }
-  };
-
-  const removeFile = () => {
-    setFile(null);
   };
 
   return (
@@ -105,10 +102,14 @@ export const TextBar = () => {
           animate={{ opacity: 1, transition: { duration: 0.3 } }}
           className="absolute max-w-[300px] bottom-12 ml-5 "
         >
-          <img className="rounded-xl" src={URL.createObjectURL(file)} alt="" />{" "}
+          <img
+            className="rounded-xl"
+            src={URL.createObjectURL(file)}
+            alt="Preview"
+          />
           <Button
-            onClick={removeFile}
-            variant={"destructive"}
+            onClick={() => setFile(null)}
+            variant="destructive"
             className="absolute size-8 top-[-10px] right-[-10px]"
           >
             <Trash2 />
@@ -121,15 +122,15 @@ export const TextBar = () => {
         className="w-full flex space-x-3 justify-end pr-10 bg-background"
       >
         <Input
-          {...register("message", { required: true })}
+          {...register("message", { required: !file })}
           className="mt-10 w-3/4 text-md"
           placeholder="Type your message here..."
+          disabled={!!file}
         />
         <div className="mt-10 border flex justify-center items-center px-3 rounded-lg hover:bg-secondary ">
           <Label htmlFor="file-upload" className="hover:cursor-pointer">
             <Paperclip className="size-4" />
           </Label>
-
           <Input
             id="file-upload"
             type="file"
@@ -140,9 +141,8 @@ export const TextBar = () => {
         <Button className="mt-10" variant="outline">
           <Laugh />
         </Button>
-
-        <Button className="mt-10" type="submit">
-          <Send />
+        <Button className="mt-10" type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? <Loader2 className="animate-spin"/> : <Send  />}
         </Button>
       </form>
     </motion.section>
