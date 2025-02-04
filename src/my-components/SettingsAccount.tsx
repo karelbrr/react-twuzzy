@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export const SettingsAccount = () => {
   const { user } = useAuth();
@@ -68,16 +69,17 @@ export const SettingsAccount = () => {
         </Card>
         <Card className="ml-10 w-1/2 border-red-800">
           <CardHeader className="opacity-90">
-            <CardTitle className="text-red-800">Danger Zone</CardTitle>
-            <CardDescription className="text-red-800">
+            <CardTitle className="">Danger Zone</CardTitle>
+            <CardDescription className="">
               Manage sensitive account settings with caution
             </CardDescription>
           </CardHeader>
+
           <CardContent className="space-y-4">
             <div className="flex w-full justify-between items-center">
               <div>
-                <h4 className="font-semibold opacity-85">Delete your account</h4>
-                <p className="opacity-60 text-sm">
+                <h4 className="font-medium opacity-85">Delete your account</h4>
+                <p className="opacity-60 text-xs">
                   This action is permanent and cannot be undone
                 </p>
               </div>
@@ -87,8 +89,10 @@ export const SettingsAccount = () => {
             </div>
             <div className="flex w-full justify-between items-center ">
               <div>
-                <h4 className="font-semibold opacity-85">Deactivate your account</h4>
-                <p className="opacity-60 text-sm">
+                <h4 className="font-medium opacity-85">
+                  Deactivate your account
+                </h4>
+                <p className="opacity-60 text-xs">
                   Temporarily disable your account.
                 </p>
               </div>

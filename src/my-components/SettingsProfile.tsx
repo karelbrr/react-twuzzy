@@ -110,6 +110,9 @@ export const SettingsProfile = () => {
       data.username === profileData?.username &&
       data.desc === profileData?.desc
     ) {
+      toast({
+        description: "You need to make changes before updating your data!",
+      });
       return;
     } else {
       mutate({ userId: user?.id, updatedData: data });

@@ -70,8 +70,6 @@ export const SideBar = () => {
     queryFn: fetchChats,
   });
 
-
-  
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -80,7 +78,6 @@ export const SideBar = () => {
     >
       <div className="flex justify-between">
         <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">Chats</h3>
-
         <FindNewPeople />
       </div>
 

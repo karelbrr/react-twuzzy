@@ -99,6 +99,9 @@ export function PrivacySettings({
       data.is_private === is_private &&
       data.visible_join_date === visible_join_date
     ) {
+      toast({
+        description: "You need to make changes before updating your data!",
+      });
       return;
     } else {
       mutate({ userId: user?.id, updatedData: data });

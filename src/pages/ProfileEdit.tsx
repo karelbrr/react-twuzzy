@@ -18,7 +18,7 @@ export const ProfileEdit = () => {
     <section className="h-screen flex ">
       <Helmet>
         <title>
-          Profile Edit | Twüzzy
+          Settings | Twüzzy
         </title>
       </Helmet>
       <motion.div className=" w-1/6 border-r   " initial={{ opacity: 0 }}

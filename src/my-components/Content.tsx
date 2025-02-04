@@ -120,15 +120,15 @@ export const Content = () => {
   }, [queryClient, id, messages, isNearBottom, messagesEndRef]);
 
   return (
-    <div className="h-[80%] w-[82%] mt-24">
+    <div className="h-[80%] w-[82%] mt-24 ">
       <motion.section
-        className="h-[94%] flex-col pt-2 overflow-auto pb-4"
+        className="h-[94%] flex-col  overflow-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
       >
         <div
           ref={messagesContainerRef}
-          className="flex flex-col overflow-auto h-full"
+          className="flex flex-col overflow-auto h-full pt-2 pb-5"
           onScroll={handleScroll}
         >
           <ProfileDescInContent />
@@ -142,6 +142,7 @@ export const Content = () => {
                 created_at={item.created_at}
                 is_liked={item.is_liked}
                 replied_to={item.replied_to}
+                media_url={item.media_url}
               />
             ))}
 

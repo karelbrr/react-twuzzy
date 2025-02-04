@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/context-menu";
 import { formatDate } from "./my-hooks/formatDate";
 import { useClipboard } from "./my-hooks/useClipboard";
-import heart from "../assets/images/heart.png";
 import { supabase } from "./my-hooks/createClient";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -19,6 +18,7 @@ interface MessageProps {
   is_liked: boolean;
   id: string;
   replied_to: string;
+  media_url: string;
 }
 
 const Message: React.FC<MessageProps> = ({
@@ -28,6 +28,7 @@ const Message: React.FC<MessageProps> = ({
   is_liked,
   id,
   replied_to,
+  media_url,
 }) => {
   const { copyToClipboard } = useClipboard();
 
@@ -59,12 +60,13 @@ const Message: React.FC<MessageProps> = ({
             transition: { duration: 0.3, type: "spring", stiffness: 200 },
           }}
           exit={{ opacity: 0, y: 15, transition: { duration: 0.3 } }}
-          className={`inline-block relative rounded-xl border px-4 py-2 max-w-[500px] text-base mx-5 mt-1 ${
+          className={`inline-block relative rounded-xl ${!media_url && "border px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-500"} max-w-[500px] text-base mx-5 mt-1 ${
             position === "right"
-              ? "bg-gradient-to-r from-violet-600 to-indigo-500 ml-auto" // zpráva vpravo
-              : "bg-gradient-to-r from-violet-600 to-indigo-500 mr-auto" // zpráva vlevo
+              ? " ml-auto" // zpráva vpravo
+              : " mr-auto" // zpráva vlevo
           } ${is_liked && "mb-2"} ${replied_to && "mt-8"}`}
         >
+          {media_url ? <img className="mt-1 rounded-xl" src={media_url} alt="" /> : <p>{message}</p>}
           {replied_to !== "" && (
             <div className="absolute z-50 right-0 top-[-27px] w-[500px] text-right  max-w-[500px] opacity-70 max-h-6 overflow-hidden">
               <p>
@@ -74,7 +76,6 @@ const Message: React.FC<MessageProps> = ({
             </div>
           )}
 
-          <p>{message}</p>
           <AnimatePresence>
             {is_liked && (
               <motion.div
@@ -82,7 +83,7 @@ const Message: React.FC<MessageProps> = ({
                 animate={{
                   opacity: 1,
                   y: 0,
-                  
+
                   transition: { duration: 0.3, type: "spring", stiffness: 200 },
                 }}
                 exit={{ opacity: 0, y: 15, transition: { duration: 0.3 } }}

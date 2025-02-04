@@ -1,6 +1,7 @@
+import { PermissionSettingsInProfileDetails } from './../my-components/PermissionSettingsInProfileDetails';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -30,7 +31,7 @@ export const ProfileDetails = () => {
 
     return `${month} ${day}, ${year}`;
   };
-  
+
   return (
     <section>
       <Helmet>
@@ -46,8 +47,9 @@ export const ProfileDetails = () => {
 
       <div className="w-1/2 m-auto mt-10 flex items-baseline">
         <Button variant={"outline"} asChild>
-          <Link to={"/"}><ArrowLeft /></Link>
-          
+          <Link to={"/"}>
+            <ArrowLeft />
+          </Link>
         </Button>
 
         <h2 className=" text-2xl font-semibold ml-4 opacity-95">
@@ -69,13 +71,16 @@ export const ProfileDetails = () => {
             </Avatar>
           )}
         </div>
-        <div className="ml-7 opacity-90">
+        <div className="ml-7 opacity-90 ">
           {isLoading || errorQuery ? (
             <Skeleton className="w-[210px] h-7" />
           ) : (
-            <h2 className=" text-3xl font-semibold">
-              {profileDetails?.first_name} {profileDetails?.last_name}
-            </h2>
+            <div className="flex items-baseline space-x-5">
+              <h2 className=" text-3xl font-semibold">
+                {profileDetails?.first_name} {profileDetails?.last_name}
+              </h2>
+              <PermissionSettingsInProfileDetails     />
+            </div>
           )}
           {isLoading || errorQuery ? (
             <Skeleton className="w-[120px] h-4 mt-1" />
