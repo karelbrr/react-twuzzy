@@ -14,15 +14,25 @@ interface FormData {
   message: string;
 }
 
-export const TextBar = () => {
+interface Props {
+  repliedTo: string | null;
+  setRepliedTo: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export const TextBar = ({repliedTo, setRepliedTo}:Props) => {
   const { register, handleSubmit, reset } = useForm<FormData>();
   const { id } = useParams();
   const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
 
-  const sendMessage = async ({ message, file }: { message: string; file: File | null }) => {
+  const sendMessage = async ({
+    message,
+    file,
+  }: {
+    message: string;
+    file: File | null;
+  }) => {
     try {
-      
       const filePath = file ? `${id}/${Date.now()}_${file.name}` : "";
       let fileUrl = "";
 
@@ -57,7 +67,7 @@ export const TextBar = () => {
           media_url: fileUrl || null,
           is_read: false,
           is_liked: false,
-          replied_to: "",
+          replied_to: repliedTo,
         },
       ]);
 
@@ -75,6 +85,7 @@ export const TextBar = () => {
     onSuccess: () => {
       reset({ message: "" });
       setFile(null);
+      setRepliedTo(null)
     },
   });
 
@@ -86,6 +97,7 @@ export const TextBar = () => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
+      event.target.value = "";
       reset({ message: "" });
     }
   };
@@ -100,17 +112,19 @@ export const TextBar = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.3 } }}
-          className="absolute max-w-[300px] bottom-12 ml-5 "
+          className={`absolute  max-w-[300px] bottom-12 ml-5`}
         >
           <img
-            className="rounded-xl"
+            className={`rounded-xl ${mutation.isPending && "opacity-70"}`}
             src={URL.createObjectURL(file)}
             alt="Preview"
           />
           <Button
             onClick={() => setFile(null)}
             variant="destructive"
-            className="absolute size-8 top-[-10px] right-[-10px]"
+            className={`absolute size-8 top-[-10px] right-[-10px] ${
+              mutation.isPending && "opacity-70"
+            }`}
           >
             <Trash2 />
           </Button>
@@ -142,7 +156,7 @@ export const TextBar = () => {
           <Laugh />
         </Button>
         <Button className="mt-10" type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? <Loader2 className="animate-spin"/> : <Send  />}
+          {mutation.isPending ? <Loader2 className="animate-spin" /> : <Send />}
         </Button>
       </form>
     </motion.section>

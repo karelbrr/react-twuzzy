@@ -7,6 +7,7 @@ import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { Error as ErrorDiv } from "./Error";
 
 interface Message {
   id: string;
@@ -27,6 +28,7 @@ export const Content = () => {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [isNearBottom, setIsNearBottom] = useState(true);
+  const [repliedTo, setRepliedTo] = useState<string | null>(null);
 
   const handleScroll = () => {
     if (!messagesContainerRef.current) {
@@ -35,7 +37,7 @@ export const Content = () => {
 
     const container = messagesContainerRef.current;
 
-    const threshold = 100;
+    const threshold = 400;
     const distanceFromTop = container.scrollTop + container.clientHeight;
     const distanceFromBottom = container.scrollHeight - distanceFromTop;
 
@@ -56,7 +58,7 @@ export const Content = () => {
     return data;
   };
 
-  const { data: messages } = useQuery<Message[], Error>({
+  const { data: messages, error } = useQuery<Message[], Error>({
     queryKey: ["fetchMessages", id],
     queryFn: () => fetchMessages(id!),
   });
@@ -67,7 +69,6 @@ export const Content = () => {
         messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
       }
     };
-
     if (isNearBottom) {
       scrollToBottom();
     }
@@ -132,6 +133,11 @@ export const Content = () => {
           onScroll={handleScroll}
         >
           <ProfileDescInContent />
+          {error && (
+            <div className="w-3/4 mx-auto">
+              <ErrorDiv error={error?.message} />
+            </div>
+          )}
           <div className="flex flex-col">
             {messages?.map((item) => (
               <Message
@@ -143,6 +149,7 @@ export const Content = () => {
                 is_liked={item.is_liked}
                 replied_to={item.replied_to}
                 media_url={item.media_url}
+                setRepliedTo={setRepliedTo}
               />
             ))}
 
@@ -164,7 +171,7 @@ export const Content = () => {
           </div>
         </div>
       </motion.section>
-      <TextBar />
+      <TextBar repliedTo={repliedTo} setRepliedTo={setRepliedTo} />
     </div>
   );
 };
