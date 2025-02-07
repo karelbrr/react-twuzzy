@@ -10,7 +10,7 @@ import { formatDate } from "./my-hooks/formatDate";
 import { useClipboard } from "./my-hooks/useClipboard";
 import { supabase } from "./my-hooks/createClient";
 import { AnimatePresence, motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import useRepliedMessage from "./my-hooks/useRepliedMessage";
 
 interface MessageProps {
   position?: string | "left" | "right";
@@ -20,13 +20,7 @@ interface MessageProps {
   id: string;
   replied_to: string;
   media_url: string;
-  setRepliedTo: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-interface RepliedToMessageProps {
-  id: string;
-  message: string;
-  replied_to: string;
+  setReplyingTo: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const Message: React.FC<MessageProps> = ({
@@ -37,7 +31,7 @@ const Message: React.FC<MessageProps> = ({
   id,
   replied_to,
   media_url,
-  setRepliedTo,
+  setReplyingTo,
 }) => {
   const { copyToClipboard } = useClipboard();
 
@@ -58,21 +52,8 @@ const Message: React.FC<MessageProps> = ({
     }
   };
 
-  const { data: repliedMessage, error: repliedToError } =
-    useQuery<RepliedToMessageProps>({
-      queryKey: ["repliedMessageFetch", replied_to],
-      queryFn: async () => {
-        const { data, error } = await supabase
-          .from("messages")
-          .select("id,message,replied_to")
-          .eq("id", replied_to)
-          .single();
+  const { data: repliedMessage, error: repliedToError } = useRepliedMessage(replied_to);
 
-        if (error) throw error;
-        return data;
-      },
-      enabled: !!replied_to,
-    });
 
   return (
     <ContextMenu>
@@ -145,7 +126,7 @@ const Message: React.FC<MessageProps> = ({
             Like
           </ContextMenuItem>
         )}
-        <ContextMenuItem onClick={() => setRepliedTo(id)}>
+        <ContextMenuItem onClick={() => setReplyingTo(id)}>
           Reply
         </ContextMenuItem>
         {position === "right" && (

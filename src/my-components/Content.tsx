@@ -28,7 +28,7 @@ export const Content = () => {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [isNearBottom, setIsNearBottom] = useState(true);
-  const [repliedTo, setRepliedTo] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
   const handleScroll = () => {
     if (!messagesContainerRef.current) {
@@ -149,7 +149,7 @@ export const Content = () => {
                 is_liked={item.is_liked}
                 replied_to={item.replied_to}
                 media_url={item.media_url}
-                setRepliedTo={setRepliedTo}
+                setReplyingTo={setReplyingTo}
               />
             ))}
 
@@ -171,7 +171,7 @@ export const Content = () => {
           </div>
         </div>
       </motion.section>
-      <TextBar repliedTo={repliedTo} setRepliedTo={setRepliedTo} />
+      <TextBar replyingTo={replyingTo} setReplyingTo={setReplyingTo} />
     </div>
   );
 };

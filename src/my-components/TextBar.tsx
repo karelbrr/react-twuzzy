@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Send, Paperclip, Laugh, Trash2, Loader2 } from "lucide-react";
+import { Send, Paperclip, Laugh, Trash2, Loader2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { supabase } from "./my-hooks/createClient";
 import { useParams } from "react-router-dom";
@@ -9,17 +9,18 @@ import { useAuth } from "@/auth/AuthProvider";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
+import useRepliedMessage from "./my-hooks/useRepliedMessage";
 
 interface FormData {
   message: string;
 }
 
 interface Props {
-  repliedTo: string | null;
-  setRepliedTo: React.Dispatch<React.SetStateAction<string | null>>;
+  replyingTo: string | null;
+  setReplyingTo: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export const TextBar = ({repliedTo, setRepliedTo}:Props) => {
+export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
   const { register, handleSubmit, reset } = useForm<FormData>();
   const { id } = useParams();
   const { user } = useAuth();
@@ -67,7 +68,7 @@ export const TextBar = ({repliedTo, setRepliedTo}:Props) => {
           media_url: fileUrl || null,
           is_read: false,
           is_liked: false,
-          replied_to: repliedTo,
+          replied_to: replyingTo,
         },
       ]);
 
@@ -85,7 +86,7 @@ export const TextBar = ({repliedTo, setRepliedTo}:Props) => {
     onSuccess: () => {
       reset({ message: "" });
       setFile(null);
-      setRepliedTo(null)
+      setReplyingTo(null);
     },
   });
 
@@ -102,6 +103,9 @@ export const TextBar = ({repliedTo, setRepliedTo}:Props) => {
     }
   };
 
+  const { data: repliedMessage, error: repliedToError } =
+    useRepliedMessage(replyingTo);
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -112,7 +116,9 @@ export const TextBar = ({repliedTo, setRepliedTo}:Props) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.3 } }}
-          className={`absolute  max-w-[300px] bottom-12 ml-5`}
+          className={`absolute  max-w-[300px]  ${
+            repliedMessage ? "bottom-28" : "bottom-12"
+          } ml-5`}
         >
           <img
             className={`rounded-xl ${mutation.isPending && "opacity-70"}`}
@@ -131,6 +137,18 @@ export const TextBar = ({repliedTo, setRepliedTo}:Props) => {
         </motion.div>
       )}
 
+      {repliedMessage && (
+        <div className="absolute  max-w-[700px] bottom-12 ml-5 max-h-24 overflow-hidden flex items-baseline">
+          <p className="text-lg">Replying to: {repliedMessage.message}</p>
+          <Button
+            variant={"outline"}
+            className="mx-3"
+            onClick={() => setReplyingTo(null)}
+          >
+            <X className="size-5" />
+          </Button>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full flex space-x-3 justify-end pr-10 bg-background"
