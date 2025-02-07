@@ -64,23 +64,13 @@ export const Content = () => {
   });
 
   useEffect(() => {
-    const scrollToBottom = () => {
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    };
-
-    if (isNearBottom) {
-      scrollToBottom();
-    }
-
     const subscription = supabase
       .channel("realtime:messages")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
         (payload) => {
-          if (payload.new.chat_id !== id) return; // ✅ Ověřujeme, že zpráva patří do aktuálního chatu
+          if (payload.new.chat_id !== id) return;
           queryClient.setQueryData<Message[]>(
             ["fetchMessages", id],
             (oldData) => [...(oldData || []), payload.new as Message]
@@ -91,7 +81,7 @@ export const Content = () => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "messages" },
         (payload) => {
-          if (payload.new.chat_id !== id) return; // ✅ Ověřujeme, že zpráva patří do aktuálního chatu
+          if (payload.new.chat_id !== id) return;
           queryClient.setQueryData<Message[]>(
             ["fetchMessages", id],
             (oldData) => {
@@ -120,7 +110,13 @@ export const Content = () => {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, [queryClient, id, isNearBottom]);
+  }, [queryClient, id, messages, isNearBottom, messagesEndRef]);
+
+  useEffect(() => {
+    if (isNearBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <div className="h-[80%] w-[82%] mt-24 ">
