@@ -69,6 +69,7 @@ export const Content = () => {
         messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
       }
     };
+
     if (isNearBottom) {
       scrollToBottom();
     }
@@ -79,6 +80,7 @@ export const Content = () => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
         (payload) => {
+          if (payload.new.chat_id !== id) return; // ✅ Ověřujeme, že zpráva patří do aktuálního chatu
           queryClient.setQueryData<Message[]>(
             ["fetchMessages", id],
             (oldData) => [...(oldData || []), payload.new as Message]
@@ -89,14 +91,14 @@ export const Content = () => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "messages" },
         (payload) => {
+          if (payload.new.chat_id !== id) return; // ✅ Ověřujeme, že zpráva patří do aktuálního chatu
           queryClient.setQueryData<Message[]>(
             ["fetchMessages", id],
             (oldData) => {
-              return oldData?.map(
-                (message) =>
-                  message.id === payload.new.id
-                    ? (payload.new as Message)
-                    : message // Assert payload.new as Message
+              return oldData?.map((message) =>
+                message.id === payload.new.id
+                  ? (payload.new as Message)
+                  : message
               );
             }
           );
@@ -118,7 +120,7 @@ export const Content = () => {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, [queryClient, id, messages, isNearBottom, messagesEndRef]);
+  }, [queryClient, id, isNearBottom]);
 
   return (
     <div className="h-[80%] w-[82%] mt-24 ">
