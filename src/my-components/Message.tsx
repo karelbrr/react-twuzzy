@@ -52,8 +52,8 @@ const Message: React.FC<MessageProps> = ({
     }
   };
 
-  const { data: repliedMessage, error: repliedToError } = useRepliedMessage(replied_to);
-
+  const { data: repliedMessage, error: repliedToError } =
+    useRepliedMessage(replied_to);
 
   return (
     <ContextMenu>
@@ -88,7 +88,9 @@ const Message: React.FC<MessageProps> = ({
                   : "absolute top-[-27px]  w-[500px] left-0 max-w-[500px] opacity-70 max-h-6 overflow-hidden"
               }`}
             >
-              <p>Replying to: {repliedMessage?.message}</p>
+              
+                <p>Replying to: {repliedMessage?.message}</p>
+             
             </div>
           )}
 

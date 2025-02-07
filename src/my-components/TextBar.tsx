@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import useRepliedMessage from "./my-hooks/useRepliedMessage";
+import { Card } from "@/components/ui/card";
 
 interface FormData {
   message: string;
@@ -138,8 +139,8 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
       )}
 
       {repliedMessage && (
-        <div className="absolute  max-w-[700px] bottom-12 ml-5 max-h-24 overflow-hidden flex items-baseline">
-          <p className="text-lg">Replying to: {repliedMessage.message}</p>
+        <Card className="absolute  max-w-[700px] bottom-12 ml-5 max-h-24 overflow-hidden flex  py-3 pl-3">
+          <p className="text-md m-auto opacity-85"><span className="">Replying to:</span> {repliedMessage.message}</p>
           <Button
             variant={"outline"}
             className="mx-3"
@@ -147,7 +148,7 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
           >
             <X className="size-5" />
           </Button>
-        </div>
+        </Card>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
