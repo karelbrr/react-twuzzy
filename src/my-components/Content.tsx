@@ -63,6 +63,7 @@ export const Content = () => {
     queryFn: () => fetchMessages(id!),
   });
 
+
   useEffect(() => {
     const subscription = supabase
       .channel("realtime:messages")
@@ -119,7 +120,7 @@ export const Content = () => {
   }, [messages]);
 
   return (
-    <div className="h-[80%] w-[82%] mt-24 ">
+    <div className="h-[80%] lg:h-[72] xl:h-[80%] w-[82%] mt-24 ">
       <motion.section
         className="h-[94%] flex-col  overflow-auto"
         initial={{ opacity: 0 }}

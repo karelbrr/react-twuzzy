@@ -3,7 +3,7 @@ import githubicon from "../assets/images/1a78d0af8893b3c26a97a6740e49a82f.png";
 import discordicon from "../assets/images/png-clipart-white-flat-taskbar-icons-discord-online-game-chat-logo-illustration-thumbnail-removebg-preview.png";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/AuthProvider";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 export const LoginPage = () => {
   const { signInWithGitHub,signInWithDiscord, user } = useAuth();
@@ -31,17 +31,17 @@ export const LoginPage = () => {
         <motion.div className="flex flex-col justify-center h-5/6">
           <motion.h1
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 0.5, delay: 0.2 } }}
-            className=" text-white font-medium text-4xl opacity-90 "
+            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.2 } }}
+            className=" text-white font-semibold text-4xl opacity-90 "
           >
             Log in to{" "}
             <motion.span
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,
-                transition: { duration: 0.5, delay: 0.6 },
+                transition: { duration: 0.5, delay: 0.4},
               }}
-              className="text-purple-500 font-bold "
+              className="text-purple-500 font-bold"
             >
               Twüzzy
             </motion.span>
@@ -51,18 +51,18 @@ export const LoginPage = () => {
             initial={{ opacity: 0 }}
             animate={{
               opacity: 1,
-              transition: { duration: 0.7, delay: 1.1 },
+              transition: { duration: 0.5, delay: 0.7 },
             }}
           >
             <button
               onClick={signInWithGitHub}
-              className="w-full mt-10 text-md bg-zinc-900 text-white flex justify-center py-3  rounded-xl hover:opacity-80 transition"
+              className="w-full mt-10 text-md bg-zinc-900 text-white flex justify-center items-center  py-3  rounded-xl hover:opacity-80 transition"
             >
-              <img src={githubicon} alt="" className="w-6 mr-1" />
+              <img src={githubicon} alt="" className="w-7 mr-2" />
               Sign in with Github
             </button>
-            <button onClick={signInWithDiscord} className="w-full  mt-5 text-md bg-indigo-600  text-white flex justify-center py-3  rounded-xl hover:opacity-80 transition">
-              <img src={discordicon} alt="" className="w-6 mt-1 mr-1" />
+            <button onClick={signInWithDiscord} className="w-full  mt-5 text-md bg-indigo-600  text-white flex justify-center items-center py-3  rounded-xl hover:opacity-80 transition">
+              <img src={discordicon} alt="" className="w-8 mt-1 mr-1" />
               Sign in with Discord
             </button>
           </motion.div>
@@ -72,9 +72,11 @@ export const LoginPage = () => {
             Terms of Service
           </a>
           <span>|</span>
-          <a href="" className="ml-1 hover:opacity-80 transition">
+          <a href="" className="ml-1 mr-1 hover:opacity-80 transition">
             Privacy Policy
           </a>
+          <span>|</span>
+          <Link className="ml-1 hover:opacity-80 transition" to={"/about"}>about Twüzzy</Link>
         </div>
       </section>
     </section>

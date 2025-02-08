@@ -111,7 +111,7 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.3 } }}
-      className="h-[4%] border-t fixed right-0 w-[82%] bg-background"
+      className="h-[4%] lg:h-[8%] xl:h-[4%] border-t fixed right-0 w-[82%] bg-background"
     >
       {file && (
         <motion.div
