@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 bg-final-edit.mp4
+bg-footerv2.mp4
 
 node_modules
 dist
