@@ -1,9 +1,11 @@
 import { AboutPageHeader } from "../my-components/AboutPageComponents/AboutPageHeader";
-
 import bg_video from "../assets/images/bg-final-edit.mp4";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import AboutPageFeatures from "@/my-components/AboutPageComponents/AboutPageFeatures";
+import { AboutPageCards } from "@/my-components/AboutPageComponents/AboutPageCards";
+import { AboutPageFooter } from "@/my-components/AboutPageComponents/AboutPageFooter";
 
 const About = () => {
   return (
@@ -28,7 +30,7 @@ const About = () => {
             Real-time conversations that bring people closer and create
             <span className="font-bold bg-gradient-to-r from-fuchsia-400/90 to-violet-500/90 bg-clip-text text-transparent">
               {" "}
-              memories.
+              memories
             </span>
           </h2>
 
@@ -37,7 +39,7 @@ const About = () => {
             the world, building meaningful conversations in real-time.
           </p>
           <div className=" space-x-2 mt-2">
-            <Button className="  opacity-90 w-36">Getting started</Button>
+            <Button className="  opacity-90 w-36">Get started</Button>
             <Button className="  opacity-90 w-32" variant={"outline"} asChild>
               <Link to={"/news/1"}>Whats New?</Link>
             </Button>
@@ -45,9 +47,9 @@ const About = () => {
         </section>
         <div className="absolute bottom-0 left-0 w-full h-[280px]  bg-gradient-to-t from-black  to-transparent"></div>
       </section>
-      <section className="h-screen bg-[#010101]">
-        <h1>tset</h1>
-      </section>
+      <AboutPageFeatures />
+      <AboutPageCards />
+      <AboutPageFooter />
     </section>
   );
 };

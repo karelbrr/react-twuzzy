@@ -79,6 +79,12 @@
     animation: gradient-animation 7s ease infinite;
   }
 
+  .fake-message {
+    @apply inline-block relative rounded-xl 
+    border px-5 py-3 bg-gradient-to-r 
+   max-w-[350px] text-base mx-3 mt-5 text-zinc-200;
+  }
+   
   @keyframes gradient-animation {
     0% {
       background-position: 0% 50%;
@@ -90,5 +96,4 @@
       background-position: 0% 50%;
     }
   }
-
 }
