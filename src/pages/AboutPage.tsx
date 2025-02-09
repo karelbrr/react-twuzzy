@@ -45,7 +45,9 @@ const About = () => {
         </section>
         <div className="absolute bottom-0 left-0 w-full h-[280px]  bg-gradient-to-t from-black  to-transparent"></div>
       </section>
-      <section className="h-screen bg-[#010101]"></section>
+      <section className="h-screen bg-[#010101]">
+        <h1>tset</h1>
+      </section>
     </section>
   );
 };
