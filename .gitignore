@@ -7,6 +7,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+bg-final-edit.mp4
+
 node_modules
 dist
 dist-ssr

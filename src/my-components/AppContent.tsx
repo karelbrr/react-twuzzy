@@ -11,14 +11,14 @@ import { SettingsBlocked } from "./SettingsBlocked";
 import { ProfileDetails } from "@/pages/ProfileDetails";
 import { Content } from "../my-components/Content";
 import NoChatSelected from "./NoChatSelected";
-
+import About from "@/pages/AboutPage";
 
 
 export const AppContent = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
     <Route path="/news/:id" element={<NewsPage />} />
-    
+    <Route path="/about" element={<About />} />
     <Route
       path="/"
       element={
