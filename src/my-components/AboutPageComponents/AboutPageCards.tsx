@@ -9,15 +9,18 @@ import { Route, Zap, Camera } from "lucide-react";
 import bg from "@/assets/images/bg-cards.jpg";
 import { Button } from "@/components/ui/button";
 
-
 export function AboutPageCards() {
   return (
-    <div className="w-full m-auto">
-      <h2 className="bg-[#010101] m-auto  text-7xl leading-none text-center font-semibold opacity-70 ">
-        Transform Your Communication
+    <div className="w-full m-auto ">
+      <h2 className="bg-[#010101] m-auto text-7xl leading-none text-center font-semibold opacity-70 relative">
+        Faster then{" "}
+        <span className="font-bold bg-gradient-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent animate-gradient">
+          twüzzy
+        </span>{" "}
+        is only light
       </h2>
       <div
-        className="bg-cover bg-center h-[1000px]"
+        className="bg-cover bg-center h-[850px]"
         style={{
           backgroundImage: `url(${bg})`,
         }}

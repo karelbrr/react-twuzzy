@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import AboutPageFeatures from "@/my-components/AboutPageComponents/AboutPageFeatures";
 import { AboutPageCards } from "@/my-components/AboutPageComponents/AboutPageCards";
 import { AboutPageFooter } from "@/my-components/AboutPageComponents/AboutPageFooter";
+import { AboutPageQnA } from "@/my-components/AboutPageComponents/AboutPageQnA";
 
 const About = () => {
   return (
@@ -28,7 +29,7 @@ const About = () => {
         <section className="relative z-5 flex w-3/4 mt-64 flex-col m-auto h-20 items-center">
           <h2 className=" text-center text-[85px] leading-none w-3/4 font-semibold opacity-70">
             Real-time conversations that bring people closer and create
-            <span className="font-bold bg-gradient-to-r from-fuchsia-400/90 to-violet-500/90 bg-clip-text text-transparent">
+            <span className="animate-gradient font-bold bg-gradient-to-r from-fuchsia-400/90 to-violet-500/90 bg-clip-text text-transparent">
               {" "}
               memories
             </span>
@@ -49,7 +50,9 @@ const About = () => {
       </section>
       <AboutPageFeatures />
       <AboutPageCards />
+      <AboutPageQnA/>
       <AboutPageFooter />
+      
     </section>
   );
 };

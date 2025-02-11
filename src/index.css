@@ -74,9 +74,26 @@
 
 @layer components {
   .gradient-background {
-    background: linear-gradient(20deg, #650f9b, #9721cd, #591aa5, #9e07fc);
+    background: linear-gradient(20deg, #650f9b, #8d24be, #5911b0, #b641ff);
     background-size: 180% 180%;
     animation: gradient-animation 7s ease infinite;
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
   }
 
   .fake-message {
@@ -84,7 +101,7 @@
     border px-5 py-3 bg-gradient-to-r 
    max-w-[350px] text-base mx-3 mt-5 text-zinc-200;
   }
-   
+
   @keyframes gradient-animation {
     0% {
       background-position: 0% 50%;
