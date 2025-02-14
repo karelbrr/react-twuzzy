@@ -37,10 +37,10 @@ export const AboutPageQnA = () => {
   ];
 
   return (
-    <section className="bg-[#010101] h-screen">
-      <div className=" w-3/4 m-auto flex">
+    <section className="bg-[#010101] pb-36 lg:pb-0 lg:h-screen">
+      <div className=" w-3/4 m-auto flex lg:flex-row flex-col mt-20 lg:mt-0">
         <div
-          className="w-1/2 h-[600px]  bg-no-repeat flex items-center"
+          className="w-full lg:w-1/2 h-[600px] hidden  bg-no-repeat lg:flex items-center"
           style={{
             backgroundImage: `url(${bg})`,
           }}
@@ -53,11 +53,23 @@ export const AboutPageQnA = () => {
           </h2>
         </div>
 
-        <div className="w-1/2 space-y-4 flex flex-col justify-center">
+        <div
+          className="w-full lg:w-1/2 h-[600px]flex items-center lg:hidden"
+          
+        >
+          <h2 className="m-auto text-4xl bg-black/20 pb-14 leading-none text-left font-semibold relative">
+            Everything you need to know is answered{" "}
+            <span className="font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+              here.
+            </span>
+          </h2>
+        </div>
+
+        <div className="w-full lg:w-1/2 space-y-4 flex flex-col justify-center">
           {faqData.map((item, index) => (
             <Accordion type="single" collapsible key={index}>
               <AccordionItem value={`item-${index + 1}`}>
-                <AccordionTrigger>{item.question}</AccordionTrigger>
+                <AccordionTrigger className="text-left lg:text-center">{item.question}</AccordionTrigger>
                 <AccordionContent>{item.answer}</AccordionContent>
               </AccordionItem>
             </Accordion>

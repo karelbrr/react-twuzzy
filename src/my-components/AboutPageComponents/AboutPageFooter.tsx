@@ -6,7 +6,7 @@ import { Instagram, Github } from "lucide-react";
 
 export const AboutPageFooter = () => {
   return (
-    <section className="relative w-full h-[450px] overflow-hidden">
+    <section className="relative w-full h-[700px] lg:h-[450px] overflow-hidden">
       <video
         src={bg_video}
         autoPlay
@@ -16,17 +16,17 @@ export const AboutPageFooter = () => {
         className="absolute top-0 left-0 w-full h-full object-cover"
       ></video>
       <div className="absolute top-0 left-0 w-full h-full bg-violet-950/90 z-0"></div>
-      <div className="relative w-full h-full flex">
-        <div className="w-1/3 h-full relative flex flex-col justify-center pl-24">
+      <div className="relative w-full h-full flex lg:flex-row flex-col">
+        <div className="w-full lg:w-1/3 h-full relative flex flex-col text-center lg:text-left justify-center lg:pl-24">
           <div className="w-1/2 m-auto">
-            <img src={logo} alt="logo" className="w-28" />
+            <img src={logo} alt="logo" className="w-28 m-auto lg:m-0" />
             <p className="my-3 opacity-90">
               Nad Ovčírnou IV 2528, 760 01 Zlín 1, Czech republic
             </p>
             <p className="opacity-90">&copy; twüzzy 2025</p>
           </div>
         </div>
-        <div className="w-1/3 h-full relative flex flex-col justify-center">
+        <div className="w-full lg:w-1/3 h-full relative flex flex-col lg:justify-center">
           <Button
             variant={"link"}
             asChild
@@ -53,7 +53,7 @@ export const AboutPageFooter = () => {
             <a className="hover:opacity-80 transition" href="https://github.com/karelbrr/react-twuzzy" target="_blank" ><Github size={20} /></a>
           </div>
         </div>
-        <div className="w-1/3 h-full relative flex flex-col justify-center pr-24">
+        <div className="w-full lg:w-1/3 h-full relative flex flex-col lg:justify-center lg:pr-24">
           <Button
             variant={"link"}
             asChild

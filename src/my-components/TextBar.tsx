@@ -35,7 +35,16 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
     file: File | null;
   }) => {
     try {
-      const filePath = file ? `${id}/${Date.now()}_${file.name}` : "";
+      const sanitizeFileName = (name: string) => {
+        return name
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "") 
+          .replace(/\s+/g, "_"); 
+      };
+
+      const filePath = file
+        ? `${id}/${Date.now()}_${sanitizeFileName(file.name)}`
+        : "";
       let fileUrl = "";
 
       if (file) {
@@ -140,7 +149,9 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
 
       {repliedMessage && (
         <Card className="absolute  max-w-[700px] bottom-12 ml-5 max-h-24 overflow-hidden flex  py-3 pl-3">
-          <p className="text-md m-auto opacity-85"><span className="">Replying to:</span> {repliedMessage.message}</p>
+          <p className="text-md m-auto opacity-85">
+            <span className="">Replying to:</span> {repliedMessage.message}
+          </p>
           <Button
             variant={"outline"}
             className="mx-3"

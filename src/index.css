@@ -99,7 +99,7 @@
   .fake-message {
     @apply inline-block relative rounded-xl 
     border px-5 py-3 bg-gradient-to-r 
-   max-w-[350px] text-base mx-3 mt-5 text-zinc-200;
+   max-w-[200px] md:max-w-[300px] lg:max-w-[350px] text-base mx-3 mt-5 text-zinc-200;
   }
 
   @keyframes gradient-animation {

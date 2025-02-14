@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 export function AboutPageCards() {
   return (
     <div className="w-full m-auto ">
-      <h2 className="bg-[#010101] m-auto text-7xl leading-none text-center font-semibold opacity-70 relative">
+      <h2 className="bg-[#010101] m-auto text-5xl w-full   lg:w-full lg:text-7xl leading-none text-center font-semibold opacity-70 relative">
         Faster then{" "}
         <span className="font-bold bg-gradient-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent animate-gradient">
           twüzzy
@@ -20,13 +20,13 @@ export function AboutPageCards() {
         is only light
       </h2>
       <div
-        className="bg-cover bg-center h-[850px]"
+        className="bg-cover bg-center lg:h-[850px]"
         style={{
           backgroundImage: `url(${bg})`,
         }}
       >
-        <div className="grid grid-cols-3 gap-6 pt-20 w-3/4 m-auto">
-          <Card className="pb-10">
+        <div className="lg:grid lg:grid-cols-3 space-y-6 gap-6 pt-20 w-3/4 m-auto">
+          <Card className="lg:pb-10">
             <CardHeader>
               <Zap
                 strokeWidth={0.75}
@@ -45,7 +45,7 @@ export function AboutPageCards() {
               <Button>Learn More</Button>
             </CardFooter>
           </Card>
-          <Card className="pb-10 ">
+          <Card className="lg:pb-10 ">
             <CardHeader>
               <Route
                 strokeWidth={0.75}
@@ -64,7 +64,7 @@ export function AboutPageCards() {
               <Button>Learn More</Button>
             </CardFooter>
           </Card>
-          <Card className="pb-10 ">
+          <Card className="lg:pb-10 ">
             <CardHeader>
               <Camera
                 strokeWidth={0.75}

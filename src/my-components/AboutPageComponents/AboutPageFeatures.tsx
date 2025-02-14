@@ -39,10 +39,10 @@ const AboutPageFeatures = () => {
   ];
 
   return (
-    <section className=" bg-[#010101] pb-32">
-      <div className="w-3/4 m-auto flex mb-32">
-        <div className="w-5/12 ">
-          <h2 className="leading-tight mt-10 text-[68px] m-auto font-semibold opacity-70">
+    <section className=" bg-[#010101] lg:pb-32">
+      <div className="w-3/4 m-auto flex flex-col-reverse lg:flex-row pb-32">
+        <div className="w-full lg:w-5/12 ">
+          <h2 className="leading-tight mt-10 text-[40px] lg:text-[68px] m-auto font-semibold opacity-70">
             An intuitive and responsive chat experience with{" "}
             <span
               className={`font-extrabold ${
@@ -59,19 +59,19 @@ const AboutPageFeatures = () => {
             </span>
           </h2>
           <div className="mt-10">
-            <div className="space-x-4">
+            <div className="flex justify-center lg:justify-start lg:space-x-4 space-x-6">
               <Button asChild>
-                <Link to={"/login"} className="px-6">
+                <Link to={"/login"} className="lg:px-6 py-7 lg:py-5 w-36">
                   Get Started
                 </Link>
               </Button>
-              <Button variant={"outline"} className="px-6">
+              <Button variant={"outline"} className="lg:px-6 py-7 lg:py-5 w-32">
                 Learn More
               </Button>
             </div>
           </div>
         </div>
-        <div className="w-7/12 flex flex-col opacity-90">
+        <div className="w-full lg:w-7/12 flex flex-col opacity-90">
           <div className="ml-auto ">
             <Select
               value={watch("theme")}
