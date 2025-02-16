@@ -67,7 +67,7 @@ export const LoginPage = () => {
             </button>
           </motion.div>
         </motion.div>
-        <div className="text-zinc-600 pt-10 font-light">
+        <div className="text-zinc-600 pt-10 text-sm lg:text-base font-light">
           <a href="" className="mr-1 hover:opacity-80 transition">
             Terms of Service
           </a>

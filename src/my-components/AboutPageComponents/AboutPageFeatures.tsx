@@ -6,9 +6,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-
 
 interface Inputs {
   theme: string;
@@ -36,10 +36,20 @@ const AboutPageFeatures = () => {
       text: "For sure! It uses end-to-end encryption, so no one else can read your messages.",
       side: "left",
     },
+    {
+      text: "That’s awesome! I’m definitely going to check it out.",
+      side: "right",
+    },
   ];
 
   return (
-    <section className=" bg-[#010101] lg:pb-32">
+    <motion.section
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.2 }}
+      className=" bg-[#010101] lg:pb-32 pt-10 lg:pt-0"
+    >
       <div className="w-3/4 m-auto flex flex-col-reverse lg:flex-row pb-32">
         <div className="w-full lg:w-5/12 ">
           <h2 className="leading-tight mt-10 text-[40px] lg:text-[68px] m-auto font-semibold opacity-70">
@@ -87,38 +97,40 @@ const AboutPageFeatures = () => {
               </SelectContent>
             </Select>
           </div>
+
           {chatMessages.map((message, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={
+                { opacity: 0, y: 15 }
+              }
+              whileInView={{ opacity: 1, y: 0, x: 0 }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.08,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true, amount: 0.3 }}
               className={`fake-message ${
                 message.side === "left" ? "mr-auto" : "ml-auto"
               } ${
-                (watch("theme") === "am" &&
-                  "from-purple-700/60 to-violet-600/60") ||
-                (watch("theme") === "on" && "") ||
-                (watch("theme") === "az" && "from-blue-600/80 to-sky-600/80")
-              } `}
+                watch("theme") === "am"
+                  ? "from-purple-700/60 to-violet-600/60"
+                  : watch("theme") === "on"
+                  ? ""
+                  : "from-blue-600/80 to-sky-600/80"
+              }`}
             >
               <p>{message.text}</p>
-            </div>
+
+              {index === chatMessages.length - 1 && (
+                <div className="absolute left-2 text-xl bottom-[-15px]">❤️</div>
+              )}
+            </motion.div>
           ))}
-          <div
-            className={`fake-message
-                ml-auto ${
-                  (watch("theme") === "am" &&
-                    "from-purple-700/60 to-violet-600/60") ||
-                  (watch("theme") === "on" && "") ||
-                  (watch("theme") === "az" && "from-blue-600/80 to-sky-600/80")
-                }
-              `}
-          >
-            <p>That’s awesome! I’m definitely going to check it out.</p>
-            <div className="absolute left-2 text-xl bottom-[-15px]">❤️</div>
-          </div>
         </div>
       </div>
-      
-    </section>
+    </motion.section>
   );
 };
 
