@@ -46,7 +46,7 @@ const About = () => {
                   ease: "easeOut",
                 }}
                 key={i}
-                className="inline-block mr-2" // Přidá mezery mezi slovy
+                className="inline-block mr-2" 
               >
                 {mainText.length - 1 === i ? (
                   <strong className="animate-gradient font-bold bg-gradient-to-r from-fuchsia-400/90 to-violet-500/90 bg-clip-text text-transparent">
@@ -72,6 +72,7 @@ const About = () => {
                   delay: 0.9,
                 },
               }}
+            
               className="my-7 lg:my-5 w-3/4 lg:mx-0 opacity-60 lg:w-1/2 text-left lg:text-center"
             >
               Talk freely without barriers. Connect instantly with people around

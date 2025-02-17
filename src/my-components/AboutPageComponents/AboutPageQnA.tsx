@@ -1,3 +1,4 @@
+import { CustomQnAHeading } from "./CustomQnAHeading";
 import {
   Accordion,
   AccordionContent,
@@ -5,6 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import bg from "@/assets/images/qna-bg-4.png";
+import { motion } from "framer-motion";
 
 export const AboutPageQnA = () => {
   const faqData = [
@@ -45,34 +47,44 @@ export const AboutPageQnA = () => {
             backgroundImage: `url(${bg})`,
           }}
         >
-          <h2 className="m-auto text-7xl bg-black/20 py-2 leading-none text-left font-semibold relative">
-            Everything you need to know is answered{" "}
-            <span className="font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-              here.
-            </span>
-          </h2>
+          <CustomQnAHeading />
         </div>
 
-        <div
-          className="w-full lg:w-1/2 h-[600px]flex items-center lg:hidden"
-          
-        >
-          <h2 className="m-auto text-4xl bg-black/20 pb-14 leading-none text-left font-semibold relative">
-            Everything you need to know is answered{" "}
-            <span className="font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-              here.
-            </span>
-          </h2>
+        <div className="w-full lg:w-1/2 h-[600px]flex items-center lg:hidden">
+          <CustomQnAHeading />
         </div>
 
         <div className="w-full lg:w-1/2 space-y-4 flex flex-col justify-center">
           {faqData.map((item, index) => (
-            <Accordion type="single" collapsible key={index}>
-              <AccordionItem value={`item-${index + 1}`}>
-                <AccordionTrigger className="text-left lg:text-center">{item.question}</AccordionTrigger>
-                <AccordionContent>{item.answer}</AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            <motion.div
+            key={index}
+              initial={{
+                opacity: 0,
+                y: 15,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.1,
+                ease: "easeOut",
+              }}
+              viewport={{
+                once: true,
+                amount: 0.3,
+              }}
+            >
+              <Accordion type="single" collapsible key={index}>
+                <AccordionItem value={`item-${index + 1}`}>
+                  <AccordionTrigger className="text-left lg:text-center">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent>{item.answer}</AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </motion.div>
           ))}
         </div>
       </div>

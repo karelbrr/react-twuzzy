@@ -42,12 +42,19 @@ export const AboutPageCards = () => {
     >
       <h2 className="bg-[#010101] m-auto text-5xl w-full   lg:w-full lg:text-7xl leading-none text-center font-semibold opacity-70 relative">
         Faster then{" "}
-        <span className="font-bold bg-gradient-to-r from-purple-500 via-violet-500 to-purple-500 bg-clip-text text-transparent">
+        <span className="font-bold bg-gradient-to-r from-purple-500 to-violet-500 bg-clip-text text-transparent">
           twüzzy
         </span>{" "}
         is only light
       </h2>
-      <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{
+          duration: 0.6,
+          ease: "easeOut",
+        }}
+        viewport={{ once: true, amount: 0.3 }}
         className="bg-cover bg-center lg:h-[850px]"
         style={{
           backgroundImage: `url(${bg})`,
@@ -56,20 +63,21 @@ export const AboutPageCards = () => {
         <div className="lg:grid lg:grid-cols-3 space-y-5 lg:space-y-0 gap-6 pt-24 w-3/4 m-auto">
           {features.map(({ icon: Icon, title, description }, index) => (
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              key={index}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0, x: 0 }}
               transition={{
                 duration: 0.6,
                 delay: index * 0.2,
                 ease: "easeOut",
               }}
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.2 }}
             >
               <Card key={index} className="lg:pb-10 ">
                 <CardHeader>
                   <Icon
                     strokeWidth={0.75}
-                    className="size-20 my-7 text-violet-500"
+                    className="size-20 my-7 text-violet-500/90"
                   />
                   <CardTitle>{title}</CardTitle>
                 </CardHeader>
@@ -83,7 +91,7 @@ export const AboutPageCards = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
