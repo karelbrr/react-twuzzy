@@ -40,13 +40,19 @@ export const AboutPageCards = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.1 }}
     >
-      <h2 className="bg-[#010101] m-auto text-5xl w-full   lg:w-full lg:text-7xl leading-none text-center font-semibold opacity-70 relative">
-        Faster then{" "}
-        <span className="font-bold bg-gradient-to-r from-purple-500 to-violet-500 bg-clip-text text-transparent">
-          twüzzy
-        </span>{" "}
-        is only light
-      </h2>
+      <div className=" w-3/4 m-auto">
+        <h2 className="bg-[#010101] text-5xl text-left lg:w-full lg:text-7xl leading-none font-semibold opacity-70 relative">
+          Faster than twüzzy <br /> is only{" "}
+          <span className="font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+            light
+          </span>{" "}
+          and{" "}
+          <span className="font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+            thunder.
+          </span>{" "}
+        </h2>
+      </div>
+
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -60,7 +66,7 @@ export const AboutPageCards = () => {
           backgroundImage: `url(${bg})`,
         }}
       >
-        <div className="lg:grid lg:grid-cols-3 space-y-5 lg:space-y-0 gap-6 pt-24 w-3/4 m-auto">
+        <div className="lg:grid lg:grid-cols-3 space-y-5 lg:space-y-0 gap-6 pt-12 w-3/4 m-auto">
           {features.map(({ icon: Icon, title, description }, index) => (
             <motion.div
               key={index}
@@ -71,7 +77,7 @@ export const AboutPageCards = () => {
                 delay: index * 0.2,
                 ease: "easeOut",
               }}
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.4 }}
             >
               <Card key={index} className="lg:pb-10 ">
                 <CardHeader>
