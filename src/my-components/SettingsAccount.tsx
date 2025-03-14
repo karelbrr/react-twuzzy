@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 export const SettingsAccount = () => {
   const { user } = useAuth();
@@ -67,7 +66,7 @@ export const SettingsAccount = () => {
             </CardContent>
           </form>
         </Card>
-        <Card className="ml-10 w-1/2 border-red-800">
+        <Card className="ml-10 w-1/2 border-red-800 bg-red-700/30">
           <CardHeader className="opacity-90">
             <CardTitle className="">Danger Zone</CardTitle>
             <CardDescription className="">

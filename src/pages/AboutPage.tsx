@@ -1,7 +1,7 @@
 import { AboutPageHeader } from "../my-components/AboutPageComponents/AboutPageHeader";
 import bg_video from "../assets/images/bg-final-edit.mp4";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import AboutPageFeatures from "@/my-components/AboutPageComponents/AboutPageFeatures";
 import { AboutPageCards } from "@/my-components/AboutPageComponents/AboutPageCards";
@@ -9,8 +9,16 @@ import { AboutPageFooter } from "@/my-components/AboutPageComponents/AboutPageFo
 import { AboutPageQnA } from "@/my-components/AboutPageComponents/AboutPageQnA";
 import { motion } from "framer-motion";
 import AboutPageReviews from "@/my-components/AboutPageComponents/AboutPageReviews";
+import { useEffect } from "react";
+
 
 const About = () => {
+
+const { pathname } = useLocation(); 
+
+useEffect(() => {
+  window.scrollTo({top: 0, behavior: "auto"});
+}, [pathname]);
   const mainText =
     "Real-time conversations that bring people closer and create memories".split(
       " "

@@ -1,7 +1,7 @@
-import { PermissionSettingsInProfileDetails } from './../my-components/PermissionSettingsInProfileDetails';
+import { PermissionSettingsInProfileDetails } from "./../my-components/PermissionSettingsInProfileDetails";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -14,6 +14,11 @@ import { Helmet } from "react-helmet-async";
 
 export const ProfileDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   const {
     data: profileDetails,
@@ -46,10 +51,8 @@ export const ProfileDetails = () => {
       </Helmet>
 
       <div className="w-1/2 m-auto mt-10 flex items-baseline">
-        <Button variant={"outline"} asChild>
-          <Link to={"/"}>
-            <ArrowLeft />
-          </Link>
+        <Button onClick={goBack} variant={"outline"} className="">
+          <ArrowLeft />
         </Button>
 
         <h2 className=" text-2xl font-semibold ml-4 opacity-95">
@@ -79,7 +82,7 @@ export const ProfileDetails = () => {
               <h2 className=" text-3xl font-semibold">
                 {profileDetails?.first_name} {profileDetails?.last_name}
               </h2>
-              <PermissionSettingsInProfileDetails     />
+              <PermissionSettingsInProfileDetails />
             </div>
           )}
           {isLoading || errorQuery ? (

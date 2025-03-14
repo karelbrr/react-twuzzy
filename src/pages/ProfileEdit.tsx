@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { Key } from "lucide-react";
 import { MoveLeft } from "lucide-react";
-import {
-  Card
-} from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 
@@ -32,12 +29,12 @@ export const ProfileEdit = () => {
           <h3 className=" font-bold text-2xl  ml-5">Settings</h3>
         </div>
 
-        <Card className="w-5/6 m-auto mt-5 ">
+        
           <div className="flex flex-col xl:ml-15 font-extralight mb-5 mt-5">
             <div className="flex  flex-col  space-y-2">
               <Button
                 className={`m-auto w-5/6 flex justify-start ${ location.pathname === "/settings/account" && "bg-secondary opacity-90"}`}
-                variant={"outline"}
+                variant={"ghost"}
                 asChild
               >
                 <Link to={"/settings/account"}>
@@ -47,7 +44,7 @@ export const ProfileEdit = () => {
               </Button>
               <Button
                 className={`m-auto w-5/6 flex justify-start ${ location.pathname === "/settings/profile" && "bg-secondary opacity-90"}`}
-                variant={"outline"}
+                variant={"ghost"}
                 asChild
               >
                 <Link to={"/settings/profile"}>
@@ -57,7 +54,7 @@ export const ProfileEdit = () => {
               </Button>
               <Button
                 className={`m-auto w-5/6 flex justify-start ${ location.pathname === "/settings/blocked" && "bg-secondary opacity-90"}`}
-                variant={"outline"}
+                variant={"ghost"}
                 asChild
               >
                 <Link to={"/settings/blocked"}>
@@ -67,7 +64,7 @@ export const ProfileEdit = () => {
               </Button>
             </div>
           </div>
-        </Card>
+        
       </motion.div>
 
       <div className="w-3/4">

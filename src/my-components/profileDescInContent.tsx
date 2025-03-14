@@ -30,7 +30,7 @@ interface Chat {
   };
 }
 
-export function ProfileDescInContent({}) {
+export function ProfileDescInContent() {
   const { user } = useAuth();
   const { id } = useParams();
   const fetchChats = async (): Promise<Chat> => {

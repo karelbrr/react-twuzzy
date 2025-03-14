@@ -12,7 +12,10 @@ import { ProfileDetails } from "@/pages/ProfileDetails";
 import { Content } from "../my-components/Content";
 import NoChatSelected from "./NoChatSelected";
 import About from "@/pages/AboutPage";
-
+import { DiscoverPage } from "@/pages/DiscoverPage";
+import { DiscoverFeatured } from "./DiscoverFeatured";
+import { DiscoverPeople } from "./DiscoverPeople";
+import { DiscoverGroups } from "./DiscoverGroups";
 
 export const AppContent = () => (
   <Routes>
@@ -27,9 +30,8 @@ export const AppContent = () => (
         </ProtectedRoute>
       }
     >
-      <Route path="/" element={<NoChatSelected/>}/>
-      <Route path="chat/:id" element={<Content/>}/>
-      
+      <Route path="/" element={<NoChatSelected />} />
+      <Route path="chat/:id" element={<Content />} />
     </Route>
     <Route
       path="/settings"
@@ -72,6 +74,39 @@ export const AppContent = () => (
         </ProtectedRoute>
       }
     />
+    <Route
+      path="/discover"
+      element={
+        <ProtectedRoute>
+          <DiscoverPage />
+        </ProtectedRoute>
+      }
+    >
+      <Route
+        path="featured"
+        element={
+          <ProtectedRoute>
+            <DiscoverFeatured />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="people"
+        element={
+          <ProtectedRoute>
+            <DiscoverPeople/>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="groups"
+        element={
+          <ProtectedRoute>
+            <DiscoverGroups />
+          </ProtectedRoute>
+        }
+      />
+    </Route>
     <Route
       path="/profile/:id"
       element={

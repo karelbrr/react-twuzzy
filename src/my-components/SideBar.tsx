@@ -1,4 +1,4 @@
-import { FindNewPeople } from "./FindNewPeople";
+//import { FindNewPeople } from "./FindNewPeople";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, Globe } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -77,10 +77,17 @@ export const SideBar = () => {
       className="h-screen w-[18%]  fixed border-r"
     >
       <div className="flex justify-between">
-        <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">Chats</h3>
-        <FindNewPeople />
+        <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">Home</h3>
+        <Button variant={"outline"} asChild>
+          <Link to={"/discover/featured"} className="mt-5 mr-4">
+            <Globe />
+          </Link>
+        </Button>
+        {/* <FindNewPeople /> */}
       </div>
-
+      <div className=" mt-5">
+        <h4 className="pl-5 text-lg font-semibold">Chats</h4>
+      </div>
       <div className="m-auto w-[90%] mt-4 ">
         {myChats?.map((item) => (
           <Button
@@ -168,6 +175,9 @@ export const SideBar = () => {
           </div>
         )}
         {errorQuery && <ErrorDiv error={errorQuery?.message} />}
+      </div>
+      <div className=" mt-5">
+        <h4 className="pl-5 text-lg font-semibold">Groups</h4>
       </div>
     </motion.section>
   );
