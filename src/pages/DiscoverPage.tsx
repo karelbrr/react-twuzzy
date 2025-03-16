@@ -147,7 +147,7 @@ export const DiscoverPage = () => {
         </div>
       </motion.div>
 
-      <div className="w-3/4">
+      <div className="w-5/6">
         <Outlet />
       </div>
     </section>

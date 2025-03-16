@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/auth/AuthProvider";
-import { SquarePen } from "lucide-react";
+import { Settings, SquarePen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
@@ -98,7 +98,7 @@ export function UpperBar() {
                   ) : (
                     <Button variant="ghost" className="mt-3" asChild>
                       <Link to={"settings/account"}>
-                        <SquarePen />
+                        <Settings />
                       </Link>
                     </Button>
                   )}
@@ -112,16 +112,23 @@ export function UpperBar() {
                     <Skeleton className="w-[250px] h-[20px]  rounded-full" />
                   </div>
                 ) : (
-                  <SheetDescription className="text-justify">
-                    {data?.desc}
-                  </SheetDescription>
+                  <div>
+                    <h4 className="font-semibold opacity-90 ">Description</h4>
+                    <SheetDescription className="text-justify">
+                      {data?.desc}
+                    </SheetDescription>
+                  </div>
                 )}
 
-                <div className=" space-x-2 mt-5">
-                  <h4 className="font-semibold opacity-90">My badges</h4>
-                  {data?.badges.map((badge) => (
-                    <Badge className="mt-1" key={badge.id}>{badge.badges.name}</Badge>
-                  ))}
+                <div className="  mt-5">
+                  <h4 className="font-semibold opacity-90 ">My badges</h4>
+                  <div className="space-y-2 space-x-2">
+                    {data?.badges.map((badge) => (
+                      <Badge className="mt-1" key={badge.id}>
+                        {badge.badges.name}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
                 {errorQuery && (
                   <div className="border border-red-700 mt-5 p-3 text-red-700 rounded-lg">

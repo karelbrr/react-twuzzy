@@ -16,6 +16,7 @@ import { DiscoverPage } from "@/pages/DiscoverPage";
 import { DiscoverFeatured } from "./DiscoverFeatured";
 import { DiscoverPeople } from "./DiscoverPeople";
 import { DiscoverGroups } from "./DiscoverGroups";
+import { InfoPage } from "@/pages/InfoPage";
 
 export const AppContent = () => (
   <Routes>
@@ -94,7 +95,7 @@ export const AppContent = () => (
         path="people"
         element={
           <ProtectedRoute>
-            <DiscoverPeople/>
+            <DiscoverPeople />
           </ProtectedRoute>
         }
       />
@@ -106,6 +107,11 @@ export const AppContent = () => (
           </ProtectedRoute>
         }
       />
+    </Route>
+    <Route path="/info" element={<InfoPage />}>
+      <Route path="news" element={<h1>test</h1>} />
+      <Route path="help" element={<h1>test</h1>} />
+      <Route path="docs" element={<h1>test</h1>} />
     </Route>
     <Route
       path="/profile/:id"

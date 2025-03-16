@@ -26,7 +26,6 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 interface News {
   id: string;
   created_at: string;
@@ -57,7 +56,7 @@ export const NewsPage = () => {
     if (error) throw new Error(error.message);
 
     if (data.length === 0) {
-     navigate(`/news/${Number(id)-1}`)
+      navigate(`/news/${Number(id) - 1}`);
     }
 
     if (count === null || start >= count) {
@@ -80,9 +79,7 @@ export const NewsPage = () => {
   return (
     <section className="w-1/2 m-auto">
       <Helmet>
-        <title>
-          News | Twüzzy
-        </title>
+        <title>News | Twüzzy</title>
       </Helmet>
       <div className="flex justify-between items-baseline mt-10 mb-4 ">
         <h2 className="font-bold text-3xl ">Twüzzy News</h2>
@@ -137,7 +134,7 @@ export const NewsPage = () => {
           </Card>
         ))}
       </div>
-      <Pagination className="mb-10">
+      <Pagination className="mb-10 mt-10">
         <PaginationContent>
           <PaginationItem>
             <Button asChild variant={"ghost"}>
@@ -149,6 +146,18 @@ export const NewsPage = () => {
               >
                 <ChevronLeft className="h-full size-4 mt-0.5 " />
                 Previous
+              </Link>
+            </Button>
+          </PaginationItem>
+          <PaginationItem>
+            <Button asChild variant={"ghost"}>
+              <Link
+                className={`text-sm font-medium flex ${
+                  Number(id) <= 1 ? "pointer-events-none opacity-50" : ""
+                }`}
+                to={"/news/1"}
+              >
+                1
               </Link>
             </Button>
           </PaginationItem>
@@ -171,8 +180,7 @@ export const NewsPage = () => {
             <Button asChild variant={"ghost"}>
               <Link
                 className={`text-sm font-medium flex ${
-                  data &&
-                  data.length < 5 
+                  data && data.length < 5
                     ? "pointer-events-none opacity-50"
                     : ""
                 }`}

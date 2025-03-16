@@ -9,6 +9,8 @@ import { Link, useParams } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Ellipsis, Globe } from "lucide-react";
+import { User, Trash2, Ban } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,14 +96,14 @@ export const SideBar = () => {
             asChild
             key={item.id}
             variant="outline"
-            className={`w-full flex justify-start  h-16 mb-3 ${
-              item.id === id && "opacity-70"
+            className={`w-full flex justify-start rounded-lg  h-16 mb-3 ${
+              item.id === id && "bg-secondary opacity-90"
             }`}
           >
             <Link to={`chat/${item.id}`}>
               <div className="flex w-full items-center justify-between">
                 <div className="flex items-center ">
-                  <Avatar className="size-10 max-h-12 max-w-12 ml-2">
+                  <Avatar className="size-10 max-h-12 max-w-12 ">
                     <AvatarImage
                       src={
                         item.created_by.id === user?.id
@@ -149,15 +151,22 @@ export const SideBar = () => {
                               ? item.chat_with.id
                               : item.created_by.id
                           }`}
+                          className="flex items-center"
                         >
+                          <User className="w-4 h-4 " />
                           Profile
                         </Link>
                       </DropdownMenuItem>
+
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-700 focus:text-red-700">
+
+                      <DropdownMenuItem className="text-red-700 focus:text-red-700 flex items-center">
+                        <Ban className="w-4 h-4 " />
                         Block User
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-700 focus:text-red-700">
+
+                      <DropdownMenuItem className="text-red-700 focus:text-red-700 flex items-center">
+                        <Trash2 className="w-4 h-4 " />
                         Delete Chat
                       </DropdownMenuItem>
                     </DropdownMenuContent>

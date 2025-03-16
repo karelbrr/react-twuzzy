@@ -11,6 +11,13 @@ import { useClipboard } from "./my-hooks/useClipboard";
 import { supabase } from "./my-hooks/createClient";
 import { AnimatePresence, motion } from "framer-motion";
 import useRepliedMessage from "./my-hooks/useRepliedMessage";
+import {
+  Copy,
+  Heart,
+  ThumbsDown,
+  MessageSquareReply,
+  Trash2,
+} from "lucide-react";
 
 interface MessageProps {
   position?: string | "left" | "right";
@@ -68,7 +75,7 @@ const Message: React.FC<MessageProps> = ({
           exit={{ opacity: 0, y: 15, transition: { duration: 0.3 } }}
           className={`inline-block relative rounded-xl ${
             !media_url &&
-            "border px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-500"
+            "border px-4 py-2  bg-zinc-900"
           } max-w-[500px] text-base mx-5 mt-1 ${
             position === "right"
               ? " ml-auto" // zpráva vpravo
@@ -88,9 +95,7 @@ const Message: React.FC<MessageProps> = ({
                   : "absolute top-[-27px]  w-[500px] left-0 max-w-[500px] opacity-70 max-h-6 overflow-hidden"
               }`}
             >
-              
-                <p>Replying to: {repliedMessage?.message}</p>
-             
+              <p>Replying to: {repliedMessage?.message}</p>
             </div>
           )}
 
@@ -116,25 +121,37 @@ const Message: React.FC<MessageProps> = ({
       <ContextMenuContent>
         <ContextMenuLabel>{formatDate(created_at)}</ContextMenuLabel>
         <ContextMenuSeparator />
+
         <ContextMenuItem onClick={() => copyToClipboard(message)}>
+          <Copy className="w-4 h-4 mr-1.5" />
           Copy
         </ContextMenuItem>
+
         {is_liked ? (
           <ContextMenuItem onClick={() => messageOperation(id, false)}>
+            <ThumbsDown className="w-4 h-4 mr-1.5" />
             Remove Like
           </ContextMenuItem>
         ) : (
           <ContextMenuItem onClick={() => messageOperation(id, true)}>
+            <Heart className="w-4 h-4 mr-1.5" />
             Like
           </ContextMenuItem>
         )}
+
         <ContextMenuItem onClick={() => setReplyingTo(id)}>
+          <MessageSquareReply className="w-4 h-4 mr-1.5" />
           Reply
         </ContextMenuItem>
+
         {position === "right" && (
-          <ContextMenuItem className="text-red-500 focus:text-red-600">
-            Delete
-          </ContextMenuItem>
+          <div>
+            <ContextMenuSeparator />
+            <ContextMenuItem className="text-red-700 focus:text-red-700">
+              <Trash2 className="w-4 h-4 mr-1.5" />
+              Delete
+            </ContextMenuItem>
+          </div>
         )}
       </ContextMenuContent>
     </ContextMenu>

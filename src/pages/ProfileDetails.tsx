@@ -82,7 +82,7 @@ export const ProfileDetails = () => {
               <h2 className=" text-3xl font-semibold">
                 {profileDetails?.first_name} {profileDetails?.last_name}
               </h2>
-              <PermissionSettingsInProfileDetails />
+              <PermissionSettingsInProfileDetails first_name={profileDetails?.first_name} last_name={profileDetails?.last_name}/>
             </div>
           )}
           {isLoading || errorQuery ? (
@@ -99,7 +99,7 @@ export const ProfileDetails = () => {
         </div>
       ) : (
         <div className="mt-8">
-          <div className="w-1/2 m-auto min-h-[140px] max-h-[240px]">
+          <div className="w-1/2 m-auto  max-h-[240px]">
             <h3 className="text-2xl font-semibold">Description</h3>
             {isLoading ? (
               <div>
@@ -132,7 +132,7 @@ export const ProfileDetails = () => {
             </div>
           </div>
           {profileDetails?.visible_join_date && (
-            <div className="w-1/2 mt-2 m-auto min-h-[140px] max-h-[240px]">
+            <div className="w-1/2 mt-4 m-auto min-h-[140px] max-h-[240px] ">
               <h3 className="text-2xl font-semibold">Member From</h3>
               {isLoading ? (
                 <Skeleton className="w-20 h-4 mt-1" />

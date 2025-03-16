@@ -63,7 +63,6 @@ export const Content = () => {
     queryFn: () => fetchMessages(id!),
   });
 
-
   useEffect(() => {
     const subscription = supabase
       .channel("realtime:messages")
@@ -158,10 +157,9 @@ export const Content = () => {
                   <h2 className="text-center text-xl font-medium">
                     No Messages Yet
                   </h2>
-                  <p className="text-justify opacity-65">
-                    It seems like there are no messages in this chat yet. Be the
-                    first to start the conversation! Type a message below and
-                    hit send to break the silence. 😊
+                  <p className="text-center opacity-65">
+                    No messages yet! Start the conversation by typing a message
+                    and hitting send. 😊
                   </p>
                 </div>
               </section>
