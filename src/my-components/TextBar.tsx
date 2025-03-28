@@ -1,7 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Send, Paperclip, Laugh, Trash2, Loader2, X } from "lucide-react";
+import {
+  Send,
+  Paperclip,
+  Laugh,
+  Trash2,
+  Loader2,
+  X,
+  Image,
+  File,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { supabase } from "./my-hooks/createClient";
 import { useParams } from "react-router-dom";
@@ -11,6 +20,14 @@ import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import useRepliedMessage from "./my-hooks/useRepliedMessage";
 import { Card } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface FormData {
   message: string;
@@ -38,8 +55,8 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
       const sanitizeFileName = (name: string) => {
         return name
           .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "") 
-          .replace(/\s+/g, "_"); 
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, "_");
       };
 
       const filePath = file
@@ -99,6 +116,15 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
       setReplyingTo(null);
     },
   });
+
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
 
   const onSubmit = (data: FormData) => {
     mutation.mutate({ message: data.message, file });
@@ -163,29 +189,50 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex space-x-3 justify-end pr-10 bg-background"
+        className="w-full flex space-x-3 mt-10 justify-end pr-10 bg-background"
       >
         <Input
           {...register("message", { required: !file })}
-          className="mt-10 w-3/4 text-md"
+          className=" w-3/4 text-md"
           placeholder="Type your message here..."
           disabled={!!file}
         />
-        <div className="mt-10 border flex justify-center items-center px-3 rounded-lg hover:bg-secondary ">
-          <Label htmlFor="file-upload" className="hover:cursor-pointer">
-            <Paperclip className="size-4" />
-          </Label>
-          <Input
-            id="file-upload"
-            type="file"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-        </div>
-        <Button className="mt-10" variant="outline">
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant={"outline"}>
+              <Paperclip />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Media</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              {" "}
+              <div className="">
+                <Label htmlFor="file-upload" className=" flex font-normal">
+                  <Image className="size-4 mr-2" /> Image
+                </Label>
+
+                <Input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept=".png, .jpg, .jpeg"
+                />
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <File />
+              File
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Button className="" variant="outline">
           <Laugh />
         </Button>
-        <Button className="mt-10" type="submit" disabled={mutation.isPending}>
+        <Button className="" type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? <Loader2 className="animate-spin" /> : <Send />}
         </Button>
       </form>
