@@ -10,6 +10,7 @@ import {
   X,
   Image,
   File,
+  AudioLines,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { supabase } from "./my-hooks/createClient";
@@ -21,13 +22,10 @@ import { useMutation } from "@tanstack/react-query";
 import useRepliedMessage from "./my-hooks/useRepliedMessage";
 import { Card } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 interface FormData {
   message: string;
@@ -91,7 +89,7 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
         {
           chat_id: id,
           user_id: user?.id,
-          message: file ? "image" : message,
+          message: file ? "media" : message,
           media_url: fileUrl || null,
           is_read: false,
           is_liked: false,
@@ -117,21 +115,13 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
     },
   });
 
-  const isValidUrl = (url: string) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  };
-
   const onSubmit = (data: FormData) => {
     mutation.mutate({ message: data.message, file });
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
+    console.log("File selected:", selectedFile); // 👈 Debug
     if (selectedFile) {
       setFile(selectedFile);
       event.target.value = "";
@@ -148,7 +138,7 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
       animate={{ opacity: 1, transition: { duration: 0.3 } }}
       className="h-[4%] lg:h-[8%] xl:h-[4%] border-t fixed right-0 w-[82%] bg-background"
     >
-      {file && (
+      {file && file.type.startsWith("image/") && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.3 } }}
@@ -173,10 +163,64 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
         </motion.div>
       )}
 
+      {file &&
+      !file.type.startsWith("image/") &&
+      !file.type.startsWith("audio/") ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 0.3 } }}
+          className={`absolute w-[400px] ${
+            repliedMessage ? "bottom-28" : "bottom-12"
+          } ml-5`}
+        >
+          <div className="bg-card border rounded-xl p-3 py-5 flex items-center">
+            <File className="mr-2" />
+            <span className="text-sm">{file.name}</span>
+            <Button
+              onClick={() => setFile(null)}
+              variant="destructive"
+              className={`absolute size-8 top-[-10px] right-[-10px] ${
+                mutation.isPending && "opacity-70"
+              }`}
+            >
+              <Trash2 />
+            </Button>
+          </div>
+        </motion.div>
+      ) : file && file.type.startsWith("audio/") ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 0.3 } }}
+          className={`absolute w-[600px]  ${
+            repliedMessage ? "bottom-28" : "bottom-12"
+          } ml-5`}
+        >
+          <div className="bg-card border rounded-xl p-3 flex items-center">
+            <AudioLines className="mr-2" />
+            <span className="text-sm">{file.name}</span>
+            <Button
+              onClick={() => setFile(null)}
+              variant="destructive"
+              className={`absolute size-8 top-[-10px] right-[-10px]`}
+            >
+              <Trash2 />
+            </Button>
+            <audio controls className="mt-1 w-full bg-card max-w-[400px] ml-10">
+              <source src={URL.createObjectURL(file)} type={file.type} />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        </motion.div>
+      ) : null}
+
       {repliedMessage && (
         <Card className="absolute  max-w-[700px] bottom-12 ml-5 max-h-24 overflow-hidden flex  py-3 pl-3">
           <p className="text-md m-auto opacity-85">
-            <span className="">Replying to:</span> {repliedMessage.message}
+            {repliedToError ? (
+              repliedToError.message
+            ) : (
+              <span className="">Replying to: {repliedMessage.message}</span>
+            )}
           </p>
           <Button
             variant={"outline"}
@@ -197,37 +241,47 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
           placeholder="Type your message here..."
           disabled={!!file}
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant={"outline"}>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline">
               <Paperclip />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Media</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              {" "}
-              <div className="">
-                <Label htmlFor="file-upload" className=" flex font-normal">
-                  <Image className="size-4 mr-2" /> Image
-                </Label>
+          </PopoverTrigger>
 
+          <PopoverContent className="w-36">
+            <div className="space-y-2">
+              <Label
+                htmlFor="image-upload"
+                className="flex items-center cursor-pointer gap-2 border p-2 hover:bg-zinc-800 transition rounded-lg"
+              >
+                <Image className="size-4" />
+                Image
                 <Input
-                  id="file-upload"
+                  id="image-upload"
                   type="file"
                   onChange={handleFileChange}
                   className="hidden"
                   accept=".png, .jpg, .jpeg"
                 />
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <File />
-              File
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              </Label>
+
+              <Label
+                htmlFor="file-upload"
+                className="flex items-center cursor-pointer gap-2 border p-2 hover:bg-zinc-800 transition rounded-lg"
+              >
+                <File className="size-4" />
+                File
+                <Input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept=".pdf,.docx,.txt,.mp3"
+                />
+              </Label>
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <Button className="" variant="outline">
           <Laugh />

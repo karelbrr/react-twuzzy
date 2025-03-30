@@ -17,7 +17,10 @@ import {
   ThumbsDown,
   MessageSquareReply,
   Trash2,
+  File,
+  AudioLines,
 } from "lucide-react";
+import { useMediaType } from "./my-hooks/useMediaType";
 
 interface MessageProps {
   position?: string | "left" | "right";
@@ -62,6 +65,10 @@ const Message: React.FC<MessageProps> = ({
   const { data: repliedMessage, error: repliedToError } =
     useRepliedMessage(replied_to);
 
+  const mediaType = useMediaType(media_url);
+  const filename = media_url?.split("?")[0].split("/").pop();
+  const cleanName = filename?.split("_").slice(1).join("_");
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -74,8 +81,7 @@ const Message: React.FC<MessageProps> = ({
           }}
           exit={{ opacity: 0, y: 15, transition: { duration: 0.3 } }}
           className={`inline-block relative rounded-xl ${
-            !media_url &&
-            "border px-4 py-2  bg-zinc-900"
+            !media_url && "border px-4 py-2  bg-zinc-900"
           } max-w-[500px] text-base mx-5 mt-1 ${
             position === "right"
               ? " ml-auto" // zpráva vpravo
@@ -83,10 +89,39 @@ const Message: React.FC<MessageProps> = ({
           } ${is_liked && "mb-2"} ${replied_to && "mt-8"}`}
         >
           {media_url ? (
-            <img className="mt-1 rounded-lg" src={media_url} alt="" />
+            <>
+              {mediaType === "image" && media_url && (
+                <img className="mt-1 rounded-lg" src={media_url} alt="Media" />
+              )}
+              {mediaType === "audio" && media_url && (
+                <div className="w-full bg-zinc-900 border rounded-xl">
+                  <h2 className="ml-4 my-4 flex">
+                    <AudioLines className="mr-2" />
+                    {cleanName}
+                  </h2>
+                  <audio controls className="mt-2 w-[300px] m-4">
+                    <source src={media_url} type="audio/mp3" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
+              {mediaType === "file" && media_url && (
+                <div className="bg-zinc-900 border rounded-xl p-3 flex items-center">
+                  <File className="mr-2" />
+                  <a
+                    href={media_url}
+                    target="_blank"
+                    className="text-sm max-w-[300px] hover:underline"
+                  >
+                    {cleanName}
+                  </a>
+                </div>
+              )}
+            </>
           ) : (
             <p>{message}</p>
           )}
+
           {replied_to && (
             <div
               className={`${
