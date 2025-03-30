@@ -122,9 +122,9 @@ export function UpperBar() {
 
                 <div className="  mt-5">
                   <h4 className="font-semibold opacity-90 ">My badges</h4>
-                  <div className="space-y-2 space-x-2">
+                  <div className="space-y-2 ">
                     {data?.badges.map((badge) => (
-                      <Badge className="mt-1" key={badge.id}>
+                      <Badge className="mt-1 mr-2" key={badge.id}>
                         {badge.badges.name}
                       </Badge>
                     ))}

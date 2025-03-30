@@ -21,6 +21,14 @@ import {
   AudioLines,
 } from "lucide-react";
 import { useMediaType } from "./my-hooks/useMediaType";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface MessageProps {
   position?: string | "left" | "right";
@@ -65,9 +73,14 @@ const Message: React.FC<MessageProps> = ({
   const { data: repliedMessage, error: repliedToError } =
     useRepliedMessage(replied_to);
 
+  const getCleanNameFromUrl = (media_url: string | undefined): string => {
+    if (!media_url) return "";
+
+    const filename = media_url.split("?")[0].split("/").pop();
+    return filename?.split("_").slice(1).join("_") || "";
+  };
+
   const mediaType = useMediaType(media_url);
-  const filename = media_url?.split("?")[0].split("/").pop();
-  const cleanName = filename?.split("_").slice(1).join("_");
 
   return (
     <ContextMenu>
@@ -91,13 +104,37 @@ const Message: React.FC<MessageProps> = ({
           {media_url ? (
             <>
               {mediaType === "image" && media_url && (
-                <img className="mt-1 rounded-lg" src={media_url} alt="Media" />
+                <Dialog>
+                  <DialogTrigger>
+                    <img
+                      className="mt-1 rounded-lg"
+                      src={media_url}
+                      alt="Media"
+                    />
+                  </DialogTrigger>
+
+                  <DialogContent className="w-full max-w-6xl h-auto">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {getCleanNameFromUrl(media_url)}
+                      </DialogTitle>
+                      <DialogDescription>Full view of image</DialogDescription>
+                    </DialogHeader>
+                    <div className="flex justify-center">
+                      <img
+                        className="mt-1 rounded-lg max-h-[85vh] object-contain"
+                        src={media_url}
+                        alt="Media"
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
               )}
               {mediaType === "audio" && media_url && (
                 <div className="w-full bg-zinc-900 border rounded-xl">
                   <h2 className="ml-4 my-4 flex">
                     <AudioLines className="mr-2" />
-                    {cleanName}
+                    {getCleanNameFromUrl(media_url)}
                   </h2>
                   <audio controls className="mt-2 w-[300px] m-4">
                     <source src={media_url} type="audio/mp3" />
@@ -113,7 +150,7 @@ const Message: React.FC<MessageProps> = ({
                     target="_blank"
                     className="text-sm max-w-[300px] hover:underline"
                   >
-                    {cleanName}
+                    {getCleanNameFromUrl(media_url)}
                   </a>
                 </div>
               )}
@@ -130,7 +167,12 @@ const Message: React.FC<MessageProps> = ({
                   : "absolute top-[-27px]  w-[500px] left-0 max-w-[500px] opacity-70 max-h-6 overflow-hidden"
               }`}
             >
-              <p>Replying to: {repliedMessage?.message}</p>
+              <p>
+                Replying to:{" "}
+                {repliedMessage?.media_url
+                  ? getCleanNameFromUrl(repliedMessage.media_url)
+                  : repliedMessage?.message}
+              </p>
             </div>
           )}
 

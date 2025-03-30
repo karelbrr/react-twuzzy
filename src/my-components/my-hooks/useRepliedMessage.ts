@@ -4,6 +4,7 @@ import { supabase } from "./createClient";
 interface RepliedToMessageProps {
   id: string;
   message: string;
+  media_url: string;
   replied_to: string | null;
 }
 
@@ -15,14 +16,14 @@ const useRepliedMessage = (replied_to: string | null) => {
 
       const { data, error } = await supabase
         .from("messages")
-        .select("id,message,replied_to")
+        .select("id,message, media_url,replied_to")
         .eq("id", replied_to)
         .single();
 
       if (error) throw error;
       return data;
     },
-    enabled: !!replied_to, 
+    enabled: !!replied_to,
   });
 };
 

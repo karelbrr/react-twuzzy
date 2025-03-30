@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { UserPen } from "lucide-react";
+import { Tag, UserPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { Key } from "lucide-react";
@@ -50,6 +50,16 @@ export const ProfileEdit = () => {
                 <Link to={"/settings/profile"}>
                   <UserPen />
                   Profile
+                </Link>
+              </Button>
+              <Button
+                className={`m-auto w-5/6 flex justify-start ${ location.pathname === "/settings/badges" && "bg-secondary opacity-90"}`}
+                variant={"ghost"}
+                asChild
+              >
+                <Link to={"/settings/badges"}>
+                  <Tag />
+                  Badges
                 </Link>
               </Button>
               <Button

@@ -106,6 +106,13 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
     }
   };
 
+  const getCleanNameFromUrl = (media_url: string | undefined): string => {
+    if (!media_url) return "";
+
+    const filename = media_url.split("?")[0].split("/").pop();
+    return filename?.split("_").slice(1).join("_") || "";
+  };
+
   const mutation = useMutation({
     mutationFn: sendMessage,
     onSuccess: () => {
@@ -219,7 +226,12 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
             {repliedToError ? (
               repliedToError.message
             ) : (
-              <span className="">Replying to: {repliedMessage.message}</span>
+              <span className="">
+                Replying to:{" "}
+                {repliedMessage?.media_url
+                  ? getCleanNameFromUrl(repliedMessage.media_url)
+                  : repliedMessage?.message}
+              </span>
             )}
           </p>
           <Button
