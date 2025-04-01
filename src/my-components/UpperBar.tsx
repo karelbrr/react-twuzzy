@@ -57,7 +57,7 @@ export function UpperBar() {
           <Sheet>
             <SheetTrigger>
               <Avatar className="size-12 max-h-12 max-w-12">
-                <AvatarImage src={data?.avatar} />
+                <AvatarImage src={data?.avatar} className="object-cover w-full h-full"/>
                 <AvatarFallback>
                   {data?.first_name?.substring(0, 1) || ""}
                   {data?.last_name?.substring(0, 1) || ""}

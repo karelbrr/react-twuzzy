@@ -66,7 +66,10 @@ export const ProfileDetails = () => {
             <Skeleton className="size-36 rounded-full" />
           ) : (
             <Avatar className="size-36 ">
-              <AvatarImage src={profileDetails?.avatar} />
+              <AvatarImage
+                src={profileDetails?.avatar}
+                className="object-cover w-full h-full"
+              />
               <AvatarFallback className="text-4xl">
                 {profileDetails?.first_name?.substring(0, 1) || ""}
                 {profileDetails?.last_name?.substring(0, 1) || ""}
@@ -82,7 +85,10 @@ export const ProfileDetails = () => {
               <h2 className=" text-3xl font-semibold">
                 {profileDetails?.first_name} {profileDetails?.last_name}
               </h2>
-              <PermissionSettingsInProfileDetails first_name={profileDetails?.first_name} last_name={profileDetails?.last_name}/>
+              <PermissionSettingsInProfileDetails
+                first_name={profileDetails?.first_name}
+                last_name={profileDetails?.last_name}
+              />
             </div>
           )}
           {isLoading || errorQuery ? (

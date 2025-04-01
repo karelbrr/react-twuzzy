@@ -18,6 +18,7 @@ import { DiscoverPeople } from "./DiscoverPeople";
 import { DiscoverGroups } from "./DiscoverGroups";
 import { InfoPage } from "@/pages/InfoPage";
 import { SettingsBadges } from "./SettingsBadges";
+import { SettingsAvatar } from "./SettingsAvatar";
 
 export const AppContent = () => (
   <Routes>
@@ -56,6 +57,14 @@ export const AppContent = () => (
         element={
           <ProtectedRoute>
             <SettingsProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="avatar"
+        element={
+          <ProtectedRoute>
+            <SettingsAvatar />
           </ProtectedRoute>
         }
       />

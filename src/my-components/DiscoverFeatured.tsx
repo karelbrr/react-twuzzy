@@ -1,12 +1,11 @@
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./my-hooks/createClient";
-import {  useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Error as ErrorDiv } from "./Error";
 import { motion } from "framer-motion";
-
 
 interface User {
   id: string;
@@ -16,12 +15,10 @@ interface User {
   username: string;
 }
 
-
 export const DiscoverFeatured = () => {
   const skeletonCount = 6;
   const skeletonArray = Array(skeletonCount).fill(null);
   const { user } = useAuth();
-  
 
   const fetchUserData = async (): Promise<User[]> => {
     const { data, error } = await supabase
@@ -30,6 +27,7 @@ export const DiscoverFeatured = () => {
       .neq("id", user?.id);
 
     if (error) throw new Error(error.message);
+    ;
     return data;
   };
 
@@ -41,8 +39,6 @@ export const DiscoverFeatured = () => {
     queryKey: ["discoverNewUsers"],
     queryFn: fetchUserData,
   });
-
-  
 
   return (
     <motion.section
@@ -64,7 +60,7 @@ export const DiscoverFeatured = () => {
           skeletonArray.map((_, index) => (
             <div
               key={index}
-              className="flex flex-col justify-center items-center mb-5 px-10 mt-5"
+              className="flex flex-col justify-center items-center mb-5 px-10 "
             >
               <Skeleton className="size-36 rounded-full mt-7 " />
 
@@ -95,7 +91,6 @@ export const DiscoverFeatured = () => {
             </div>
 
             <h3 className="text-sm opacity-65">@{user.username}</h3>
-            
           </div>
         ))}
       </section>
