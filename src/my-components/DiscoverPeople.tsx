@@ -28,7 +28,9 @@ export const DiscoverPeople = () => {
     const { data, error } = await supabase
       .from("profiles")
       .select("id, first_name, last_name, username, avatar")
-      .ilike("username", `%${searchTerm}%`)
+      .or(
+        `username.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`
+      )
       .neq("id", user?.id);
 
     if (error) {
@@ -46,11 +48,11 @@ export const DiscoverPeople = () => {
   } = useQuery({
     queryKey: ["users", searchTerm],
     queryFn: fetchUsers,
-    enabled: !!searchTerm, // Spustí se jen pokud searchTerm není null nebo prázdný
+    enabled: !!searchTerm,
   });
 
   const onSubmit = (data: { searchTerm: string }) => {
-    setSearchTerm(data.searchTerm); // Nastavení hledaného výrazu po submitu
+    setSearchTerm(data.searchTerm);
   };
 
   return (
@@ -92,7 +94,6 @@ export const DiscoverPeople = () => {
           ))}
         </div>
       ) : users && users.length > 0 ? (
-        // Výpis uživatelů, pokud data existují
         <div>
           <div className="grid grid-cols-6 gap-4">
             {users.map((user) => (
@@ -122,12 +123,20 @@ export const DiscoverPeople = () => {
             ))}
           </div>
         </div>
-      ) : (
-        // Pokud nejsou žádná data
-        <div className="w-1/3 mt-5 mx-auto text-center">
-          <h2 className="text-xl font-semibold">No Results Found</h2>
+      ) : searchTerm ? (
+        // Pokud je searchTerm vyplněný, ale žádné výsledky
+        <div className="w-2/4 mt-5 mx-auto text-center">
+          <h2 className="text-xl font-semibold">No Results</h2>
           <p className="text-muted-foreground">
-            No users match your search. Try searching for someone else!
+            Your search doesn’t match any name or username.
+          </p>
+        </div>
+      ) : (
+        // Úvodní obrazovka před hledáním
+        <div className="w-2/4 mt-5 mx-auto text-center">
+          <h2 className="text-xl font-semibold">Start Searching</h2>
+          <p className="text-muted-foreground">
+            Find and connect with people by searching their name or username.
           </p>
         </div>
       )}

@@ -22,6 +22,8 @@ import { useAuth } from "@/auth/AuthProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
+import { Check, X, User, Ban } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export interface ChatRequest {
   id: string;
@@ -149,7 +151,9 @@ export function MyChatRequests() {
             users who want to connect with you.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[200px] w-full">
+
+        <ScrollArea className="min-h-[100px] max-h-[200px] w-full ">
+          <h3 className="font-semibold">Chats</h3>
           {errorQuery && (
             <div className="border border-red-700 mt-2 p-3 text-red-700 rounded-lg">
               <h4>Error</h4>
@@ -181,19 +185,28 @@ export function MyChatRequests() {
                     <DropdownMenuItem
                       onClick={() => sendAcceptRequest(item.id)}
                     >
-                      Accept Request
+                      <Check size={16} /> Accept Request
                     </DropdownMenuItem>
-                    <DropdownMenuItem>Decline Request</DropdownMenuItem>
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <X size={16} /> Decline Request
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to={`/profile/${item.profiles.id}`}>
+                        <User size={16} /> Profile
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                      Block
+                      <Ban size={16} /> Block
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             ))}
           </div>
+        </ScrollArea>
+        <ScrollArea className="min-h-[100px] max-h-[200px] w-full ">
+          <h3 className="font-semibold">Groups</h3>
         </ScrollArea>
       </DialogContent>
     </Dialog>

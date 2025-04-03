@@ -45,11 +45,12 @@ export const DiscoverFeatured = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.3 } }}
     >
+      
       <h2 className="font-bold text-2xl mx-10 mt-10 mb-1">Featured People</h2>
       <p className="mx-10 mb-5 text-muted-foreground">
         Connect with popular and recommended users!
       </p>
-      <section className="flex overflow-auto ml-5">
+      <section className="flex overflow-auto ml-5 min-h-[240px]">
         {errorQuery && (
           <div className="ml-10">
             <ErrorDiv error={errorQuery?.message} />

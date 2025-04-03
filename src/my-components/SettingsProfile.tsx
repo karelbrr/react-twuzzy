@@ -258,7 +258,7 @@ export const SettingsProfile = () => {
                 </Label>
                 <Textarea
                   id="desc"
-                  className={`min-h-[310px] text-justify ${
+                  className={`xl:min-h-[310px] text-justify ${
                     errors.desc ? "border-red-500 " : "border-secondary"
                   }`}
                   {...register("desc", {

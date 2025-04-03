@@ -104,7 +104,7 @@ export function UpperBar() {
                   )}
                 </div>
               </SheetHeader>
-              <div className="mt-5 h-5/6">
+              <div className="mt-5 lg:h-[80%] xl:h-5/6">
                 {isLoading || errorQuery ? (
                   <div className="space-y-2">
                     <Skeleton className="w-[330px] h-[20px]  rounded-full" />

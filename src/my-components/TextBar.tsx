@@ -257,7 +257,7 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex space-x-3 mt-10 justify-end pr-10 bg-background"
+        className="w-full flex space-x-3 lg:mt-6 xl:mt-10 justify-end pr-10 bg-background"
       >
         <Input
           {...register("message", { required: !file })}
