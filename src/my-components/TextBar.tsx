@@ -97,6 +97,18 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
         },
       ]);
 
+      const { error: updateTimeError } = await supabase
+        .from("chats")
+        .update({ updated_at: new Date().toISOString() }) 
+        .eq("id", id); 
+
+      if (updateTimeError) {
+        console.error(
+          "Chyba při aktualizaci updated_at:",
+          updateTimeError.message
+        );
+      }
+
       if (messageError) {
         throw new Error(`Error inserting message: ${messageError.message}`);
       }

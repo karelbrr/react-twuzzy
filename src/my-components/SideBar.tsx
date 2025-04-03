@@ -4,13 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./my-hooks/createClient";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Ellipsis, Globe } from "lucide-react";
 import { User, Trash2, Ban } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useEffect } from "react";
 
 interface Chat {
   id: string;
@@ -42,6 +42,8 @@ interface Chat {
 export const SideBar = () => {
   const { user } = useAuth();
   const { id } = useParams();
+  const queryClient = useQueryClient();
+
 
   const fetchChats = async (): Promise<Chat[]> => {
     const { data, error } = await supabase
@@ -54,7 +56,8 @@ export const SideBar = () => {
   `
       )
       .eq("is_started", true)
-      .or(`created_by.eq.${user?.id},chat_with.eq.${user?.id}`);
+      .or(`created_by.eq.${user?.id},chat_with.eq.${user?.id}`)
+      .order("updated_at", { ascending: false });
 
     if (error) {
       throw new Error(error.message);
@@ -71,6 +74,72 @@ export const SideBar = () => {
     queryKey: ["fetchChats"],
     queryFn: fetchChats,
   });
+
+  useEffect(() => {
+    const subscription = supabase
+      .channel("realtime:chats")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "chats" },
+        (payload) => {
+          console.log("Realtime event:", payload);
+        }
+      )
+
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "chats" },
+        (payload) => {
+          const newChat = payload.new as Chat;
+
+          if (
+            (newChat.created_by === user?.id ||
+              newChat.chat_with === user?.id) &&
+            newChat.is_started === true
+          ) {
+            queryClient.setQueryData<Chat[]>(["fetchChats"], (oldData) => [
+              ...(oldData || []),
+              newChat,
+            ]);
+            console.log("test update");
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "chats" },
+        (payload) => {
+          const updatedChat = payload.new as Chat;
+          if (
+            updatedChat.created_by === user?.id ||
+            updatedChat.chat_with === user?.id
+          ) {
+            queryClient.setQueryData<Chat[]>(["fetchChats"], (oldData) =>
+              oldData?.map((chat) =>
+                chat.id === updatedChat.id ? updatedChat : chat
+              )
+            );
+            console.log("test update");
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "chats" },
+        (payload) => {
+          queryClient.setQueryData<Chat[]>(
+            ["fetchChats"],
+            (oldData) =>
+              oldData?.filter((chat) => chat.id !== payload.old.id) || []
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [queryClient, user?.id]);
 
   return (
     <motion.section

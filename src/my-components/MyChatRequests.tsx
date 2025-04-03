@@ -19,8 +19,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect } from "react";
 
 export interface ChatRequest {
   id: string;
@@ -31,30 +32,29 @@ export interface ChatRequest {
   chat_with: string;
 }
 
-export function MyChatRequests({}) {
+export function MyChatRequests() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  // 🔹 Načtení chat requestů
   const fetchChatRequests = async () => {
     const { data, error } = await supabase
       .from("chats")
       .select(
         `
-      *,
-      profiles!created_by (
-        id,
-        first_name,
-        last_name,
-        avatar
-      )
-    `
+        *,
+        profiles!created_by (
+          id,
+          first_name,
+          last_name,
+          avatar
+        )
+      `
       )
       .eq("is_started", false)
       .eq("chat_with", user?.id);
 
-    if (error) {
-      throw new Error(error.message);
-    }
-
-   
+    if (error) throw new Error(error.message);
 
     return data;
   };
@@ -68,47 +68,77 @@ export function MyChatRequests({}) {
     queryFn: fetchChatRequests,
   });
 
+  // 🔹 Funkce pro akceptaci requestu
   const acceptRequest = async (chatId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("chats")
-        .update({ is_started: true })
-        .eq("id", chatId);
+    const { data, error } = await supabase
+      .from("chats")
+      .update({ is_started: true })
+      .eq("id", chatId);
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      console.log("Chat request accepted", data);
-      return data;
-      ;
-
-    } catch (error) {
-      console.error("Error accepting request:", error);
-      throw error;
-    }
+    if (error) throw new Error(error.message);
+    return data;
   };
-  const { mutate, isPending, error } = useMutation({
+
+  // 🔹 Mutace s invalidací cache
+  const { mutate, isPending } = useMutation({
     mutationFn: acceptRequest,
-    onError: () => {
-      console.log(error);
-
-    },
+    onError: () => console.log("error"),
     onSuccess: () => {
-      console.log("test");
-
-    }
+      queryClient.invalidateQueries({ queryKey: ["chatRequests"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchChats"] });
+    },
   });
 
   const sendAcceptRequest = (chatId: string) => {
     mutate(chatId);
   };
 
+  // 🔹 Realtime subscription pro sledování změn
+  useEffect(() => {
+    const subscription = supabase
+      .channel("realtime:chats")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "chats" },
+        () => {
+          queryClient.invalidateQueries(["chatRequests"]);
+          queryClient.invalidateQueries(["fetchChats"]);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "chats" },
+        () => {
+          queryClient.invalidateQueries(["chatRequests"]);
+          queryClient.invalidateQueries(["fetchChats"]);
+          console.log("update");
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "chats" },
+        () => {
+          queryClient.invalidateQueries(["chatRequests"]);
+          queryClient.invalidateQueries(["fetchChats"]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [queryClient, user?.id]); // Přidáno user?.id jako závislost
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="">
+        <Button variant="ghost" className="relative">
           <MailQuestion />
+          {myRequestsData && myRequestsData.length > 0 ? (
+            <div className="absolute bottom-1 left-2 w-4 h-4 bg-white text-black rounded-full flex items-center justify-center text-xs">
+              <p>{myRequestsData.length}</p>
+            </div>
+          ) : null}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -148,7 +178,11 @@ export function MyChatRequests({}) {
                       </p>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                     <DropdownMenuItem onClick={() => sendAcceptRequest(item.id)}>Accept Request</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => sendAcceptRequest(item.id)}
+                    >
+                      Accept Request
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Decline Request</DropdownMenuItem>
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuSeparator />
