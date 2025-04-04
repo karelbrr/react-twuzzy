@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SquarePen } from "lucide-react";
+import { Users } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -46,8 +46,8 @@ export const CreateGroup = () => {
     <section>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant={"outline"} className="mt-5 mr-2">
-            <SquarePen />
+          <Button variant={"outline"} className=" mr-2 w-full">
+            <Users /> Create Group
           </Button>
         </DialogTrigger>
         <DialogContent>
