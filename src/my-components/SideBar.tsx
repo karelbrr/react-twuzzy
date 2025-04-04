@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CirclePlus, Ellipsis, Globe, SquarePen } from "lucide-react";
+import {  Ellipsis, Globe } from "lucide-react";
 import { User, Trash2, Ban } from "lucide-react";
 import {
   DropdownMenu,
@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useEffect } from "react";
+import { CreateGroup } from "./CreateGroup";
 
 interface Chat {
   id: string;
@@ -148,9 +149,7 @@ export const SideBar = () => {
     >
       <div className="flex justify-between">
         <h3 className=" font-bold text-2xl m-auto w-4/5  mt-5 ml-5">Home</h3>
-        <Button variant={"outline"} className="mt-5 mr-2">
-          <SquarePen />
-        </Button>
+        <CreateGroup/>
         <Button variant={"outline"} asChild>
           <Link to={"/discover/featured"} className="mt-5 mr-4">
             <Globe />

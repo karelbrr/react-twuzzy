@@ -154,7 +154,7 @@ export const Content = () => {
             {messages?.length === 0 && (
               <section className="w-full flex justify-center">
                 <div className="w-1/2 opacity-70 ">
-                  <h2 className="text-center text-xl font-medium">
+                  <h2 className="text-center text-xl ">
                     No Messages Yet
                   </h2>
                 </div>
