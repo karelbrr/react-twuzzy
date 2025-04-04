@@ -271,14 +271,11 @@ export const SettingsAvatar = () => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-
-            <Button
-              variant={"outline"}
-              onClick={() => setFile(null)}
-              disabled={!file}
-            >
-              Reset Chosen Avatar
-            </Button>
+            {file && (
+              <Button variant={"outline"} onClick={() => setFile(null)}>
+                Reset Chosen Avatar
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>

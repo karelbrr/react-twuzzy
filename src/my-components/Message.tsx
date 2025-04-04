@@ -82,6 +82,17 @@ const Message: React.FC<MessageProps> = ({
 
   const mediaType = useMediaType(media_url);
 
+  const isUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -108,7 +119,7 @@ const Message: React.FC<MessageProps> = ({
                   <DialogTrigger>
                     <img
                       className="mt-1 rounded-lg"
-                      src={media_url}
+                      src={media_url ? media_url : message}
                       alt="Media"
                     />
                   </DialogTrigger>
@@ -130,6 +141,7 @@ const Message: React.FC<MessageProps> = ({
                   </DialogContent>
                 </Dialog>
               )}
+[]
               {mediaType === "audio" && media_url && (
                 <div className="w-full bg-zinc-900 border rounded-xl">
                   <h2 className="ml-4 my-4 flex">
@@ -156,7 +168,15 @@ const Message: React.FC<MessageProps> = ({
               )}
             </>
           ) : (
-            <p>{message}</p>
+            <p>
+              {isUrl(message) ? (
+                <a href={message} className="text-blue-500" target="_blank">
+                  {message}
+                </a>
+              ) : (
+                message
+              )}
+            </p>
           )}
 
           {replied_to && (

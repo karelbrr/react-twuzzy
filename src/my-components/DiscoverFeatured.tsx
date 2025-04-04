@@ -50,7 +50,7 @@ export const DiscoverFeatured = () => {
       <p className="mx-10 mb-5 text-muted-foreground">
         Connect with popular and recommended users!
       </p>
-      <section className="flex overflow-auto ml-5 min-h-[240px]">
+      <section className="flex overflow-auto ml-5 min-h-[250px]">
         {errorQuery && (
           <div className="ml-10">
             <ErrorDiv error={errorQuery?.message} />

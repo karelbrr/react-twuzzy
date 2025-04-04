@@ -95,7 +95,6 @@ export function MyChatRequests() {
     mutate(chatId);
   };
 
-  // 🔹 Realtime subscription pro sledování změn
   useEffect(() => {
     const subscription = supabase
       .channel("realtime:chats")
@@ -152,7 +151,7 @@ export function MyChatRequests() {
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="min-h-[100px] max-h-[200px] w-full ">
+        <ScrollArea className=" max-h-[200px] w-full ">
           <h3 className="font-semibold">Chats</h3>
           {errorQuery && (
             <div className="border border-red-700 mt-2 p-3 text-red-700 rounded-lg">
@@ -205,7 +204,7 @@ export function MyChatRequests() {
             ))}
           </div>
         </ScrollArea>
-        <ScrollArea className="min-h-[100px] max-h-[200px] w-full ">
+        <ScrollArea className=" max-h-[200px] w-full ">
           <h3 className="font-semibold">Groups</h3>
         </ScrollArea>
       </DialogContent>

@@ -153,14 +153,10 @@ export const Content = () => {
 
             {messages?.length === 0 && (
               <section className="w-full flex justify-center">
-                <div className="w-1/2 opacity-70 mt-4">
+                <div className="w-1/2 opacity-70 ">
                   <h2 className="text-center text-xl font-medium">
                     No Messages Yet
                   </h2>
-                  <p className="text-center opacity-65">
-                    No messages yet! Start the conversation by typing a message
-                    and hitting send. 😊
-                  </p>
                 </div>
               </section>
             )}
