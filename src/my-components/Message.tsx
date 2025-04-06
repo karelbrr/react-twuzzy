@@ -141,7 +141,7 @@ const Message: React.FC<MessageProps> = ({
                   </DialogContent>
                 </Dialog>
               )}
-[]
+
               {mediaType === "audio" && media_url && (
                 <div className="w-full bg-zinc-900 border rounded-xl">
                   <h2 className="ml-4 my-4 flex">
@@ -170,7 +170,7 @@ const Message: React.FC<MessageProps> = ({
           ) : (
             <p>
               {isUrl(message) ? (
-                <a href={message} className="text-blue-500" target="_blank">
+                <a href={message} className="text-blue-500 hover:underline" target="_blank">
                   {message}
                 </a>
               ) : (

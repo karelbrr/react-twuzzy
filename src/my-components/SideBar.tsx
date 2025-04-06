@@ -25,6 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { GroupList } from "./GroupComponents/GroupList";
 
 interface Chat {
   id: string;
@@ -161,7 +162,7 @@ export const SideBar = () => {
               <SquarePen />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="max-w-[200px]">
+          <PopoverContent className="max-w-[200px] p-0">
             <CreateGroup />
           </PopoverContent>
         </Popover>
@@ -191,6 +192,7 @@ export const SideBar = () => {
                 <div className="flex items-center ">
                   <Avatar className="size-10 max-h-12 max-w-12 ">
                     <AvatarImage
+                      className="object-cover w-full h-full"
                       src={
                         item.created_by.id === user?.id
                           ? item.chat_with.avatar
@@ -273,6 +275,7 @@ export const SideBar = () => {
       </div>
       <div className=" mt-5">
         <h4 className="pl-5 text-lg font-semibold">Groups</h4>
+        <GroupList />
       </div>
     </motion.section>
   );

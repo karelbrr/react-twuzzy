@@ -13,13 +13,13 @@ import {
   AudioLines,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { supabase } from "./my-hooks/createClient";
+import { supabase } from "../my-hooks/createClient";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/auth/AuthProvider";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
-import useRepliedMessage from "./my-hooks/useRepliedMessage";
+import useRepliedMessage from "../my-hooks/useRepliedMessage";
 import { Card } from "@/components/ui/card";
 import {
   Popover,
@@ -36,12 +36,11 @@ interface Props {
   setReplyingTo: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
+export const GroupTextBar = ({ replyingTo, setReplyingTo }: Props) => {
   const { register, handleSubmit, reset } = useForm<FormData>();
   const { id } = useParams();
   const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
-  
 
   const sendMessage = async ({
     message,
@@ -86,22 +85,23 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
         fileUrl = signedUrlData.signedUrl;
       }
 
-      const { error: messageError } = await supabase.from("messages").insert([
-        {
-          chat_id: id,
-          user_id: user?.id,
-          message: file ? "media" : message,
-          media_url: fileUrl || null,
-          is_read: false,
-          is_liked: false,
-          replied_to: replyingTo,
-        },
-      ]);
+      const { error: messageError } = await supabase
+        .from("group_messages")
+        .insert([
+          {
+            group_id: id,
+            user_id: user?.id,
+            message: file ? "media" : message,
+            media_url: fileUrl || null,
+            is_liked: false,
+            replied_to: replyingTo,
+          },
+        ]);
 
       const { error: updateTimeError } = await supabase
-        .from("chats")
-        .update({ updated_at: new Date().toISOString() }) 
-        .eq("id", id); 
+        .from("groups")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("id", id);
 
       if (updateTimeError) {
         console.error(

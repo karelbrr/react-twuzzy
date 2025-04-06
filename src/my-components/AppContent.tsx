@@ -19,6 +19,7 @@ import { DiscoverGroups } from "./DiscoverGroups";
 import { InfoPage } from "@/pages/InfoPage";
 import { SettingsBadges } from "./SettingsBadges";
 import { SettingsAvatar } from "./SettingsAvatar";
+import { GroupContent } from "./GroupComponents/GroupContent";
 
 export const AppContent = () => (
   <Routes>
@@ -35,6 +36,7 @@ export const AppContent = () => (
     >
       <Route path="/" element={<NoChatSelected />} />
       <Route path="chat/:id" element={<Content />} />
+      <Route path="group/:id" element={<GroupContent />} />
     </Route>
     <Route
       path="/settings"

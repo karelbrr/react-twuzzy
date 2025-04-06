@@ -69,7 +69,7 @@ export const CreateGroup = () => {
                     : "Group Name"
                 }
                 {...register("group_name", { required: true })}
-                className={`${errors.group_name && "border-red-500 placeholder:text-red-500"}`}
+                className={`${errors.group_name && "border-red-700 placeholder:text-red-700"}`}
               />
             </div>
             <div className="grid w-full max-w-full items-center gap-1.5">
@@ -84,7 +84,7 @@ export const CreateGroup = () => {
                       : "Group Name"
                   }
                 {...register("description", { required: true })}
-                className={`${errors.description && "border-red-500 placeholder:text-red-500"}`}
+                className={`${errors.description && "border-red-700 placeholder:text-red-700"}`}
 
               />
             </div>
