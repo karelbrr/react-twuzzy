@@ -11,10 +11,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getProfileData } from "@/my-components/my-hooks/getProfileData";
 import { User } from "src/my-components/types.tsx";
 import { Helmet } from "react-helmet-async";
+import { useAuth } from "@/auth/AuthProvider";
 
 export const ProfileDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const goBack = () => {
     navigate(-1);
@@ -85,10 +87,12 @@ export const ProfileDetails = () => {
               <h2 className=" text-3xl font-semibold">
                 {profileDetails?.first_name} {profileDetails?.last_name}
               </h2>
-              <PermissionSettingsInProfileDetails
-                first_name={profileDetails?.first_name}
-                last_name={profileDetails?.last_name}
-              />
+              {user?.id !== id && (
+                <PermissionSettingsInProfileDetails
+                  first_name={profileDetails?.first_name}
+                  last_name={profileDetails?.last_name}
+                />
+              )}
             </div>
           )}
           {isLoading || errorQuery ? (
@@ -99,7 +103,7 @@ export const ProfileDetails = () => {
         </div>
       </div>
       <Separator className="w-1/2 m-auto mt-8" />
-      {profileDetails?.is_private ? (
+      {profileDetails?.is_private && user?.id !== id ? (
         <div className="flex justify-center mt-4 opacity-70">
           <h2 className="font-medium">This account is private</h2>
         </div>
@@ -150,7 +154,7 @@ export const ProfileDetails = () => {
             </div>
           )}
         </div>
-      )}
+      ) }
     </section>
   );
 };

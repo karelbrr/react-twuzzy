@@ -20,6 +20,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { supabase } from "./my-hooks/createClient";
+import { toast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/auth/AuthProvider";
 
 type Inputs = {
   group_name: string;
@@ -29,6 +33,44 @@ type Inputs = {
 };
 
 export const CreateGroup = () => {
+  const { user } = useAuth();
+  const addGroup = async (data: Inputs) => {
+    const { data: chat, error: chatError } = await supabase
+      .from("groups")
+      .insert([
+        {
+          created_by: user?.id,
+          updated_at: new Date(),
+          ...data,
+        },
+      ]);
+
+    if (chatError) {
+      console.error("Error creating chat:", chatError.message);
+      throw new Error(chatError.message);
+    }
+    return { chat };
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: addGroup,
+    onSuccess: () => {
+      toast({
+        title: "Group Created",
+        description: "Your group has been created successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        description: "There was an error creating the group.",
+      });
+    },
+  });
+
+  const handleFinish = (data: Inputs) => {
+    mutate(data);
+  };
   const {
     register,
     handleSubmit,
@@ -40,7 +82,7 @@ export const CreateGroup = () => {
       is_public: false,
     },
   });
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = (data) => handleFinish(data);
 
   return (
     <section>
@@ -64,12 +106,12 @@ export const CreateGroup = () => {
                 type="text"
                 id="name"
                 placeholder={
-                  errors.group_name
-                    ? "This field is required"
-                    : "Group Name"
+                  errors.group_name ? "This field is required" : "Group Name"
                 }
                 {...register("group_name", { required: true })}
-                className={`${errors.group_name && "border-red-700 placeholder:text-red-700"}`}
+                className={`${
+                  errors.group_name && "border-red-700 placeholder:text-red-700"
+                }`}
               />
             </div>
             <div className="grid w-full max-w-full items-center gap-1.5">
@@ -77,15 +119,14 @@ export const CreateGroup = () => {
               <Input
                 type="text"
                 id="desc"
-               
                 placeholder={
-                    errors.description
-                      ? "This field is required"
-                      : "Group Name"
-                  }
+                  errors.description ? "This field is required" : "Group Name"
+                }
                 {...register("description", { required: true })}
-                className={`${errors.description && "border-red-700 placeholder:text-red-700"}`}
-
+                className={`${
+                  errors.description &&
+                  "border-red-700 placeholder:text-red-700"
+                }`}
               />
             </div>
             <div className="grid w-full max-w-full items-center gap-1.5">

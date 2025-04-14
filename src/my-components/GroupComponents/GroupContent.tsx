@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import Message from "../Message";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { motion } from "framer-motion";
@@ -8,7 +8,6 @@ import { Error as ErrorDiv } from "../Error";
 import { useState } from "react";
 import { GroupTextBar } from "./GroupTextBar";
 import GroupMessage from "./GroupMessage";
-
 
 interface Message {
   id: string;
@@ -60,6 +59,14 @@ export const GroupContent = () => {
             </div>
           )}
           <div className="flex flex-col">
+            {messages?.length === 0 && (
+              <section className="w-full flex justify-center mt-5">
+                <div className="w-1/2 opacity-70 ">
+                  <h2 className="text-center text-xl ">No Messages Yet</h2>
+                  <p></p>
+                </div>
+              </section>
+            )}
             {messages?.map((message) => (
               <GroupMessage
                 key={message.id}

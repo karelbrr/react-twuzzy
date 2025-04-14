@@ -20,6 +20,7 @@ import { InfoPage } from "@/pages/InfoPage";
 import { SettingsBadges } from "./SettingsBadges";
 import { SettingsAvatar } from "./SettingsAvatar";
 import { GroupContent } from "./GroupComponents/GroupContent";
+import { GroupSettings } from "@/pages/GroupSettings";
 
 export const AppContent = () => (
   <Routes>
@@ -35,8 +36,30 @@ export const AppContent = () => (
       }
     >
       <Route path="/" element={<NoChatSelected />} />
-      <Route path="chat/:id" element={<Content />} />
-      <Route path="group/:id" element={<GroupContent />} />
+      <Route
+        path="chat/:id"
+        element={
+          <ProtectedRoute>
+            <Content />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="group/:id"
+        element={
+          <ProtectedRoute>
+            <GroupContent />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="group/:id/settings"
+        element={
+          <ProtectedRoute>
+            <GroupSettings />
+          </ProtectedRoute>
+        }
+      />
     </Route>
     <Route
       path="/settings"

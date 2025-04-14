@@ -103,9 +103,11 @@ export const GroupList = () => {
                    <GroupShowPeople    group_id={group.id} created_by={group.created_by} />
 
                     {group.created_by === user?.id && (
-                      <DropdownMenuItem>
-                        <Settings className="w-4 h-4 " />
-                        Settings
+                      <DropdownMenuItem asChild>
+                        <Link to={`/group/${group.id}/settings`} className="flex items-center">
+                          <Settings className="w-4 h-4" />
+                          Settings
+                        </Link> 
                       </DropdownMenuItem>
                     )}
 

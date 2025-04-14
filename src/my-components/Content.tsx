@@ -8,6 +8,8 @@ import { useAuth } from "@/auth/AuthProvider";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Error as ErrorDiv } from "./Error";
+import { Button } from "@/components/ui/button";
+import { ChevronUp } from "lucide-react";
 
 interface Message {
   id: string;
@@ -30,6 +32,7 @@ export const Content = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [isNearBottom, setIsNearBottom] = useState(true);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  // const [offset, setOffset] = useState<number>(1);
 
   const handleScroll = () => {
     if (!messagesContainerRef.current) {
@@ -45,18 +48,23 @@ export const Content = () => {
     setIsNearBottom(distanceFromBottom < threshold);
   };
 
-  const fetchMessages = async (chatId: string): Promise<Message[]> => {
+  const fetchMessages = async (
+    chatId: string
+    // offset: number,
+    // limit: number = 30
+  ): Promise<Message[]> => {
     const { data, error } = await supabase
       .from("messages")
       .select("*")
       .eq("chat_id", chatId)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: false });
+    // .range(0, offset * limit - 1);
 
     if (error) {
       throw new Error(error.message);
     }
 
-    return data;
+    return data.reverse();
   };
 
   const { data: messages, error } = useQuery<Message[], Error>({
@@ -117,7 +125,11 @@ export const Content = () => {
     if (isNearBottom) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, isNearBottom]);
+
+  // useEffect(() => {
+  //   setOffset(1);
+  // }, [id]);
 
   return (
     <div className="h-[80%] lg:h-[72] xl:h-[80%] w-[82%] mt-24 ">
@@ -132,6 +144,19 @@ export const Content = () => {
           onScroll={handleScroll}
         >
           <ProfileDescInContent />
+          {/* {messages?.length >= 30 && (
+            <div className="flex justify-center">
+              {" "}
+              <Button
+                onClick={() => setOffset(offset + 1)}
+                className="w-1/12 text-xs rounded-xl"
+                variant={"outline"}
+              >
+                <ChevronUp />
+                Load more
+              </Button>
+            </div>
+          )} */}
           {error && (
             <div className="w-3/4 mx-auto">
               <ErrorDiv error={error?.message} />

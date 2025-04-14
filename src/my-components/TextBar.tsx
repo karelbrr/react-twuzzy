@@ -56,7 +56,7 @@ export const TextBar = ({ replyingTo, setReplyingTo }: Props) => {
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
           .replace(/\s+/g, "_");
-      };
+      }; 
 
       const filePath = file
         ? `${id}/${Date.now()}_${sanitizeFileName(file.name)}`

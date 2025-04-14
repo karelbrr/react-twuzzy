@@ -1,4 +1,4 @@
-import { Error as ErrorDiv } from './Error';
+import { Error as ErrorDiv } from "./Error";
 import { SquarePen } from "lucide-react";
 import {
   Dialog,
@@ -103,7 +103,7 @@ export function FindNewPeople() {
         variant: "destructive",
         description: "There was an error while sending request.",
       });
-    }
+    },
   });
 
   const handleFinish = (oppositeUserId: string) => {
@@ -113,16 +113,16 @@ export function FindNewPeople() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-5 w-1/5 mr-4 " variant="outline">
-          <SquarePen />
+        <Button className=" w-1/2 " variant="outline">
+          Add User
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Discover new people to start chatting with.</DialogTitle>
+          <DialogTitle>Discover people to add to your group</DialogTitle>
           <DialogDescription>
-            Discover and chat with new people around you to expand your network
-            and start engaging conversations
+            Find and invite new members to your group to collaborate, share
+            ideas, and stay connected.
           </DialogDescription>
         </DialogHeader>
         <div>
@@ -133,9 +133,7 @@ export function FindNewPeople() {
                 <CommandEmpty>No people found. Please try again.</CommandEmpty>
               )}
               <CommandGroup className="mt-1">
-                {errorQuery && (
-                  <ErrorDiv  error={errorQuery?.message}/>
-                )}
+                {errorQuery && <ErrorDiv error={errorQuery?.message} />}
                 {isLoading && <Skeleton className="w-full h-6" />}
                 {data?.map((item) => (
                   <CommandItem key={item.id} asChild>
@@ -167,7 +165,9 @@ export function FindNewPeople() {
                             </DropdownMenuItem>
                           )}
 
-                          <DropdownMenuItem asChild><Link to={`/profile/${item.id}`}>Profile</Link></DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={`/profile/${item.id}`}>Profile</Link>
+                          </DropdownMenuItem>
 
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-red-700 focus:text-red-700">
