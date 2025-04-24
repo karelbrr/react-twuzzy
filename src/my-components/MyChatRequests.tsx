@@ -24,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 import { Check, X, User, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
+import { GroupRequest } from "./GroupComponents/GroupRequest";
 
 export interface ChatRequest {
   id: string;
@@ -206,6 +207,7 @@ export function MyChatRequests() {
         </ScrollArea>
         <ScrollArea className=" max-h-[200px] w-full ">
           <h3 className="font-semibold">Groups</h3>
+          <GroupRequest />
         </ScrollArea>
       </DialogContent>
     </Dialog>

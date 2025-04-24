@@ -1,5 +1,5 @@
 import { Error as ErrorDiv } from "./Error";
-import { SquarePen } from "lucide-react";
+import { Send, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -32,24 +32,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface User {
   id: string;
   first_name: string;
   last_name: string;
 }
-interface Chat {
-  id?: string;
-  updated_at: string;
-  created_by: string | undefined;
-  chat_with: string;
-  is_started: boolean;
+interface GroupRequest {
+  joined_at: string;
+  is_joined: boolean;
+  user_id: string | undefined;
+  group_id: string | undefined;
 }
 
 export function FindNewPeople() {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { id } = useParams();
   const fetchUserData = async (): Promise<User[]> => {
     const { data, error } = await supabase
       .from("profiles")
@@ -65,37 +65,37 @@ export function FindNewPeople() {
     error: errorQuery,
     isLoading,
   } = useQuery<User[], Error>({
-    queryKey: ["findNewUsers"],
+    queryKey: ["findNewUsersForGroup"],
     queryFn: fetchUserData,
   });
 
-  const CreateChatRequest = async (oppositeUserId: string) => {
-    const chatData: Chat = {
-      updated_at: new Date().toISOString(),
-      is_started: false,
-      created_by: user?.id,
-      chat_with: oppositeUserId,
+  const CreateGroupRequest = async (targetUserId: string) => {
+    const chatData: GroupRequest = {
+      joined_at: new Date().toISOString(),
+      is_joined: false,
+      user_id: targetUserId,
+      group_id: id,
     };
 
     const { data: chat, error: chatError } = await supabase
-      .from("chats")
+      .from("group_members")
       .insert([chatData])
       .select("id")
       .single();
 
     if (chatError) {
-      console.error("Error creating chat:", chatError.message);
       throw new Error(chatError.message);
     }
+
     return { chat };
   };
 
   const { mutate, isPending } = useMutation({
-    mutationFn: CreateChatRequest,
+    mutationFn: CreateGroupRequest,
     onSuccess: () => {
       toast({
         title: "Request sent",
-        description: "Your chat request has been successfully sent.",
+        description: "Your group request has been successfully sent.",
       });
     },
     onError: () => {
@@ -106,8 +106,8 @@ export function FindNewPeople() {
     },
   });
 
-  const handleFinish = (oppositeUserId: string) => {
-    mutate(oppositeUserId);
+  const handleFinish = (targetUserId: string) => {
+    mutate(targetUserId);
   };
 
   return (
@@ -161,17 +161,16 @@ export function FindNewPeople() {
                             <DropdownMenuItem
                               onClick={() => handleFinish(item.id)}
                             >
+                              <Send className="mr-2" />
                               Send Request
                             </DropdownMenuItem>
                           )}
 
                           <DropdownMenuItem asChild>
-                            <Link to={`/profile/${item.id}`}>Profile</Link>
-                          </DropdownMenuItem>
-
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                            Block
+                            <Link to={`/profile/${item.id}`}>
+                              <User />
+                              Profile
+                            </Link>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

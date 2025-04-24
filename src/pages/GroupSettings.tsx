@@ -1,5 +1,4 @@
 import { GroupSettingsUser } from "./../my-components/GroupSettingsUser";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,10 +9,62 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FindNewPeople } from "@/my-components/FindNewPeople";
+import { supabase } from "@/my-components/my-hooks/createClient";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { useParams } from "react-router-dom";
 //vyresit aby se tady nemohl nikdo dostat bez prihlaseni nebo created_by
 
+interface GroupMembers {
+  id: string;
+  created_at: string;
+  is_joined: string;
+  is_verified: string;
+  group_id: string;
+  user_id: string;
+  profiles: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    avatar_url: string;
+  };
+}
+
 export const GroupSettings = () => {
+  const { id } = useParams();
+
+  const fetchGroupMembers = async (): Promise<GroupMembers[]> => {
+    const { data, error } = await supabase
+      .from("group_members")
+      .select(
+        `
+              *,
+              profiles (
+                id,
+                first_name,
+                last_name,
+                avatar
+              )
+            `
+      )
+      .eq("group_id", id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
+  };
+
+  const {
+    data: groupMembers,
+    error,
+    isLoading,
+  } = useQuery<GroupMembers[], Error>({
+    queryKey: ["fetchGroupMembers", id],
+    queryFn: fetchGroupMembers,
+  });
+
   return (
     <div className="h-[80%] lg:h-[72] xl:h-[80%] w-[82%] mt-24 ">
       <motion.section
@@ -53,7 +104,15 @@ export const GroupSettings = () => {
           <div>
             <Label className="text-md">Users</Label>
             <div className="space-y-2 my-2">
-              <GroupSettingsUser />
+              {groupMembers?.map((item) => (
+                <GroupSettingsUser
+                  key={item.id}
+                  id={item.profiles.id}
+                  first_name={item.profiles.first_name}
+                  last_name={item.profiles.last_name}
+                  is_verified={item.is_verified}
+                />
+              ))}
             </div>
 
             <FindNewPeople />

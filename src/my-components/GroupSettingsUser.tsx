@@ -6,27 +6,51 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ban, Ellipsis, ShieldCheck, User } from "lucide-react";
+import { Ban, Ellipsis, ShieldBan, ShieldCheck, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function GroupSettingsUser() {
+interface Props {
+  id: string;
+  first_name: string;
+  last_name: string;
+  is_verified: boolean;
+}
+
+export function GroupSettingsUser({
+  id,
+  first_name,
+  last_name,
+  is_verified,
+}: Props) {
   return (
     <div className="flex justify-between border p-2 rounded-lg w-1/2">
-      <p className="text-sm">Karel Braborec</p>
+      <p className="text-sm  flex items-center">
+        {is_verified && <ShieldCheck size={15} className="mr-1" />}
+        {first_name} {last_name}
+      </p>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Ellipsis size={17} />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>
-            <p>Karel Braborec</p>
+            <p>
+              {first_name} {last_name}
+            </p>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <ShieldCheck size={16} /> Verify user
-          </DropdownMenuItem>
+          {is_verified ? (
+            <DropdownMenuItem>
+              <ShieldBan size={16} /> Unverify User
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem>
+              <ShieldCheck size={16} /> Verify User
+            </DropdownMenuItem>
+          )}
+
           <DropdownMenuItem asChild>
-            <Link to={`/profile/`}>
+            <Link to={`/profile/${id}`}>
               <User size={16} /> Profile
             </Link>
           </DropdownMenuItem>
