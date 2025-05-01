@@ -48,7 +48,8 @@ export const GroupList = () => {
         groups (*)
       `
       )
-      .eq("user_id", user?.id);
+      .eq("user_id", user?.id)
+      .eq("is_joined", true);
 
     if (error2) throw new Error(error2.message);
 

@@ -206,7 +206,7 @@ export function MyChatRequests() {
           </div>
         </ScrollArea>
         <ScrollArea className=" max-h-[200px] w-full ">
-          <h3 className="font-semibold">Groups</h3>
+          
           <GroupRequest />
         </ScrollArea>
       </DialogContent>
