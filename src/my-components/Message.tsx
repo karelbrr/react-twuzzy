@@ -29,6 +29,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { renderSpotifyEmbed } from "./my-hooks/getSpotifyEmbed";
+import { renderYouTubeEmbed } from "./my-hooks/getYoutubeEmbed";
 
 interface MessageProps {
   position?: string | "left" | "right";
@@ -91,7 +93,17 @@ const Message: React.FC<MessageProps> = ({
     }
   };
 
+  const isSpotifyEmbed = (input: string): boolean => {
+    const spotifyPattern =
+      /^(https:\/\/open\.spotify\.com\/)|(spotify\.com\/embed\/)/;
+    return spotifyPattern.test(input);
+  };
 
+  const isYouTubeEmbed = (input: string): boolean => {
+    const youtubePattern =
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)/;
+    return youtubePattern.test(input);
+  };
 
   return (
     <ContextMenu>
@@ -110,7 +122,10 @@ const Message: React.FC<MessageProps> = ({
             position === "right"
               ? " ml-auto" // zpráva vpravo
               : " mr-auto" // zpráva vlevo
-          } ${is_liked && "mb-2"} ${replied_to && "mt-8"}`}
+          } ${is_liked && "mb-2"} ${replied_to && "mt-8"} ${
+            (isSpotifyEmbed(message) && " py-0 px-0 border-none  ") ||
+            (isYouTubeEmbed(message) && " py-0 px-0 border-none  ")
+          }`}
         >
           {media_url ? (
             <>
@@ -167,10 +182,18 @@ const Message: React.FC<MessageProps> = ({
                 </div>
               )}
             </>
+          ) : isSpotifyEmbed(message) ? (
+            renderSpotifyEmbed(message)
+          ) : isYouTubeEmbed(message) ? (
+            renderYouTubeEmbed(message)
           ) : (
             <p>
               {isUrl(message) ? (
-                <a href={message} className="text-blue-500 hover:underline" target="_blank">
+                <a
+                  href={message}
+                  className="text-blue-500 hover:underline"
+                  target="_blank"
+                >
                   {message}
                 </a>
               ) : (

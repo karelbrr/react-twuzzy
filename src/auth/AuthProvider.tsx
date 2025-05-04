@@ -61,10 +61,11 @@ export const AuthProvider = ({ children }: any) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "discord",
       });
-      if (error) throw error; // Zpracování chyb
+      if (error) throw error; 
     } catch (err) {
-      console.error("Error signing in with Discord:", err); // Zpracování chyby
+      console.error("Error signing in with Discord:", err); 
     } finally {
+      
     }
   };
 

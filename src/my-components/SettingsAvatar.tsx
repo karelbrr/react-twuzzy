@@ -32,6 +32,7 @@ import {
 import { supabase } from "./my-hooks/createClient";
 import { useToast } from "@/hooks/use-toast";
 import { Error as ErrorDiv } from "./Error";
+import { Helmet } from "react-helmet-async";
 
 export const SettingsAvatar = () => {
   const { user } = useAuth();
@@ -162,6 +163,9 @@ export const SettingsAvatar = () => {
       animate={{ opacity: 1, transition: { duration: 0.2 } }}
       className="ml-10"
     >
+      <Helmet>
+        <title>Settings Avatar | Twüzzy</title>
+      </Helmet>
       <h2 className="font-bold text-2xl  mb-5 mt-10 ">Avatar customization</h2>
       <div className="grid grid-cols-2 gap-4">
         <Card className="">

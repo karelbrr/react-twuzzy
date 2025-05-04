@@ -161,7 +161,7 @@ export function FindNewPeople() {
                             <DropdownMenuItem
                               onClick={() => handleFinish(item.id)}
                             >
-                              <Send className="mr-2" />
+                              <Send  />
                               Send Request
                             </DropdownMenuItem>
                           )}

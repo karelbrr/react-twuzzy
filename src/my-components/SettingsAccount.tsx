@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Helmet } from "react-helmet-async";
 
 export const SettingsAccount = () => {
   const { user } = useAuth();
@@ -21,6 +22,9 @@ export const SettingsAccount = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.2 } }}
     >
+       <Helmet>
+              <title>Settings Account | Twüzzy</title>
+            </Helmet>
       <h2 className="font-bold text-2xl mx-10 mt-10 mb-5">Account Settings</h2>
       <div className="w-full justify-center flex">
         <Card className="ml-10 w-1/2">

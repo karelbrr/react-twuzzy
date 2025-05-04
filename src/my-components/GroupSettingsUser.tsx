@@ -23,6 +23,7 @@ interface Props {
 
 export function GroupSettingsUser({
   id,
+  user_id,
   first_name,
   last_name,
   is_verified,
@@ -94,7 +95,7 @@ export function GroupSettingsUser({
           )}
 
           <DropdownMenuItem asChild>
-            <Link to={`/profile/${id}`}>
+            <Link to={`/profile/${user_id}`}>
               <User size={16} /> Profile
             </Link>
           </DropdownMenuItem>

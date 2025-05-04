@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/select";
 import { FindNewPeople } from "@/my-components/FindNewPeople";
 import { supabase } from "@/my-components/my-hooks/createClient";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Navigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import AlertDialogSection from "@/my-components/AlertDialogSection";
 import { toast } from "@/hooks/use-toast";
@@ -81,6 +81,7 @@ export const GroupSettings = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: groupData || {
@@ -132,6 +133,38 @@ export const GroupSettings = () => {
     queryFn: fetchGroupMembers,
   });
 
+  const updateGroup = async (variables: {
+    groupId: string | undefined;
+    updatedData: Inputs;
+  }) => {
+    const { groupId, updatedData } = variables;
+    const { data, error } = await supabase
+      .from("groups")
+      .update(updatedData)
+      .eq("id", groupId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  };
+  // Mutace pro aktualizaci skupiny
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateGroup,
+    onSuccess: () => {
+      toast({
+        title: "Profile updated",
+        description: "Group settings has been successfully updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        description: "There was an error while updating group settings.",
+      });
+    },
+  });
+
   const onSubmit = (data: Inputs) => {
     if (
       data.group_name === groupData?.group_name &&
@@ -143,7 +176,9 @@ export const GroupSettings = () => {
       });
       return;
     } else {
-      console.log("data", data);
+      mutate({ groupId: id, updatedData: data });
+      console.log(id);
+      
     }
   };
 
@@ -166,6 +201,11 @@ export const GroupSettings = () => {
         <p className="text-muted-foreground mb-4">
           Manage your group visibility, members, and other preferences here.
         </p>
+        {errorQuery && (
+          <div className=" mb-5 w-1/2">
+            <ErrorDiv error={errorQuery.message} />
+          </div>
+        )}
         <section>
           <form className="space-y-5 mb-5">
             <div className="flex flex-col gap-1.5 w-1/2 ">
@@ -194,15 +234,26 @@ export const GroupSettings = () => {
             </div>
             <div className="flex flex-col gap-1.5 w-1/2">
               <Label className="text-md">Group Visibility</Label>
-              <Select value={groupData?.is_public ? "public" : "private"}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Public" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="private">Private</SelectItem>
-                  <SelectItem value="public">Public</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="is_public"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value ? "public" : "private"}
+                    onValueChange={(value) =>
+                      field.onChange(value === "public")
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Visibility" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="private">Private</SelectItem>
+                      <SelectItem value="public">Public</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
             <div className="w-1/2">
               <AlertDialogSection
@@ -211,7 +262,7 @@ export const GroupSettings = () => {
                   "This action will save the changes to your profile, and it cannot be undone."
                 }
                 onConfirm={handleSubmit(onSubmit)}
-                isPending={false}
+                isPending={isPending}
               />
             </div>
           </form>

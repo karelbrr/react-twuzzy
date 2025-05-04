@@ -8,6 +8,7 @@ import { Error as ErrorDiv } from "../Error";
 import { useState } from "react";
 import { GroupTextBar } from "./GroupTextBar";
 import GroupMessage from "./GroupMessage";
+import { Helmet } from "react-helmet-async";
 
 interface Message {
   id: string;
@@ -40,13 +41,47 @@ export const GroupContent = () => {
     return data;
   };
 
-  const { data: messages, error } = useQuery<Message[], Error>({
+  const {
+    data: messages,
+    error,
+    isLoading,
+  } = useQuery<Message[], Error>({
     queryKey: ["fetchGroupMessages", id],
     queryFn: () => fetchGroupMessages(id!),
   });
 
+  const fetchGroupName = async (groupId: string): Promise<string> => {
+    const { data, error } = await supabase
+      .from("groups")
+      .select("group_name")
+      .eq("id", groupId)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data.group_name;
+  }; 
+
+  const { data: groupName } = useQuery<string, Error>({
+    queryKey: ["fetchGroupName", id],
+    queryFn: () => fetchGroupName(id!),
+    enabled: !!id,
+  });
+
   return (
     <div className="h-[80%] lg:h-[72] xl:h-[80%] w-[82%] mt-24 ">
+      <Helmet>
+        {isLoading ? (
+          <title>groupname | Twüzzy</title>
+        ) : (
+          <title>
+            {groupName && groupName.length > 0
+              ? groupName
+              : "groupname"}{" "}
+            | Twüzzy
+          </title>
+        )}
+      </Helmet>
       <motion.section
         className="h-[94%] flex-col  overflow-auto"
         initial={{ opacity: 0 }}

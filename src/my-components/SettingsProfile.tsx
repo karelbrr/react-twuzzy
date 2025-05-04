@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import AlertDialogSection from "./AlertDialogSection";
 import { PrivacySettings } from "./PrivacySettings";
 import { toast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet-async";
 
 type Inputs = {
   first_name: string;
@@ -125,6 +126,9 @@ export const SettingsProfile = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.2 } }}
     >
+      <Helmet>
+        <title>Settings Profile | Twüzzy</title>
+      </Helmet>
       <h2 className="font-bold text-2xl mt-10 mb-5">Profile Settings</h2>
 
       {errorQuery && (

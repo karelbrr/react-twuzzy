@@ -35,6 +35,8 @@ import { getProfileData } from "../my-hooks/getProfileData";
 import { useMediaType } from "../my-hooks/useMediaType";
 import useRepliedMessage from "../my-hooks/useRepliedMessage";
 import { formatDate } from "../my-hooks/formatDate";
+import { renderSpotifyEmbed } from "../my-hooks/getSpotifyEmbed";
+import { renderYouTubeEmbed } from "../my-hooks/getYoutubeEmbed";
 
 interface MessageProps {
   position?: string | "left" | "right";
@@ -64,16 +66,16 @@ const GroupMessage: React.FC<MessageProps> = ({
 
   const messageOperation = async (messageId: string, isLiked: boolean) => {
     try {
-      const { data: updateData, error } = await supabase
-        .from("messages")
+      const { error: likeError } = await supabase
+        .from("group_messages")
         .update({ is_liked: isLiked })
         .eq("id", messageId);
 
-      if (error) {
-        throw error;
+      if (likeError) {
+        throw likeError;
       }
 
-      console.log("Message liked successfully:", updateData);
+      console.log("Message liked successfully.");
     } catch (error) {
       console.error("Error liking message:", error);
     }
@@ -109,6 +111,18 @@ const GroupMessage: React.FC<MessageProps> = ({
     queryFn: () => getProfileData(user_id),
   });
 
+  const isSpotifyEmbed = (input: string): boolean => {
+    const spotifyPattern =
+      /^(https:\/\/open\.spotify\.com\/)|(spotify\.com\/embed\/)/;
+    return spotifyPattern.test(input);
+  };
+
+  const isYouTubeEmbed = (input: string): boolean => {
+    const youtubePattern =
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)/;
+    return youtubePattern.test(input);
+  };
+
   return (
     <div className="flex mt-1 space-x-2 ml-3 mr-5">
       {position === "left" && (
@@ -141,7 +155,10 @@ const GroupMessage: React.FC<MessageProps> = ({
               !media_url && "border px-4 py-2  bg-zinc-900"
             } max-w-[500px] text-base  ${
               position === "right" ? " ml-auto" : " mr-auto"
-            } ${is_liked && "mb-2"} ${replied_to && "mt-8"}`}
+            } ${is_liked && "mb-2"} ${replied_to && "mt-8"} ${
+              (isSpotifyEmbed(message) && " py-0 px-0 border-none  ") ||
+              (isYouTubeEmbed(message) && " py-0 px-0 border-none  ")
+            }`}
           >
             {media_url ? (
               <>
@@ -200,6 +217,10 @@ const GroupMessage: React.FC<MessageProps> = ({
                   </div>
                 )}
               </>
+            ) : isSpotifyEmbed(message) ? (
+              renderSpotifyEmbed(message)
+            ) : isYouTubeEmbed(message) ? (
+              renderYouTubeEmbed(message)
             ) : (
               <p>
                 {isUrl(message) ? (

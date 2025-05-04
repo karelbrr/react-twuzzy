@@ -15,6 +15,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { Helmet } from "react-helmet-async";
+
 interface BlockedUser {
   id: number;
   blocker_id: string;
@@ -62,6 +64,9 @@ export const SettingsBlocked = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.2 } }}
     >
+      <Helmet>
+        <title>Settings Blocked | Twüzzy</title>
+      </Helmet>
       <h2 className="font-bold text-2xl mt-10 mb-5 mx-10 ">Blocked People</h2>
       <Card className="ml-10 ">
         <CardHeader>

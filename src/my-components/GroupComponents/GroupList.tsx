@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis, LogOut, Settings
- } from "lucide-react";
+import { Ellipsis, LogOut, Settings } from "lucide-react";
 import { supabase } from "../my-hooks/createClient";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/auth/AuthProvider";
@@ -31,6 +30,7 @@ interface Group {
 
 export const GroupList = () => {
   const { user } = useAuth();
+  const { id } = useParams();
 
   const fetchGroups = async (): Promise<Group[]> => {
     const { data: createdGroups, error: error1 } = await supabase
@@ -79,7 +79,9 @@ export const GroupList = () => {
           key={group.id}
           asChild
           variant="outline"
-          className={`w-full flex justify-start rounded-lg z-0  h-16 mb-3 
+          className={`w-full flex justify-start rounded-lg z-0  h-16 mb-3 ${
+            group.id === id && "bg-secondary opacity-90"
+          }
         }`}
         >
           <Link to={`group/${group.id}`}>
@@ -101,14 +103,20 @@ export const GroupList = () => {
                   <DropdownMenuContent className="z-20">
                     <DropdownMenuLabel>{group.group_name}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                   <GroupShowPeople    group_id={group.id} created_by={group.created_by} />
+                    <GroupShowPeople
+                      group_id={group.id}
+                      created_by={group.created_by}
+                    />
 
                     {group.created_by === user?.id && (
                       <DropdownMenuItem asChild>
-                        <Link to={`/group/${group.id}/settings`} className="flex items-center">
+                        <Link
+                          to={`/group/${group.id}/settings`}
+                          className="flex items-center"
+                        >
                           <Settings className="w-4 h-4" />
                           Settings
-                        </Link> 
+                        </Link>
                       </DropdownMenuItem>
                     )}
 

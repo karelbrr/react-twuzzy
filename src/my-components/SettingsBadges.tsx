@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet-async";
 
 interface Badge {
   id: string;
@@ -85,6 +86,9 @@ export const SettingsBadges = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.2 } }}
     >
+      <Helmet>
+        <title>Settings Badges | Twüzzy</title>
+      </Helmet>
       <h2 className="font-bold text-2xl mt-10 mx-10">Customize Badges</h2>
       <Card className="ml-10 mt-5">
         <CardHeader>
