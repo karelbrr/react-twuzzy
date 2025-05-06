@@ -21,7 +21,7 @@ import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Check, X, User, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GroupRequest } from "./GroupComponents/GroupRequest";
@@ -38,27 +38,39 @@ export interface ChatRequest {
 export function MyChatRequests() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [labelCount, setLabelCount] = useState<number>();
 
   // 🔹 Načtení chat requestů
   const fetchChatRequests = async () => {
+    const { data: blocked, error: blockedError } = await supabase
+      .from("blocked_users")
+      .select("blocked_id")
+      .eq("blocker_id", user?.id);
+
+    if (blockedError) throw new Error(blockedError.message);
+
+    const blockedIds = blocked?.map((entry) => entry.blocked_id) || [];
+    const blockedIdsString = `(${blockedIds.join(",")})`;
+
     const { data, error } = await supabase
       .from("chats")
       .select(
         `
-        *,
-        profiles!created_by (
-          id,
-          first_name,
-          last_name,
-          avatar
-        )
-      `
+          *,
+          profiles:created_by (
+            id,
+            first_name,
+            last_name,
+            avatar
+          )
+        `
       )
       .eq("is_started", false)
-      .eq("chat_with", user?.id);
+      .eq("chat_with", user?.id)
+      .not("created_by", "in", blockedIdsString); // Vyloučíme blokované
 
     if (error) throw new Error(error.message);
-
+    setLabelCount(labelCount || 0 + data?.length);
     return data;
   };
 
@@ -138,7 +150,7 @@ export function MyChatRequests() {
           <MailQuestion />
           {myRequestsData && myRequestsData.length > 0 ? (
             <div className="absolute bottom-1 left-2 w-4 h-4 bg-white text-black rounded-full flex items-center justify-center text-xs">
-              <p>{myRequestsData.length}</p>
+              <p>{labelCount}</p>
             </div>
           ) : null}
         </Button>
@@ -206,8 +218,7 @@ export function MyChatRequests() {
           </div>
         </ScrollArea>
         <ScrollArea className=" max-h-[200px] w-full ">
-          
-          <GroupRequest />
+          <GroupRequest/>
         </ScrollArea>
       </DialogContent>
     </Dialog>

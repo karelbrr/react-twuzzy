@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, User, UserPlus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -98,11 +98,13 @@ export const ManageProfileVisibility = () => {
                           <DropdownMenuSeparator />
 
                           <DropdownMenuItem>
+                            <UserPlus />
                             Allow to see profile
                           </DropdownMenuItem>
 
                           <DropdownMenuItem asChild>
-                            <Link to={`/profile/${item.id}`}>Profile</Link>
+                           
+                            <Link to={`/profile/${item.id}`} className="flex ">  <User/>Profile</Link>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

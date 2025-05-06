@@ -25,17 +25,32 @@ export const DiscoverPeople = () => {
   const fetchUsers = async (): Promise<User[]> => {
     if (!searchTerm) return [];
 
+    // Získat seznam ID zablokovaných uživatelů
+    const { data: blocked, error: blockedError } = await supabase
+      .from("blocked_users")
+      .select("blocked_id")
+      .eq("blocker_id", user?.id);
+
+    if (blockedError) throw new Error(blockedError.message);
+
+    const blockedIds = blocked?.map((entry) => entry.blocked_id) || [];
+
+    const excludedIds = [user?.id, ...blockedIds].filter(Boolean);
+    const excludedIdsString = `(${excludedIds.join(",")})`;
+
+    // Hlavní dotaz na profily s vyhledáváním a filtrováním
     const { data, error } = await supabase
       .from("profiles")
       .select("id, first_name, last_name, username, avatar")
       .or(
         `username.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`
       )
-      .neq("id", user?.id);
+      .not("id", "in", excludedIdsString);
 
     if (error) {
       throw new Error(error.message);
     }
+
     return data;
   };
 

@@ -13,6 +13,9 @@ import { Check, X, User, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Ellipsis } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Error as ErrorDiv } from "../Error";
+
+
 export const GroupRequest = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -33,7 +36,7 @@ export const GroupRequest = () => {
       .eq("user_id", user?.id);
 
     if (error) throw new Error(error.message);
-
+    
     return data;
   };
 
@@ -50,7 +53,7 @@ export const GroupRequest = () => {
     const { data, error } = await supabase
       .from("group_members")
       .update({ is_joined: true })
-      .eq("id", memberId); 
+      .eq("id", memberId);
 
     if (error) throw new Error(error.message);
     return data;
@@ -60,7 +63,6 @@ export const GroupRequest = () => {
     mutationFn: acceptRequest,
     onError: () => console.log("error"),
     onSuccess: () => {
-      
       queryClient.invalidateQueries({ queryKey: ["GroupRequest"] });
     },
   });
@@ -74,6 +76,7 @@ export const GroupRequest = () => {
       {myGroupRequestsData?.length !== 0 && (
         <section className="">
           <h3 className="font-semibold mt-2">Groups</h3>
+          {errorQuery && (<ErrorDiv error={errorQuery.message}/>)}
           <div className="space-y-2">
             {myGroupRequestsData?.map((item) => (
               <div

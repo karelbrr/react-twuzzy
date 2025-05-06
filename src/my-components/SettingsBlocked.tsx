@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Ban } from "lucide-react";
 import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
@@ -14,7 +14,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Helmet } from "react-helmet-async";
 
 interface BlockedUser {
@@ -31,6 +41,7 @@ interface BlockedUser {
 
 export const SettingsBlocked = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const fetchBlockedUsers = async (): Promise<BlockedUser[]> => {
     const { data, error } = await supabase
@@ -57,6 +68,30 @@ export const SettingsBlocked = () => {
   } = useQuery<BlockedUser[], Error>({
     queryKey: ["fetchBlockedUsers"],
     queryFn: fetchBlockedUsers,
+  });
+
+  const {
+    mutate: unblockUser,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: async (blockedId: string) => {
+      if (!user) throw new Error("User not authenticated");
+
+      const { error } = await supabase
+        .from("blocked_users")
+        .delete()
+        .eq("blocker_id", user.id)
+        .eq("blocked_id", blockedId);
+
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fetchBlockedUsers"] });
+    },
+    onError: (error: Error) => {
+      console.error("Unblock failed:", error.message);
+    },
   });
 
   return (
@@ -119,7 +154,29 @@ export const SettingsBlocked = () => {
                       This user was blocked at {formatDate(user.created_at)}
                     </AlertDescription>
                   </div>
-                  <Button variant="outline">Unblock</Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button >Unblock</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Unblock this user?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This person will be able to message you, see your
+                          profile, or interact with you. You can block them
+                          later from your settings.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => unblockUser(user.blocked_id)} // <- musíš mít `targetUserId` k dispozici
+                        >
+                          Unlock
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </Alert>
             ))

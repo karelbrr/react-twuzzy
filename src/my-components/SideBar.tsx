@@ -26,6 +26,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { GroupList } from "./GroupComponents/GroupList";
+import { useBlockUserAndDeleteChat } from "./my-hooks/useBlockUser";
 
 interface Chat {
   id: string;
@@ -50,6 +51,7 @@ export const SideBar = () => {
   const { user } = useAuth();
   const { id } = useParams();
   const queryClient = useQueryClient();
+  const { mutate: blockUserAndDeleteChat } = useBlockUserAndDeleteChat();
 
   const fetchChats = async (): Promise<Chat[]> => {
     const { data, error } = await supabase
@@ -107,7 +109,6 @@ export const SideBar = () => {
               ...(oldData || []),
               newChat,
             ]);
-            console.log("test update");
           }
         }
       )
@@ -248,7 +249,19 @@ export const SideBar = () => {
 
                       <DropdownMenuSeparator />
 
-                      <DropdownMenuItem className="text-red-700 focus:text-red-700 flex items-center">
+                      <DropdownMenuItem
+                        className="text-red-700 focus:text-red-700 flex items-center"
+                        onClick={() =>
+                          blockUserAndDeleteChat({
+                            blockerId: user?.id,
+                            blockedId:
+                              item.created_by.id === user?.id
+                                ? item.chat_with.id
+                                : item.created_by.id,
+                            chatId: item.id,
+                          })
+                        }
+                      >
                         <Ban className="w-4 h-4 " />
                         Block User
                       </DropdownMenuItem>

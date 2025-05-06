@@ -14,6 +14,7 @@ import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./my-hooks/createClient";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { useBlockUser } from "./my-hooks/useBlockUser";
 
 interface Props {
   first_name: string | undefined;
@@ -74,9 +75,26 @@ export function PermissionSettingsInProfileDetails({
   });
 
   const handleFinish = (oppositeUserId: string | undefined) => {
-    if (!oppositeUserId) return; 
+    if (!oppositeUserId) return;
     mutate(oppositeUserId);
   };
+
+  const { mutate: blockUser } = useBlockUser();
+
+  const handleBlock = async () => {
+    try {
+      const blockerId = user?.id;
+      const blockedId = id;
+      if (!blockerId || !blockedId) {
+        console.error("Missing blockerId or blockedId");
+        return;
+      }
+      blockUser({ blockerId, blockedId });
+    } catch (error) {
+      console.log("Error blocking user:", error);
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -106,7 +124,10 @@ export function PermissionSettingsInProfileDetails({
           Report user
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="text-red-700 focus:text-red-700">
+        <DropdownMenuItem
+          className="text-red-700 focus:text-red-700"
+          onClick={handleBlock}
+        >
           <Ban className="w-4 h-4 " />
           Block user
         </DropdownMenuItem>
