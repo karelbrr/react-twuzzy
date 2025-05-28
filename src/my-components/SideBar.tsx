@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./my-hooks/createClient";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Error as ErrorDiv } from "./Error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Ellipsis, Globe, SquarePen } from "lucide-react";
@@ -15,7 +15,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useEffect } from "react";
@@ -27,6 +31,7 @@ import {
 } from "@/components/ui/popover";
 import { GroupList } from "./GroupComponents/GroupList";
 import { useBlockUserAndDeleteChat } from "./my-hooks/useBlockUser";
+import { toast } from "@/hooks/use-toast";
 
 interface Chat {
   id: string;
@@ -52,6 +57,7 @@ export const SideBar = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const { mutate: blockUserAndDeleteChat } = useBlockUserAndDeleteChat();
+  const navigate = useNavigate();
 
   const fetchChats = async (): Promise<Chat[]> => {
     const { data, error } = await supabase
@@ -147,6 +153,37 @@ export const SideBar = () => {
       supabase.removeChannel(subscription);
     };
   }, [queryClient, user?.id]);
+
+  const deleteChat = async (id: string) => {
+    const { error } = await supabase.from("chats").delete().eq("id", id);
+    if (error) {
+      throw new Error(error.message);
+    }
+    return id;
+  };
+
+  const { mutate: handleDeleteChat } = useMutation({
+    mutationFn: deleteChat,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fetchChats"] }); 
+      navigate("/")
+      toast({
+        description: "The chat was successfully deleted.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to delete chat.",
+      });
+    },
+  });
+
+  const onDelete = (id: string) => {
+
+    handleDeleteChat(id);
+  };
 
   return (
     <motion.section
@@ -247,29 +284,52 @@ export const SideBar = () => {
                         </Link>
                       </DropdownMenuItem>
 
-                      <DropdownMenuSeparator />
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className="text-red-700 focus:text-red-700 flex items-center">
+                          <Ban className="w-4 h-4 " />
+                          Block User
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                          <DropdownMenuSubContent>
+                            <DropdownMenuLabel>Block user?</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-red-700 focus:text-red-700 flex items-center"
+                              onClick={() =>
+                                blockUserAndDeleteChat({
+                                  blockerId: user?.id,
+                                  blockedId:
+                                    item.created_by.id === user?.id
+                                      ? item.chat_with.id
+                                      : item.created_by.id,
+                                  chatId: item.id,
+                                })
+                              }
+                            >
+                              Yes
+                            </DropdownMenuItem>
+                          </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                      </DropdownMenuSub>
 
-                      <DropdownMenuItem
-                        className="text-red-700 focus:text-red-700 flex items-center"
-                        onClick={() =>
-                          blockUserAndDeleteChat({
-                            blockerId: user?.id,
-                            blockedId:
-                              item.created_by.id === user?.id
-                                ? item.chat_with.id
-                                : item.created_by.id,
-                            chatId: item.id,
-                          })
-                        }
-                      >
-                        <Ban className="w-4 h-4 " />
-                        Block User
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="text-red-700 focus:text-red-700 flex items-center">
-                        <Trash2 className="w-4 h-4 " />
-                        Delete Chat
-                      </DropdownMenuItem>
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className="text-red-700 focus:text-red-700 flex items-center">
+                          <Trash2 className="w-4 h-4 " />
+                          Delete Chat
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                          <DropdownMenuSubContent>
+                            <DropdownMenuLabel>Delete chat?</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-red-700 focus:text-red-700 flex items-center"
+                              onClick={() => onDelete(item.id)}
+                            >
+                              Yes
+                            </DropdownMenuItem>
+                          </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                      </DropdownMenuSub>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

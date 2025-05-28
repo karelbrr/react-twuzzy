@@ -81,7 +81,7 @@ const GroupMessage: React.FC<MessageProps> = ({
     }
   };
 
-  const { data: repliedMessage, error: repliedToError } =
+  const { data: repliedMessage } =
     useRepliedMessage(replied_to);
 
   const getCleanNameFromUrl = (media_url: string | undefined): string => {
@@ -104,8 +104,7 @@ const GroupMessage: React.FC<MessageProps> = ({
 
   const {
     data,
-    error: errorQuery,
-    isLoading,
+  
   } = useQuery<User, Error>({
     queryKey: ["profileDetailsGroupMessage", user_id],
     queryFn: () => getProfileData(user_id),
@@ -156,8 +155,8 @@ const GroupMessage: React.FC<MessageProps> = ({
             } max-w-[500px] text-base  ${
               position === "right" ? " ml-auto" : " mr-auto"
             } ${is_liked && "mb-2"} ${replied_to && "mt-8"} ${
-              (isSpotifyEmbed(message) && " py-0 px-0 border-none  ") ||
-              (isYouTubeEmbed(message) && " py-0 px-0 border-none  ")
+              (isSpotifyEmbed(message) && " py-0 px-0 border-none") ||
+              (isYouTubeEmbed(message) && " py-0 px-0 border-none")
             }`}
           >
             {media_url ? (

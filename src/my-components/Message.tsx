@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/dialog";
 import { renderSpotifyEmbed } from "./my-hooks/getSpotifyEmbed";
 import { renderYouTubeEmbed } from "./my-hooks/getYoutubeEmbed";
+import { toast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface MessageProps {
   position?: string | "left" | "right";
@@ -54,6 +56,7 @@ const Message: React.FC<MessageProps> = ({
   setReplyingTo,
 }) => {
   const { copyToClipboard } = useClipboard();
+  const queryClient = useQueryClient();
 
   const messageOperation = async (messageId: string, isLiked: boolean) => {
     try {
@@ -103,6 +106,35 @@ const Message: React.FC<MessageProps> = ({
     const youtubePattern =
       /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)/;
     return youtubePattern.test(input);
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    const {error} = await supabase
+      .from("messages")
+      .delete()
+      .eq("id", messageId)
+    if (error) throw new Error(error.message);
+  };
+
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: async (id: string) => {
+      await deleteMessage(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fetchMessages"] });
+      
+      
+    },
+    onError: () => {
+      toast({
+        description: "Failed to delete the message.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeleteMessage = (messageId: string) => {
+    handleDelete(messageId);
   };
 
   return (
@@ -267,7 +299,10 @@ const Message: React.FC<MessageProps> = ({
         {position === "right" && (
           <div>
             <ContextMenuSeparator />
-            <ContextMenuItem className="text-red-700 focus:text-red-700">
+            <ContextMenuItem
+              className="text-red-700 focus:text-red-700"
+              onClick={() => handleDeleteMessage(id)}
+            >
               <Trash2 className="w-4 h-4 mr-1.5" />
               Delete
             </ContextMenuItem>

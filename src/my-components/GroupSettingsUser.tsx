@@ -48,7 +48,7 @@ export function GroupSettingsUser({
     return data;
   };
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: verifyUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fetchGroupMembers"] });
@@ -62,6 +62,26 @@ export function GroupSettingsUser({
 
   const handleUnverify = () => {
     if (user?.id) mutate({ memberId: id, is_verified: false });
+  };
+
+  const removeUser = async (id: string) => {
+    const { data, error } = await supabase
+      .from("group_members")
+      .delete()
+      .eq("id", id);
+    if (error) throw new Error(error.message);
+    return data;
+  };
+  const { mutate: removeMutate } = useMutation({
+    mutationFn: removeUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fetchGroupMembers"] });
+    },
+  });
+
+
+  const handleRemove = () => {
+    if (user?.id) removeMutate(id);
   };
 
   return (
@@ -100,7 +120,7 @@ export function GroupSettingsUser({
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-700 focus:text-red-700">
+          <DropdownMenuItem className="text-red-700 focus:text-red-700" onClick={handleRemove}>
             <Ban size={16} /> Remove User
           </DropdownMenuItem>
         </DropdownMenuContent>

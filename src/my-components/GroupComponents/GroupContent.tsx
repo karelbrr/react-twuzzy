@@ -5,7 +5,7 @@ import { supabase } from "../my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { motion } from "framer-motion";
 import { Error as ErrorDiv } from "../Error";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GroupTextBar } from "./GroupTextBar";
 import GroupMessage from "./GroupMessage";
 import { Helmet } from "react-helmet-async";
@@ -27,6 +27,24 @@ export const GroupContent = () => {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const { id } = useParams();
   const { user } = useAuth();
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [isNearBottom, setIsNearBottom] = useState(true);
+
+  const handleScroll = () => {
+    if (!messagesContainerRef.current) {
+      return;
+    }
+
+    const container = messagesContainerRef.current;
+
+    const threshold = 400;
+    const distanceFromTop = container.scrollTop + container.clientHeight;
+    const distanceFromBottom = container.scrollHeight - distanceFromTop;
+
+    setIsNearBottom(distanceFromBottom < threshold);
+  };
+
   const fetchGroupMessages = async (groupId: string): Promise<Message[]> => {
     const { data, error } = await supabase
       .from("group_messages")
@@ -60,13 +78,19 @@ export const GroupContent = () => {
       throw new Error(error.message);
     }
     return data.group_name;
-  }; 
+  };
 
   const { data: groupName } = useQuery<string, Error>({
     queryKey: ["fetchGroupName", id],
     queryFn: () => fetchGroupName(id!),
     enabled: !!id,
   });
+
+  useEffect(() => {
+    if (isNearBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isNearBottom]);
 
   return (
     <div className="h-[80%] lg:h-[72] xl:h-[80%] w-[82%] mt-24 ">
@@ -75,10 +99,8 @@ export const GroupContent = () => {
           <title>groupname | Twüzzy</title>
         ) : (
           <title>
-            {groupName && groupName.length > 0
-              ? groupName
-              : "groupname"}{" "}
-            | Twüzzy
+            {groupName && groupName.length > 0 ? groupName : "groupname"} |
+            Twüzzy
           </title>
         )}
       </Helmet>
@@ -87,7 +109,11 @@ export const GroupContent = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
       >
-        <div className="flex flex-col overflow-auto h-full pt-2 pb-5">
+        <div
+          className="flex flex-col overflow-auto h-full pt-2 pb-5"
+          onScroll={handleScroll}
+          ref={messagesContainerRef}
+        >
           {error && (
             <div className="w-3/4 mx-auto">
               <ErrorDiv error={error?.message} />
@@ -117,6 +143,7 @@ export const GroupContent = () => {
                 setReplyingTo={setReplyingTo}
               />
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </div>
       </motion.section>

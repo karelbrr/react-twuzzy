@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { Ellipsis } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Error as ErrorDiv } from "../Error";
-
+import { toast } from "@/hooks/use-toast";
 
 export const GroupRequest = () => {
   const queryClient = useQueryClient();
@@ -36,7 +36,7 @@ export const GroupRequest = () => {
       .eq("user_id", user?.id);
 
     if (error) throw new Error(error.message);
-    
+
     return data;
   };
 
@@ -71,12 +71,42 @@ export const GroupRequest = () => {
     mutate(chatId);
   };
 
+  const deleteRequest = async (id: string) => {
+    const { error } = await supabase
+      .from("group_members")
+      .delete()
+      .eq("id", id);
+    if (error) throw new Error(error.message);
+  };
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: async (id: string) => {
+      await deleteRequest(id);
+    },
+    onSuccess: () => {
+      toast({
+        description: "Request declined successfully.",
+        variant: "default",
+      });
+      queryClient.invalidateQueries({ queryKey: ["GroupRequest"] });
+    },
+    onError: () => {
+      toast({
+        description: "Failed to decline the request.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const sendDeclineRequest = (chatId: string) => {
+    handleDelete(chatId);
+  };
+
   return (
     <>
       {myGroupRequestsData?.length !== 0 && (
         <section className="">
           <h3 className="font-semibold mt-2">Groups</h3>
-          {errorQuery && (<ErrorDiv error={errorQuery.message}/>)}
+          {errorQuery && <ErrorDiv error={errorQuery.message} />}
           <div className="space-y-2">
             {myGroupRequestsData?.map((item) => (
               <div
@@ -99,17 +129,10 @@ export const GroupRequest = () => {
                       <Check size={16} /> Accept Request
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => sendDeclineRequest(item.id)}
+                    >
                       <X size={16} /> Decline Request
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to={`/profile/${item.id}`}>
-                        <User size={16} /> Profile
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                      <Ban size={16} /> Block
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

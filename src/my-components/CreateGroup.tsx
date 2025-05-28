@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -21,9 +22,10 @@ import {
 } from "@/components/ui/select";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { supabase } from "./my-hooks/createClient";
-import { toast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/auth/AuthProvider";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 type Inputs = {
   group_name: string;
@@ -34,6 +36,8 @@ type Inputs = {
 
 export const CreateGroup = () => {
   const { user } = useAuth();
+  const [file, setFile] = useState<File | null>(null);
+
   const addGroup = async (data: Inputs) => {
     const { data: chat, error: chatError } = await supabase
       .from("groups")
@@ -55,6 +59,7 @@ export const CreateGroup = () => {
   const { mutate } = useMutation({
     mutationFn: addGroup,
     onSuccess: () => {
+      reset({group_name: "", description: "", is_public: false});
       toast({
         title: "Group Created",
         description: "Your group has been created successfully.",
@@ -68,14 +73,31 @@ export const CreateGroup = () => {
     },
   });
 
-  const handleFinish = (data: Inputs) => {
-    mutate(data);
+  const handleFinish = async (formData: Inputs) => {
+    try {
+      let avatarUrl = "";
+      if (file) {
+        avatarUrl = await uploadGroupAvatar(file, formData.group_name);
+      }
+
+      mutate({
+        ...formData,
+        avatar_url: avatarUrl,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "Failed to upload group avatar.",
+      });
+    }
   };
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
@@ -83,6 +105,34 @@ export const CreateGroup = () => {
     },
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => handleFinish(data);
+
+  // ZMĚNA: upravená upload funkce pro skupiny
+  const uploadGroupAvatar = async (file: File, groupName: string) => {
+    if (!file) throw new Error("No avatar file provided");
+
+    const timestamp = Date.now();
+    const extension = file.name.split(".").pop();
+    const safeName = groupName.replace(/\s+/g, "_").toLowerCase();
+    const filePath = `groups/${safeName}-${timestamp}.${extension}`;
+
+    const { data, error } = await supabase.storage
+      .from("avatarsgroups")
+      .upload(filePath, file);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from("avatarsgroups")
+      .getPublicUrl(filePath);
+
+    if (!publicUrlData?.publicUrl) {
+      throw new Error("Failed to get public URL.");
+    }
+
+    return publicUrlData.publicUrl;
+  };
 
   return (
     <section>
@@ -131,7 +181,12 @@ export const CreateGroup = () => {
             </div>
             <div className="grid w-full max-w-full items-center gap-1.5">
               <Label htmlFor="avatar">Avatar</Label>
-              <Input type="file" id="avatar" accept=".png, .jpg, .jpeg" />
+              <Input
+                type="file"
+                id="avatar"
+                accept=".png, .jpg, .jpeg"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
             </div>
             <div className="grid w-full max-w-full items-center gap-1.5">
               <Label htmlFor="visibility">Visibility</Label>
@@ -157,6 +212,7 @@ export const CreateGroup = () => {
             <div className="flex justify-end">
               <Button type="submit">Create</Button>
             </div>
+            
           </form>
         </DialogContent>
       </Dialog>

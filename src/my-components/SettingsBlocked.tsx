@@ -52,7 +52,8 @@ export const SettingsBlocked = () => {
     blocked_user: profiles!blocked_id (id,first_name, last_name)
   `
       )
-      .eq("blocker_id", user?.id);
+      .eq("blocker_id", user?.id)
+      .order("created_at", { ascending: false });
 
     if (error) {
       throw new Error(error.message);
@@ -156,7 +157,7 @@ export const SettingsBlocked = () => {
                   </div>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button >Unblock</Button>
+                      <Button>Unblock</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>

@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import AlertDialogSection from "@/my-components/AlertDialogSection";
 import { toast } from "@/hooks/use-toast";
 import { Error as ErrorDiv } from "@/my-components/Error";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface GroupMembers {
   id: string;
@@ -82,7 +83,6 @@ export const GroupSettings = () => {
     handleSubmit,
     reset,
     control,
-    formState: { errors },
   } = useForm<Inputs>({
     defaultValues: groupData || {
       group_name: "",
@@ -115,7 +115,8 @@ export const GroupSettings = () => {
               )
             `
       )
-      .eq("group_id", id);
+      .eq("group_id", id)
+      .order("created_at", { ascending: false });
 
     if (error) {
       throw new Error(error.message);
@@ -178,7 +179,6 @@ export const GroupSettings = () => {
     } else {
       mutate({ groupId: id, updatedData: data });
       console.log(id);
-      
     }
   };
 
@@ -268,8 +268,17 @@ export const GroupSettings = () => {
           </form>
           <div>
             <Label className="text-md">Users</Label>
-            {error && <ErrorDiv error={error.message} />}
+            <div className="w-1/2">
+              {error && <ErrorDiv error={error.message} />}
+            </div>
+
             <div className="space-y-2 my-2">
+              {isLoading && (
+                <div className="space-y-2">
+                  <Skeleton className="w-1/2 h-10" />
+                  <Skeleton className="w-1/2 h-10" />
+                </div>
+              )}
               {groupMembers?.map((item) => (
                 <GroupSettingsUser
                   key={item.id}

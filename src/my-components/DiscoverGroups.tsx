@@ -25,35 +25,47 @@ export const DiscoverGroups = () => {
   const fetchGroups = async (): Promise<Group[]> => {
     if (!searchTerm || !user?.id) return [];
 
-    const { data: createdGroups, error: error1 } = await supabase
+    // Veřejné skupiny odpovídající názvu
+    const { data: nameMatchedGroups, error: error1 } = await supabase
       .from("groups")
       .select("*")
-      .or(`created_by.eq.${user.id},group_name.ilike.%${searchTerm}%`)
+      .ilike("group_name", `%${searchTerm}%`)
       .eq("is_public", true);
 
     if (error1) throw new Error(error1.message);
 
-    const { data: memberGroups, error: error2 } = await supabase
-      .from("group_members")
-      .select(
-        `
-          group_id,
-          groups (
-            *
-          )
-        `
-      )
-      .eq("user_id", user.id);
+    // Veřejné skupiny, které vytvořil uživatel a odpovídají hledání
+    const { data: createdGroups, error: error2 } = await supabase
+      .from("groups")
+      .select("*")
+      .eq("created_by", user.id)
+      .eq("is_public", true)
+      .ilike("group_name", `%${searchTerm}%`);
 
     if (error2) throw new Error(error2.message);
 
+    // Veřejné skupiny, kde je uživatel členem
+    const { data: memberGroups, error: error3 } = await supabase
+      .from("group_members")
+      .select("group_id, groups(*)")
+      .eq("user_id", user.id);
+
+    if (error3) throw new Error(error3.message);
+
     const joinedGroups = memberGroups
       ?.map((item) => item.groups)
-      .filter((group: Group[]) =>
-        group?.group_name?.toLowerCase().includes(searchTerm.toLowerCase())
+      .filter(
+        (group) =>
+          group?.is_public === true &&
+          group?.group_name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
-    const allGroups = [...(createdGroups || []), ...(joinedGroups || [])];
+    // Sloučení všech skupin a odstranění duplicit
+    const allGroups = [
+      ...(nameMatchedGroups || []),
+      ...(createdGroups || []),
+      ...(joinedGroups || []),
+    ];
 
     const uniqueGroups = allGroups.filter(
       (group, index, self) => index === self.findIndex((g) => g.id === group.id)

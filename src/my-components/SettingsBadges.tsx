@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Badge {
   id: string;
@@ -32,6 +33,8 @@ export const SettingsBadges = () => {
   const { toast } = useToast();
   const skeletonCount = 36;
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
   const [availableBadges, setAvailableBadges] = useState<Badge[]>([]);
   const [myBadges, setMyBadges] = useState<UserBadge[]>([]);
 
@@ -80,6 +83,50 @@ export const SettingsBadges = () => {
     setAvailableBadges([...availableBadges, userBadge.badges]);
     setMyBadges(myBadges.filter((b) => b.badges.id !== userBadge.badges.id));
   };
+
+  const updateBadgesMutation = useMutation({
+    mutationFn: async (badges: UserBadge[]) => {
+      if (!user?.id) throw new Error("User not authenticated");
+
+      const { error: deleteError } = await supabase
+        .from("user_badges")
+        .delete()
+        .eq("user_id", user.id);
+
+      if (deleteError) throw new Error(deleteError.message);
+
+      const insertPayload = badges.map((b) => ({
+        user_id: user.id,
+        badge_id: b.badges.id,
+      }));
+
+      const { error: insertError } = await supabase
+        .from("user_badges")
+        .insert(insertPayload);
+
+      if (insertError) throw new Error(insertError.message);
+    },
+
+    onSuccess: () => {
+      toast({
+        title: "Changes saved!",
+        description: "Your badges have been updated.",
+      });
+
+      // ✅ Refetch badge queries
+      queryClient.invalidateQueries({
+        queryKey: ["MyBadgesForSettings"],
+      });
+    },
+
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update badges.",
+      });
+    },
+  });
 
   return (
     <motion.section
@@ -139,7 +186,11 @@ export const SettingsBadges = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button variant={"outline"} onClick={() => updateBadges(myBadges)}>
+          <Button
+            variant={"outline"}
+            onClick={() => updateBadgesMutation.mutate(myBadges)}
+            disabled={updateBadgesMutation.isPending}
+          >
             Save changes
           </Button>
         </CardFooter>

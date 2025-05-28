@@ -1,3 +1,4 @@
+import { JoinPublicGroup } from "./JoinPublicGroup";
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "./my-hooks/createClient";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +7,6 @@ import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Error as ErrorDiv } from "./Error";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 
 interface User {
   id: string;
@@ -43,8 +43,6 @@ export const DiscoverFeatured = () => {
     const blockedIds = blocked?.map((entry) => entry.blocked_id) || [];
 
     const excludedIds = [user?.id, ...blockedIds].filter(Boolean);
-
-    // Vytvoř správný řetězec pro .not("id", "in", ...)
     const excludedIdsString = `(${excludedIds.join(",")})`;
 
     const { data, error } = await supabase
@@ -66,11 +64,22 @@ export const DiscoverFeatured = () => {
   });
 
   const fetchGroupsData = async (): Promise<Group[]> => {
+    // Nejprve najdi ID skupin, kde je uživatel členem
+    const { data: memberships, error: membershipsError } = await supabase
+      .from("group_members")
+      .select("group_id")
+      .eq("user_id", user?.id);
+
+    if (membershipsError) throw new Error(membershipsError.message);
+
+    const memberGroupIds = memberships?.map((entry) => entry.group_id) || [];
+
     const { data, error } = await supabase
       .from("groups")
       .select("*")
       .eq("is_public", true)
-      .neq("created_by", user?.id);
+      .neq("created_by", user?.id)
+      .not("id", "in", `(${memberGroupIds.join(",")})`);
 
     if (error) throw new Error(error.message);
     return data;
@@ -184,9 +193,7 @@ export const DiscoverFeatured = () => {
             </div>
 
             <h3 className="text-sm opacity-65">{group.description}</h3>
-            <Button className="text-xs mt-3 px-2 " variant={"outline"}>
-              Join Group
-            </Button>
+            <JoinPublicGroup groupId={group.id} />
           </div>
         ))}
       </section>

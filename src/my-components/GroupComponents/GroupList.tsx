@@ -6,16 +6,21 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis, LogOut, Settings } from "lucide-react";
 import { supabase } from "../my-hooks/createClient";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/auth/AuthProvider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Error as ErrorDiv } from "../Error";
 import { GroupShowPeople } from "./GroupShowPeople";
+import { toast } from "@/hooks/use-toast";
 
 interface Group {
   id: string;
@@ -31,6 +36,7 @@ interface Group {
 export const GroupList = () => {
   const { user } = useAuth();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const fetchGroups = async (): Promise<Group[]> => {
     const { data: createdGroups, error: error1 } = await supabase
@@ -56,11 +62,18 @@ export const GroupList = () => {
     const joinedGroups = memberGroups?.map((item) => item.groups);
 
     const allGroups = [...(createdGroups || []), ...(joinedGroups || [])];
+
     const uniqueGroups = allGroups.filter(
       (group, index, self) => index === self.findIndex((g) => g.id === group.id)
     );
 
-    return uniqueGroups;
+    // Lokální řazení podle updated_at (od nejnovějších)
+    const sortedGroups = uniqueGroups.sort(
+      (a, b) =>
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+    );
+
+    return sortedGroups;
   };
 
   const {
@@ -71,6 +84,30 @@ export const GroupList = () => {
     queryKey: ["fetchGroupsForGroupList"],
     queryFn: fetchGroups,
   });
+
+  const leaveGroup = async (id: string) => {
+    const { data, error } = await supabase
+      .from("group_members")
+      .delete()
+      .eq("user_id", user?.id)
+      .eq("group_id", id);
+    if (error) throw new Error(error.message);
+    return data;
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: leaveGroup,
+    onSuccess: () => {
+      toast({
+        description: "You have left the group.",
+        duration: 2000,
+      });
+      queryClient.invalidateQueries({ queryKey: ["fetchGroupsForGroupList"] });
+    },
+  });
+  const handleLeaveGroup = (id: string) => {
+    if (user?.id) mutate(id);
+  };
 
   return (
     <div className="m-auto w-[90%] mt-4 ml-5">
@@ -120,12 +157,26 @@ export const GroupList = () => {
                       </DropdownMenuItem>
                     )}
 
-                    <DropdownMenuSeparator />
-
-                    <DropdownMenuItem className="text-red-700 focus:text-red-700 flex items-center">
-                      <LogOut className="w-4 h-4 " />
-                      Leave Group
-                    </DropdownMenuItem>
+                    {group.created_by !== user?.id && (
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className="text-red-700 focus:text-red-700 flex items-center">
+                          <LogOut className="w-4 h-4 " />
+                          Leave Group
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                          <DropdownMenuSubContent>
+                            <DropdownMenuLabel>Leave group?</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-red-700 focus:text-red-700 flex items-center"
+                              onClick={() => handleLeaveGroup(group.id)}
+                            >
+                              Yes
+                            </DropdownMenuItem>
+                          </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                      </DropdownMenuSub>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

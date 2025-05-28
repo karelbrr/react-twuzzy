@@ -1,3 +1,4 @@
+import { PendingRequests } from './PendingRequests';
 import { Ellipsis, MailQuestion } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -25,6 +26,8 @@ import { useEffect, useState } from "react";
 import { Check, X, User, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GroupRequest } from "./GroupComponents/GroupRequest";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from '@/hooks/use-toast';
 
 export interface ChatRequest {
   id: string;
@@ -107,6 +110,33 @@ export function MyChatRequests() {
   const sendAcceptRequest = (chatId: string) => {
     mutate(chatId);
   };
+  // 🔹 Funkce pro odmítnutí requestu
+  const deleteRequest = async (id: string) => {
+    const { error } = await supabase.from("chats").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+  };
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: async (id: string) => {
+      await deleteRequest(id);
+    },
+    onSuccess: () => {
+      toast({
+        description: "Request declined successfully.",
+        variant: "default",
+      });
+      queryClient.invalidateQueries({ queryKey: ["chatRequests"] });
+    },
+    onError: () => {
+      toast({
+        description: "Failed to decline the request.",
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const sendDeclineRequest = (chatId: string) => {
+    handleDelete(chatId);
+  };
 
   useEffect(() => {
     const subscription = supabase
@@ -163,63 +193,76 @@ export function MyChatRequests() {
             users who want to connect with you.
           </DialogDescription>
         </DialogHeader>
+        <Tabs defaultValue="my-requests">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="my-requests">My requests</TabsTrigger>
+            <TabsTrigger value="pending-requests">Pending Requests</TabsTrigger>
+          </TabsList>
+          <TabsContent value="my-requests">
+            <ScrollArea className=" max-h-[200px] w-full mt-5">
+              <h3 className="font-semibold">Chats</h3>
+              {errorQuery && (
+                <div className="border border-red-700 mt-2 p-3 text-red-700 rounded-lg">
+                  <h4>Error</h4>
+                  <p>{errorQuery.message}</p>
+                </div>
+              )}
 
-        <ScrollArea className=" max-h-[200px] w-full ">
-          <h3 className="font-semibold">Chats</h3>
-          {errorQuery && (
-            <div className="border border-red-700 mt-2 p-3 text-red-700 rounded-lg">
-              <h4>Error</h4>
-              <p>{errorQuery.message}</p>
-            </div>
-          )}
-
-          {isLoading && <Skeleton className="w-full h-6" />}
-          <div className="space-y-2">
-            {myRequestsData?.map((item) => (
-              <div
-                key={item.id}
-                className="flex justify-between border p-2 rounded-lg"
-              >
-                <p className="text-sm">
-                  {item.profiles.first_name} {item.profiles.last_name}
-                </p>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Ellipsis size={17} />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>
-                      <p>
-                        {item.profiles.first_name} {item.profiles.last_name}
-                      </p>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => sendAcceptRequest(item.id)}
-                    >
-                      <Check size={16} /> Accept Request
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <X size={16} /> Decline Request
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to={`/profile/${item.profiles.id}`}>
-                        <User size={16} /> Profile
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-700 focus:text-red-700">
-                      <Ban size={16} /> Block
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              {isLoading && <Skeleton className="w-full h-6" />}
+              <div className="space-y-2">
+                {myRequestsData?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex justify-between border p-2 rounded-lg"
+                  >
+                    <p className="text-sm">
+                      {item.profiles.first_name} {item.profiles.last_name}
+                    </p>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Ellipsis size={17} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>
+                          <p>
+                            {item.profiles.first_name} {item.profiles.last_name}
+                          </p>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => sendAcceptRequest(item.id)}
+                        >
+                          <Check size={16} /> Accept Request
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => sendDeclineRequest(item.id)}> 
+                          <X size={16} /> Decline Request
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to={`/profile/${item.profiles.id}`}>
+                            <User size={16} /> Profile
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-red-700 focus:text-red-700">
+                          <Ban size={16} /> Block
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </ScrollArea>
-        <ScrollArea className=" max-h-[200px] w-full ">
-          <GroupRequest/>
-        </ScrollArea>
+            </ScrollArea>
+
+            <ScrollArea className=" max-h-[200px]  w-full ">
+              <GroupRequest />
+            </ScrollArea>
+          </TabsContent>
+          <TabsContent value="pending-requests">
+            <ScrollArea className=" max-h-[200px] min-h-[100px] w-full mt-5">
+              <PendingRequests     />
+            </ScrollArea>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
