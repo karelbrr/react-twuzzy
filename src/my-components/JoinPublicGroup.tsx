@@ -38,17 +38,20 @@ export function JoinPublicGroup({ groupId }: { groupId: string }) {
   const { mutate: handleDeleteChat } = useMutation({
     mutationFn: handleJoinGroup,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["fetchChats"] }); // uprav dle key
+      queryClient.invalidateQueries({
+        queryKey: ["groups"],
+      });
+
       toast({
-        title: "Chat Deleted",
-        description: "The chat was successfully deleted.",
+        title: "Joined the group",
+        description: "Succesfully joined to the group",
       });
     },
     onError: (error: Error) => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to delete chat.",
+        description: error.message || "Failed to join the public group",
       });
     },
   });

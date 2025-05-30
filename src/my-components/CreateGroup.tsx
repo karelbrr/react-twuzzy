@@ -59,7 +59,9 @@ export const CreateGroup = () => {
   const { mutate } = useMutation({
     mutationFn: addGroup,
     onSuccess: () => {
-      reset({group_name: "", description: "", is_public: false});
+      setFile(null);
+      reset({ group_name: "", description: "", is_public: false });
+
       toast({
         title: "Group Created",
         description: "Your group has been created successfully.",
@@ -212,7 +214,6 @@ export const CreateGroup = () => {
             <div className="flex justify-end">
               <Button type="submit">Create</Button>
             </div>
-            
           </form>
         </DialogContent>
       </Dialog>

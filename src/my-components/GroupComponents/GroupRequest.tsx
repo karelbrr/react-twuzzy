@@ -9,14 +9,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Check, X, User, Ban } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Check, X } from "lucide-react";
 import { Ellipsis } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Error as ErrorDiv } from "../Error";
 import { toast } from "@/hooks/use-toast";
 
-export const GroupRequest = () => {
+export const GroupRequest = ({
+  chatRequestLength,
+}: {
+  chatRequestLength: number | undefined;
+}) => {
+  // můžeš teď použít chatRequestLength jako číslo
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const fetchGroupRequests = async () => {
@@ -103,9 +107,11 @@ export const GroupRequest = () => {
 
   return (
     <>
-      {myGroupRequestsData?.length !== 0 && (
+      <h3 className="font-semibold mt-2">Groups</h3>
+      {myGroupRequestsData?.length === 0 ? (
+        <p className="text-sm font-medium ">No chat requests</p>
+      ) : (
         <section className="">
-          <h3 className="font-semibold mt-2">Groups</h3>
           {errorQuery && <ErrorDiv error={errorQuery.message} />}
           <div className="space-y-2">
             {myGroupRequestsData?.map((item) => (

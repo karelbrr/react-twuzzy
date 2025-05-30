@@ -1,3 +1,4 @@
+import { GroupSettingsDangerZone } from './../my-components/GroupSettingsDangerZone';
 import { useAuth } from "@/auth/AuthProvider";
 import { GroupSettingsUser } from "./../my-components/GroupSettingsUser";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ import AlertDialogSection from "@/my-components/AlertDialogSection";
 import { toast } from "@/hooks/use-toast";
 import { Error as ErrorDiv } from "@/my-components/Error";
 import { Skeleton } from "@/components/ui/skeleton";
+
 
 interface GroupMembers {
   id: string;
@@ -78,12 +80,7 @@ export const GroupSettings = () => {
     enabled: !!user,
   });
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-  } = useForm<Inputs>({
+  const { register, handleSubmit, reset, control } = useForm<Inputs>({
     defaultValues: groupData || {
       group_name: "",
       description: "",
@@ -191,7 +188,7 @@ export const GroupSettings = () => {
   }
 
   return (
-    <div className="h-[80%] lg:h-[72] xl:h-[80%] w-[82%] mt-24 ">
+    <div className="h-[80%] lg:h-[72%] xl:h-[100%] w-[82%] mt-24 ">
       <motion.section
         className="h-[94%] flex-col  overflow-auto pl-10"
         initial={{ opacity: 0 }}
@@ -293,6 +290,10 @@ export const GroupSettings = () => {
             </div>
 
             <FindNewPeople />
+          </div>
+
+          <div className="mt-10 w-1/2 z-10 ">
+            <GroupSettingsDangerZone     />
           </div>
         </section>
       </motion.section>

@@ -3,12 +3,12 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Link } from "react-router-dom";
 import { supabase } from "./my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { Error as ErrorDiv } from "./Error";
 import { Button } from "@/components/ui/button"; // Přidání tlačítka
 import { Skeleton } from "@/components/ui/skeleton";
+import { JoinPublicGroup } from "./JoinPublicGroup";
 
 interface Group {
   id: string;
@@ -25,53 +25,33 @@ export const DiscoverGroups = () => {
   const fetchGroups = async (): Promise<Group[]> => {
     if (!searchTerm || !user?.id) return [];
 
-    // Veřejné skupiny odpovídající názvu
-    const { data: nameMatchedGroups, error: error1 } = await supabase
-      .from("groups")
-      .select("*")
-      .ilike("group_name", `%${searchTerm}%`)
-      .eq("is_public", true);
+    // Zjisti skupiny, kde je uživatel členem
+    const { data: memberGroups, error: error1 } = await supabase
+      .from("group_members")
+      .select("group_id")
+      .eq("user_id", user.id);
 
     if (error1) throw new Error(error1.message);
 
-    // Veřejné skupiny, které vytvořil uživatel a odpovídají hledání
-    const { data: createdGroups, error: error2 } = await supabase
+    const memberGroupIds = memberGroups?.map((g) => g.group_id) || [];
+
+    // Základní dotaz
+    let query = supabase
       .from("groups")
       .select("*")
-      .eq("created_by", user.id)
+      .ilike("group_name", `%${searchTerm}%`)
       .eq("is_public", true)
-      .ilike("group_name", `%${searchTerm}%`);
+      .neq("created_by", user.id);
+
+    if (memberGroupIds.length > 0) {
+      query = query.not("id", "in", `(${memberGroupIds.join(",")})`);
+    }
+
+    const { data: filteredGroups, error: error2 } = await query;
 
     if (error2) throw new Error(error2.message);
 
-    // Veřejné skupiny, kde je uživatel členem
-    const { data: memberGroups, error: error3 } = await supabase
-      .from("group_members")
-      .select("group_id, groups(*)")
-      .eq("user_id", user.id);
-
-    if (error3) throw new Error(error3.message);
-
-    const joinedGroups = memberGroups
-      ?.map((item) => item.groups)
-      .filter(
-        (group) =>
-          group?.is_public === true &&
-          group?.group_name?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-    // Sloučení všech skupin a odstranění duplicit
-    const allGroups = [
-      ...(nameMatchedGroups || []),
-      ...(createdGroups || []),
-      ...(joinedGroups || []),
-    ];
-
-    const uniqueGroups = allGroups.filter(
-      (group, index, self) => index === self.findIndex((g) => g.id === group.id)
-    );
-
-    return uniqueGroups;
+    return filteredGroups || [];
   };
 
   const { register, handleSubmit } = useForm<{ searchTerm: string }>();
@@ -137,21 +117,16 @@ export const DiscoverGroups = () => {
                 key={group.id}
                 className="flex flex-col items-center px-10 mt-10"
               >
-                <div className="hover:opacity-60 transition flex flex-col items-center">
-                  <Link to={`/profile/${group.id}`}>
-                    <Avatar className="size-36">
-                      <AvatarImage src={group.avatar_url} />
-                      <AvatarFallback className="text-4xl">
-                        {group.group_name.slice(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Link>
-                  <Link
-                    className="mt-3 font-semibold"
-                    to={`/profile/${group.id}`}
-                  >
-                    {group.group_name}
-                  </Link>
+                <div className=" transition flex flex-col items-center">
+                  <Avatar className="size-36">
+                    <AvatarImage src={group.avatar_url} />
+                    <AvatarFallback className="text-4xl">
+                      {group.group_name.slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  {group.group_name}
+                  <JoinPublicGroup groupId={group.id} />
                 </div>
               </div>
             ))}

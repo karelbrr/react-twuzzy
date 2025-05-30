@@ -1,4 +1,4 @@
-import { PendingRequests } from './PendingRequests';
+import { PendingRequests } from "./PendingRequests";
 import { Ellipsis, MailQuestion } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -27,7 +27,7 @@ import { Check, X, User, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GroupRequest } from "./GroupComponents/GroupRequest";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from '@/hooks/use-toast';
+import { toast } from "@/hooks/use-toast";
 
 export interface ChatRequest {
   id: string;
@@ -133,7 +133,7 @@ export function MyChatRequests() {
       });
     },
   });
-  
+
   const sendDeclineRequest = (chatId: string) => {
     handleDelete(chatId);
   };
@@ -199,8 +199,14 @@ export function MyChatRequests() {
             <TabsTrigger value="pending-requests">Pending Requests</TabsTrigger>
           </TabsList>
           <TabsContent value="my-requests">
-            <ScrollArea className=" max-h-[200px] w-full mt-5">
+            <ScrollArea className=" max-h-[200px] w-full mt-4">
               <h3 className="font-semibold">Chats</h3>
+              {myRequestsData?.length === 0 && (
+                <div>
+                  <p className="text-sm font-medium ">No chat requests</p>
+                </div>
+              )}
+
               {errorQuery && (
                 <div className="border border-red-700 mt-2 p-3 text-red-700 rounded-lg">
                   <h4>Error</h4>
@@ -234,7 +240,9 @@ export function MyChatRequests() {
                         >
                           <Check size={16} /> Accept Request
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => sendDeclineRequest(item.id)}> 
+                        <DropdownMenuItem
+                          onClick={() => sendDeclineRequest(item.id)}
+                        >
                           <X size={16} /> Decline Request
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
@@ -254,12 +262,12 @@ export function MyChatRequests() {
             </ScrollArea>
 
             <ScrollArea className=" max-h-[200px]  w-full ">
-              <GroupRequest />
+              <GroupRequest chatRequestLength={myRequestsData?.length} />
             </ScrollArea>
           </TabsContent>
           <TabsContent value="pending-requests">
             <ScrollArea className=" max-h-[200px] min-h-[100px] w-full mt-5">
-              <PendingRequests     />
+              <PendingRequests />
             </ScrollArea>
           </TabsContent>
         </Tabs>
