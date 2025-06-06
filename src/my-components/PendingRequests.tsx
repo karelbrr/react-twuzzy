@@ -40,7 +40,6 @@ export function PendingRequests() {
   const {
     data: pendingRequestsData,
     error: errorQuery,
-    isLoading,
   } = useQuery({
     queryKey: ["pendingRequests"],
     queryFn: fetchPendingRequests,

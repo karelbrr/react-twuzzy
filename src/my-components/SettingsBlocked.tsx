@@ -73,8 +73,6 @@ export const SettingsBlocked = () => {
 
   const {
     mutate: unblockUser,
-    isPending,
-    isError,
   } = useMutation({
     mutationFn: async (blockedId: string) => {
       if (!user) throw new Error("User not authenticated");

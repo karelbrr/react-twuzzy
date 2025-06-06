@@ -15,7 +15,7 @@ type UserFormProps = UserData & {
   updateForm: (fields: Partial<UserData>) => void;
 };
 
-export const FormThree = ({ avatar, updateForm }: UserFormProps) => {
+export const FormThree = ({ updateForm }: UserFormProps) => {
   const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const { toast } = useToast();
@@ -52,7 +52,7 @@ export const FormThree = ({ avatar, updateForm }: UserFormProps) => {
         description: "Your avatar has been successfully uploaded!",
       });
     },
-    onError: (error: Error) => {
+    onError: () => {
       toast({
         variant: "destructive",
         description: "There was an error while uploading the avatar",

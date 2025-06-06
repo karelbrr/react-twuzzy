@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { CopyPlus, SquarePlus } from "lucide-react";
+import { CopyPlus } from "lucide-react";
 
 export function JoinPublicGroup({ groupId }: { groupId: string }) {
   const { user } = useAuth();

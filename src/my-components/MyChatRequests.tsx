@@ -98,7 +98,7 @@ export function MyChatRequests() {
   };
 
   // 🔹 Mutace s invalidací cache
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: acceptRequest,
     onError: () => console.log("error"),
     onSuccess: () => {

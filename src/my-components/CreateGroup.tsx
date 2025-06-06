@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -89,7 +88,7 @@ export const CreateGroup = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        description: "Failed to upload group avatar.",
+        description: "Failed to upload group avatar. ",
       });
     }
   };
@@ -117,7 +116,7 @@ export const CreateGroup = () => {
     const safeName = groupName.replace(/\s+/g, "_").toLowerCase();
     const filePath = `groups/${safeName}-${timestamp}.${extension}`;
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("avatarsgroups")
       .upload(filePath, file);
 

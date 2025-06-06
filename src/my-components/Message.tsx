@@ -75,7 +75,7 @@ const Message: React.FC<MessageProps> = ({
     }
   };
 
-  const { data: repliedMessage, error: repliedToError } =
+  const { data: repliedMessage } =
     useRepliedMessage(replied_to);
 
   const getCleanNameFromUrl = (media_url: string | undefined): string => {

@@ -15,12 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Error as ErrorDiv } from "../Error";
 import { toast } from "@/hooks/use-toast";
 
-export const GroupRequest = ({
-  chatRequestLength,
-}: {
-  chatRequestLength: number | undefined;
-}) => {
-  // můžeš teď použít chatRequestLength jako číslo
+export const GroupRequest = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const fetchGroupRequests = async () => {
@@ -47,7 +42,6 @@ export const GroupRequest = ({
   const {
     data: myGroupRequestsData,
     error: errorQuery,
-    isLoading,
   } = useQuery({
     queryKey: ["GroupRequest"],
     queryFn: fetchGroupRequests,
@@ -63,7 +57,7 @@ export const GroupRequest = ({
     return data;
   };
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: acceptRequest,
     onError: () => console.log("error"),
     onSuccess: () => {

@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { Error as ErrorDiv } from "../Error";
 interface News {
   id: string;
   created_at: string;
@@ -39,7 +40,6 @@ export function AboutPageHeader() {
   const {
     data,
     error: errorQuery,
-    isLoading,
   } = useQuery<News[], Error>({
     queryKey: ["NewsForAboutPage"],
     queryFn: fetchNews,
@@ -176,6 +176,7 @@ export function AboutPageHeader() {
                         </NavigationMenuLink>
                       </li>
                       <div className="space-y-4">
+                        {errorQuery && <ErrorDiv error={errorQuery.message}/> }
                         {data?.map((item) => (
                           <div key={item.id}>
                             <h4 className="font-medium text-sm">

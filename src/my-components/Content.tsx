@@ -8,8 +8,8 @@ import { useAuth } from "@/auth/AuthProvider";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Error as ErrorDiv } from "./Error";
-import { Button } from "@/components/ui/button";
-import { ChevronUp } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { ChevronUp } from "lucide-react";
 
 interface Message {
   id: string;
