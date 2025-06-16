@@ -141,7 +141,7 @@ export const GroupTextBar = ({ replyingTo, setReplyingTo }: Props) => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
-    console.log("File selected:", selectedFile); // 👈 Debug
+    console.log("File selected:", selectedFile); 
     if (selectedFile) {
       setFile(selectedFile);
       event.target.value = "";

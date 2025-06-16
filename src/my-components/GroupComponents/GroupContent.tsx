@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
-import Message from "../Message";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../my-hooks/createClient";
 import { useAuth } from "@/auth/AuthProvider";
 import { motion } from "framer-motion";
@@ -27,21 +26,19 @@ export const GroupContent = () => {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const { id } = useParams();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [isNearBottom, setIsNearBottom] = useState(true);
 
   const handleScroll = () => {
-    if (!messagesContainerRef.current) {
-      return;
-    }
-
     const container = messagesContainerRef.current;
+    if (!container) return;
 
     const threshold = 400;
     const distanceFromTop = container.scrollTop + container.clientHeight;
     const distanceFromBottom = container.scrollHeight - distanceFromTop;
-
     setIsNearBottom(distanceFromBottom < threshold);
   };
 
@@ -52,17 +49,13 @@ export const GroupContent = () => {
       .eq("group_id", groupId)
       .order("created_at", { ascending: true });
 
-    if (error) {
-      throw new Error(error.message);
-    }
-
+    if (error) throw new Error(error.message);
     return data;
   };
 
   const {
     data: messages,
     error,
-    isLoading,
   } = useQuery<Message[], Error>({
     queryKey: ["fetchGroupMessages", id],
     queryFn: () => fetchGroupMessages(id!),
@@ -74,9 +67,7 @@ export const GroupContent = () => {
       .select("group_name")
       .eq("id", groupId)
       .single();
-    if (error) {
-      throw new Error(error.message);
-    }
+    if (error) throw new Error(error.message);
     return data.group_name;
   };
 
@@ -85,6 +76,56 @@ export const GroupContent = () => {
     queryFn: () => fetchGroupName(id!),
     enabled: !!id,
   });
+
+  // 🚀 Realtime sync with Supabase
+  useEffect(() => {
+    if (!id) return;
+
+    const subscription = supabase
+      .channel("realtime:group_messages")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "group_messages" },
+        (payload) => {
+          if (payload.new.group_id !== id) return;
+
+          queryClient.setQueryData<Message[]>(
+            ["fetchGroupMessages", id],
+            (old) => [...(old || []), payload.new as Message]
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "group_messages" },
+        (payload) => {
+          if (payload.new.group_id !== id) return;
+
+          queryClient.setQueryData<Message[]>(
+            ["fetchGroupMessages", id],
+            (old) =>
+              old?.map((msg) =>
+                msg.id === payload.new.id ? (payload.new as Message) : msg
+              ) || []
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "group_messages" },
+        (payload) => {
+          queryClient.setQueryData<Message[]>(
+            ["fetchGroupMessages", id],
+            (old) => old?.filter((msg) => msg.id !== payload.old.id) || []
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, [id, queryClient]);
 
   useEffect(() => {
     if (isNearBottom) {
@@ -95,17 +136,11 @@ export const GroupContent = () => {
   return (
     <div className="h-[80%] lg:h-[72] xl:h-[80%] w-[82%] mt-24 ">
       <Helmet>
-        {isLoading ? (
-          <title>groupname | Twüzzy</title>
-        ) : (
-          <title>
-            {groupName && groupName.length > 0 ? groupName : "groupname"} |
-            Twüzzy
-          </title>
-        )}
+        <title>{groupName || "groupname"} | Twüzzy</title>
       </Helmet>
+
       <motion.section
-        className="h-[94%] flex-col  overflow-auto"
+        className="h-[94%] flex-col overflow-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
       >
@@ -123,8 +158,7 @@ export const GroupContent = () => {
             {messages?.length === 0 && (
               <section className="w-full flex justify-center mt-5">
                 <div className="w-1/2 opacity-70 ">
-                  <h2 className="text-center text-xl ">No Messages Yet</h2>
-                  <p></p>
+                  <h2 className="text-center text-xl">No Messages Yet</h2>
                 </div>
               </section>
             )}
@@ -147,6 +181,7 @@ export const GroupContent = () => {
           </div>
         </div>
       </motion.section>
+
       <GroupTextBar replyingTo={replyingTo} setReplyingTo={setReplyingTo} />
     </div>
   );

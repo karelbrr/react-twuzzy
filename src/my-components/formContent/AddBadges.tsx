@@ -23,7 +23,7 @@ export const AddBadges = ({ myBadges, setMyBadges }: UserFormProps) => {
   const [availableBadges, setAvailableBadges] = useState<Badge[]>([]);
   const { user } = useAuth();
   const fetchBadges = async (): Promise<Badge[]> => {
-    const { data, error } = await supabase.from("badges").select("*");
+    const { data, error } = await supabase.from("badges").select("*").neq("is_dns", true);
     if (error) throw new Error(error.message);
     return data;
   };
