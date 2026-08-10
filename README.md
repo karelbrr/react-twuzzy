@@ -1,3 +1,5 @@
+# [DONE]
+
 # Twüzzy
 
 A real-time chat application built with React and Supabase. It includes 1-on-1 messaging, group chats, media sharing, and customizable profiles.
